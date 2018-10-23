@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Focusable : MonoBehaviour {
 
@@ -12,11 +10,15 @@ public class Focusable : MonoBehaviour {
     private bool inFocus = false;
 
     private Manager manager;
+    private Renderer rend;
+    private Color defCol; 
 
     void Start() {
         manager = Manager.instance;
         outline.OutlineColor = hoverColor;
         outline.OutlineWidth = 0;
+        rend = GetComponent<Renderer>();
+        defCol = rend.material.color;
     }
 
     public void Toggle() {
@@ -28,21 +30,25 @@ public class Focusable : MonoBehaviour {
         Debug.Log(outline.OutlineWidth);
     }
 
+    public bool IsFocused() {
+        return inFocus;
+    }
+
     private void Focus() {
         if (manager.CanFocus()) {
             inFocus = true;
-            manager.AddInFocus();
-            outline.OutlineWidth = 10;
-            transform.Translate(-Vector3.forward *2* transform.localScale.z);
+            manager.AddInFocus(gameObject);
+            outline.OutlineWidth = 0;
+            rend.material.color = focusedColor;
         }
     }
 
     private void DeFocus() {
         if (inFocus) {
-            manager.SubInFocus();
+            manager.SubInFocus(gameObject);
             inFocus = false;
             outline.OutlineWidth = 0;
-            transform.Translate(Vector3.forward*2* transform.localScale.z);
+            rend.material.color = defCol;
         }
     }
 
