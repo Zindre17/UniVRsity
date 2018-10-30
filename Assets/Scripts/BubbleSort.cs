@@ -39,6 +39,9 @@ public class BubbleSort :ISortingAlgorithm {
                 if(i < arrayLength-1) {
                     i++;
                     j = arrayLength-1;
+                } 
+                if(i == arrayLength - 1) {
+                    complete = true;
                 }
             }
         }
@@ -65,6 +68,10 @@ public class BubbleSort :ISortingAlgorithm {
 
     public string GetPseudo() {
         return "for i = 0 to A.length -2 \n   for j = A.length downto i+1 \n       if A[j] < A[j-1] \n           exchange A[j] with A[j-1]";
+    }
+
+    public bool Complete() {
+        return complete;
     }
 
     private readonly string[] pseudo = {

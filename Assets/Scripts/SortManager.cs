@@ -54,6 +54,7 @@ public class SortManager : MonoBehaviour {
         elements = new List<GameObject>(arraySize);
         arrayToSort = new int[arraySize];
         sortedArray = new int[arraySize];
+        movingObjects = 0;
 
         for (int i = 0; i < arraySize; i++) {
             int num = UnityEngine.Random.Range(1, 16);
@@ -137,10 +138,22 @@ public class SortManager : MonoBehaviour {
                 Keep();
             }
             sortingAlgorithm.Next();
+            if (sortingAlgorithm.Complete()) {
+                ReStart();
+                //dostuff;
+            }
         } else {
             Keep();
             //TODO: add some indicator to let user know the last move was incorrect
         }
+    }
+
+    private void ReStart() {
+        spawnedElements = 0;
+        foreach(GameObject go in elements) {
+            Destroy(go);
+        }
+        Start();
     }
 
     private bool NeedsSwap() {

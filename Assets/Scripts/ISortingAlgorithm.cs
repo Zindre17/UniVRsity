@@ -8,4 +8,5 @@ public interface ISortingAlgorithm {
     bool CorrectMove(Move move);
     int RequiredSelections();
     string GetPseudo();
+    bool Complete();
 }
