@@ -11,13 +11,13 @@ public class Hands : MonoBehaviour {
 
     private bool grabbing = false;
 
-    private Manager manager;
+    private SortManager manager;
 
-    private Focusable prevHover;
+    private Selectable prevHover;
 
 	void Start () {
         rb = gameObject.GetComponent<Rigidbody>();
-        manager = Manager.instance;
+        manager = SortManager.instance;
 	}
 	
 	void Update () {
@@ -27,7 +27,7 @@ public class Hands : MonoBehaviour {
         Ray ray = new Ray(transform.position, transform.forward);
 
         if(Physics.Raycast(ray, out hit)) {
-            Focusable focusable = hit.collider.GetComponent<Focusable>();
+            Selectable focusable = hit.collider.GetComponent<Selectable>();
 
             if (focusable != null) {
                 if (focusable != prevHover) {

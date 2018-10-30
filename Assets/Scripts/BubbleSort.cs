@@ -2,79 +2,76 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BubbleSort : MonoBehaviour {
+public class BubbleSort :ISortingAlgorithm {
 
-    public int arraySize;
-    private int spawnedElements = 0;
+    private int i = 0;
+    public int I { get { return i; } }
 
-    public float distanceBetweenElements = 0.5f;
-    public float scale = 0.2f;
+    private int j = 0;
+    public int J { get { return j; } }
 
-    public GameObject elementPrefab;
-    public Transform spawnCenter;
+    private int neededSelections = 2;
+    private int arrayLength;
 
-    public float spawnInterval = 0.5f;
-    private float timeSinceLastSpawn = 0f;
+    private bool complete = false;
 
-    private GameObject[] elements;
+    private Stack<int> prevIs;
+    private Stack<int> prevJs;
 
-    private int[] arrayToSort;
-    private int[] sortedArray;
+    public BubbleSort(int _arrayLength) {
+        arrayLength = _arrayLength;
+
+        prevIs = new Stack<int>();
+        prevJs = new Stack<int>();
+        
+        i = 0;
+        j = arrayLength - 1;
+        
+    }
+
+    public void Next() {
+        if (!complete) {
+            prevIs.Push(i);
+            prevJs.Push(i);
+            if(j > i + 1) {
+                j--;
+            } else {
+                if(i < arrayLength-1) {
+                    i++;
+                    j = arrayLength-1;
+                }
+            }
+        }
+    }
+
+    public void Prev() {
+        if(prevIs.Count > 0) {
+            i = prevIs.Pop();
+            j = prevJs.Pop();
+        }
+    }
+
+    public bool CorrectMove(Move move) {
+        if(move.GetSelectionCount() < 2) 
+            return false;
+        int m1 = move.GetFirstSelection().Index;
+        int m2 = move.GetSecondSelection().Index;
+        return (m1 == j && m2 == j - 1) || (m1 == j - 1 && m2 == j);
+    }
+
+    public int RequiredSelections() {
+        return neededSelections;
+    }
+
+    public string GetPseudo() {
+        return "for i = 0 to A.length -2 \n   for j = A.length downto i+1 \n       if A[j] < A[j-1] \n           exchange A[j] with A[j-1]";
+    }
 
     private readonly string[] pseudo = {
-        "for i = 1 to A.length -1",
-        "   for j = A.length downto i+1",
+        "for i = 0 to A.length -2",
+        "   for j = A.length-1 downto i+1",
         "       if A[j] < A[j-1]",
         "           exchange A[j] with A[j-1]"
     };
 
-	// Use this for initialization
-	void Start () {
-        elements = new GameObject[arraySize];
-        arrayToSort = new int[arraySize];
-        sortedArray = new int[arraySize];
-        
-        for(int i = 0; i < arraySize; i++) {
-            int num = Random.Range(1, 16);
-            arrayToSort[i] = num;
-            sortedArray[i] = num;
-        }
-
-        System.Array.Sort(sortedArray);
-    }
-	
-	// Update is called once per frame
-
-	void Update () {
-        if(arraySize > spawnedElements) {
-            timeSinceLastSpawn += Time.deltaTime;
-            //Debug.Log(timeSinceLastSpawn);
-            if(timeSinceLastSpawn >= spawnInterval) {
-                SpawnElement();
-                timeSinceLastSpawn = 0;
-            }
-        }
-	}
-
-    void SpawnElement() {
-        Debug.Log("spawning element");
-       
-        for(int i = 0; i < spawnedElements; i++) {
-            elements[i].transform.Translate(new Vector3(-distanceBetweenElements/2, 0, 0));
-        }
-        GameObject newE = Instantiate(elementPrefab, spawnCenter);
-        elements[spawnedElements] = newE;
-        newE.transform.localScale = new Vector3(1, arrayToSort[spawnedElements], 1)*scale;
-        newE.transform.Translate(new Vector3(spawnedElements*distanceBetweenElements/2, newE.transform.localScale.y/2, 0));
-       
-        spawnedElements++;
-    }
-
-    void Swap(int index1, int index2) {
-        int temp = arrayToSort[index1];
-        arrayToSort[index1] = arrayToSort[index2];
-        arrayToSort[index2] = temp;
-
-
-    }
 }

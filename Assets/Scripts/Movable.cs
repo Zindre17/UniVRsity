@@ -11,21 +11,27 @@ public class Movable : MonoBehaviour {
     private int currentPoint = -1;
     private bool moving = false;
     private Vector3 direction;
+    private SortManager manager;
 
     private void Start() {
         wayPoints = new Vector3[maxPoints];
+        manager = SortManager.instance;
     }
 	
     public void SetPath(Vector3[] path) {
         numberOfWayPoints = path.Length;
         wayPoints = path;
-        currentPoint = 0;
+        currentPoint = -1;
+        manager.AddMovingObject();
+        Move();
     }
 
     public void SetPath(Vector3 point) {
         wayPoints = new Vector3[] { point };
         numberOfWayPoints = 1;
-        currentPoint = 0;
+        currentPoint = -1;
+        manager.AddMovingObject();
+        Move();
     }
 
 	public void Move() {
@@ -33,6 +39,7 @@ public class Movable : MonoBehaviour {
         if(currentPoint < numberOfWayPoints) {
             moving = true;
         } else {
+            manager.RemoveMovingObject();
             moving = false;
             currentPoint = -1;
             numberOfWayPoints = 0;

@@ -12,7 +12,7 @@ public class SelectionHandler : MonoBehaviour {
     public Transform laserOrigin;
     public float maxDistance = 20f;
 
-    private Focusable prevHover;
+    private Selectable prevHover;
 
     private void Start()
     {
@@ -29,10 +29,10 @@ public class SelectionHandler : MonoBehaviour {
         if(Physics.Raycast(ray, out hit, maxDistance))
         {
             //Debug.Log("Ray hit!");
-            Focusable focusable = hit.collider.GetComponent<Focusable>();
+            Selectable focusable = hit.collider.GetComponent<Selectable>();
             if(focusable != null)
             {
-                Debug.Log("Target has focusable component!");
+                //Debug.Log("Target has focusable component!");
                 if(focusable != prevHover)
                 {
                     focusable.StartHover();
@@ -42,7 +42,7 @@ public class SelectionHandler : MonoBehaviour {
                 }
                 if (a_select.GetStateDown(SteamVR_Input_Sources.Any))
                 {
-                    Debug.Log("selected");
+                    //Debug.Log("selected");
                     focusable.Toggle();
                 }
             }
