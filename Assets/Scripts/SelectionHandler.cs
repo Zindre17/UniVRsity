@@ -29,21 +29,21 @@ public class SelectionHandler : MonoBehaviour {
         if(Physics.Raycast(ray, out hit, maxDistance))
         {
             //Debug.Log("Ray hit!");
-            Selectable focusable = hit.collider.GetComponent<Selectable>();
-            if(focusable != null)
+            Selectable selectable = hit.collider.GetComponent<Selectable>();
+            if(selectable != null)
             {
                 //Debug.Log("Target has focusable component!");
-                if(focusable != prevHover)
+                if(selectable != prevHover)
                 {
-                    focusable.StartHover();
+                    selectable.StartHover();
                     if(prevHover!= null)
                         prevHover.EndHover();
-                    prevHover = focusable;
+                    prevHover = selectable;
                 }
                 if (a_select.GetStateDown(SteamVR_Input_Sources.Any))
                 {
                     //Debug.Log("selected");
-                    focusable.Toggle();
+                    selectable.Toggle();
                 }
             }
             else

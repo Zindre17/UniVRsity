@@ -47,7 +47,7 @@
         if (selectionCount == 0)
             return;
         for( int i = 0; i< selectionCount; i++) {
-            if( selections[i] == selection) {
+            if( selections[i].Equals(selection)) {
                 selections[i] = null;
                 selectionCount--;
                 return;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -39,6 +40,9 @@ public class SortManager : MonoBehaviour {
     public Text j;
     public Text i;
     public Text pseudo;
+    public Text message;
+
+    private bool demo = false;
 
     void Awake() {
         if (instance == null) {
@@ -64,6 +68,9 @@ public class SortManager : MonoBehaviour {
 
         Array.Sort(sortedArray);
 
+        pseudo.text = sortingAlgorithm.GetPseudo();
+        i.text = sortingAlgorithm.I.ToString();
+        j.text = sortingAlgorithm.J.ToString();
     }
     
 
@@ -84,10 +91,6 @@ public class SortManager : MonoBehaviour {
                 timeSinceLastSpawn = 0;
             }
         }
-
-        i.text = sortingAlgorithm.I.ToString();
-        j.text = sortingAlgorithm.J.ToString();
-        pseudo.text = sortingAlgorithm.GetPseudo();
     }
 
     void SpawnElement() {
@@ -107,6 +110,12 @@ public class SortManager : MonoBehaviour {
         newE.transform.Translate(new Vector3(spawnedElements * distanceBetweenElements / 2, 0, 0));
 
         spawnedElements++;
+        if (spawnedElements == arraySize)
+            OnSpawnComplete();
+    }
+
+    private void OnSpawnComplete() {
+       
     }
 
     public bool CanFocus() {
@@ -138,14 +147,30 @@ public class SortManager : MonoBehaviour {
                 Keep();
             }
             sortingAlgorithm.Next();
+            i.text = sortingAlgorithm.I.ToString();
+            j.text = sortingAlgorithm.J.ToString();
             if (sortingAlgorithm.Complete()) {
                 ReStart();
                 //dostuff;
             }
+
         } else {
             Keep();
             //TODO: add some indicator to let user know the last move was incorrect
+            ShowWrongMoveMessage();
         }
+    }
+
+    private void ShowWrongMoveMessage() {
+        StartCoroutine(ShowMessage("wrong selctions, try again!", 5));
+    }
+
+    IEnumerator ShowMessage(string _message, float seconds) {
+        message.text = _message;
+        message.enabled = true;
+        yield return new WaitForSeconds(seconds);
+        message.enabled = false;
+        
     }
 
     private void ReStart() {
@@ -190,6 +215,15 @@ public class SortManager : MonoBehaviour {
     }
     public void RemoveMovingObject() {
         movingObjects--;
+        if(movingObjects == 0) {
+            RemoveSelections();
+        }
+    }
+
+    private void RemoveSelections() {
+        move.GetSecondSelection().DeSelect();
+        move.GetFirstSelection().DeSelect();
+        move = new Move();
     }
 
     private void Keep() {
@@ -205,14 +239,14 @@ public class SortManager : MonoBehaviour {
             Vector3 forward = new Vector3(m.transform.position.x, m.transform.position.y, m.transform.position.z - 2 * scale);
             m.SetPath(new Vector3[] { forward, back });
         }
-        Selectable s = move.GetSecondSelection().GetComponentInChildren<Selectable>();
-        if (s != null) {
-            s.Toggle();
-        }
-        s = move.GetFirstSelection().GetComponentInChildren<Selectable>();
-        if (s != null) {
-            s.Toggle();
-        }
+        //Selectable s = move.GetSecondSelection().GetComponentInChildren<Selectable>();
+        //if (s != null) {
+        //    s.Toggle();
+        //}
+        //s = move.GetFirstSelection().GetComponentInChildren<Selectable>();
+        //if (s != null) {
+        //    s.Toggle();
+        //}
     }
 
     private void Swap() {
@@ -257,12 +291,12 @@ public class SortManager : MonoBehaviour {
         CheckForCorrectPosition(e1);
         CheckForCorrectPosition(e2);
 
-        Selectable f1 = e1.GetComponentInChildren<Selectable>();
-        Selectable f2 = e2.GetComponentInChildren<Selectable>();
-        if(f2!=null)
-            f2.Toggle();
-        if(f1!=null)
-            f1.Toggle();
+        //Selectable f1 = e1.GetComponentInChildren<Selectable>();
+        //Selectable f2 = e2.GetComponentInChildren<Selectable>();
+        //if(f2!=null)
+        //    f2.Toggle();
+        //if(f1!=null)
+        //    f1.Toggle();
     }
 
     private void CheckForCorrectPosition(Element e) {

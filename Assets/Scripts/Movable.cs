@@ -43,6 +43,8 @@ public class Movable : MonoBehaviour {
             moving = false;
             currentPoint = -1;
             numberOfWayPoints = 0;
+            //Selectable s = GetComponentInChildren<Selectable>();
+            //if(s!=null) s.Toggle();
         }
     }
 	void Update () {

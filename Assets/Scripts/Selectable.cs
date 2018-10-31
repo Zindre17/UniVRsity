@@ -49,8 +49,8 @@ public class Selectable : MonoBehaviour {
         return selected;
     }
 
-    private void Select() {
-        if (manager.CanFocus()) {
+    public void Select() {
+        if (manager.CanFocus() && !selected) {
             selected = true;
             outline.OutlineWidth = 0;
             rend.material.color = focusedColor;
@@ -59,7 +59,7 @@ public class Selectable : MonoBehaviour {
         }
     }
 
-    private void DeSelect() {
+    public void DeSelect() {
         if (selected) {
             selected = false;
             outline.OutlineWidth = 0;
