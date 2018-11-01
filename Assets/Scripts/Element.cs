@@ -14,19 +14,19 @@ public class Element : MonoBehaviour {
         get;set;
     }
 
-    private Selectable s;
+    //private Selectable s;
 
-    private void Start() {
-        s = GetComponentInChildren<Selectable>();
-    }
+    //private void Start() {
+    //    s = GetComponentInChildren<Selectable>();
+    //}
 
-    public void Select() {
-        s.Select();
-    }
+    //public void Select() {
+    //    s.Select();
+    //}
 
-    public void DeSelect() {
-        s.DeSelect();
-    }
+    //public void DeSelect() {
+    //    s.DeSelect();
+    //}
 
     public new bool Equals(object other) {
         if (other.GetType() == GetType()) {

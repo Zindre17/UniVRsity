@@ -52,6 +52,25 @@ public class SortManager : MonoBehaviour {
         }
     }
 
+    //private void OnEnable()
+    //{
+    //    SelectionHandler.OnSelectableClicked += AttemptSelection;
+    //}
+
+    //private void OnDisable()
+    //{
+    //    SelectionHandler.OnSelectableClicked -= AttemptSelection;
+    //}
+
+    //private void AttemptSelection(Selectable s)
+    //{
+    //    if (s == null) return;
+    //    if (CanFocus())
+    //    {
+    //        s.Toggle();
+    //    }
+    //}
+
     private void Start() {
         sortingAlgorithm = GetSelectedAlgorithm();
         move = new Move();
@@ -115,11 +134,19 @@ public class SortManager : MonoBehaviour {
     }
 
     private void OnSpawnComplete() {
-       
+        if (demo)
+        {
+            StartDemo();
+        }
+    }
+
+    private void StartDemo()
+    {
+
     }
 
     public bool CanFocus() {
-        return move.GetSelectionCount() < sortingAlgorithm.RequiredSelections() && movingObjects == 0 && spawnedElements >= arraySize;
+        return move.GetSelectionCount() < sortingAlgorithm.RequiredSelections() && movingObjects == 0 && spawnedElements >= arraySize && !demo;
     }
 
     public void AddSelection(Element e) {
@@ -165,7 +192,7 @@ public class SortManager : MonoBehaviour {
         StartCoroutine(ShowMessage("wrong selctions, try again!", 5));
     }
 
-    IEnumerator ShowMessage(string _message, float seconds) {
+    private IEnumerator ShowMessage(string _message, float seconds) {
         message.text = _message;
         message.enabled = true;
         yield return new WaitForSeconds(seconds);
@@ -221,8 +248,8 @@ public class SortManager : MonoBehaviour {
     }
 
     private void RemoveSelections() {
-        move.GetSecondSelection().DeSelect();
-        move.GetFirstSelection().DeSelect();
+        //move.GetSecondSelection().DeSelect();
+        //move.GetFirstSelection().DeSelect();
         move = new Move();
     }
 

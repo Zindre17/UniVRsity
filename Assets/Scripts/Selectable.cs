@@ -15,11 +15,16 @@ public class Selectable : MonoBehaviour {
     private Color defCol;
     public Color correctColor;
 
+    private void Awake()
+    {
+        rend = GetComponent<Renderer>();
+    }
+
     void Start() {
         manager = SortManager.instance;
         outline.OutlineColor = hoverColor;
         outline.OutlineWidth = 0;
-        rend = GetComponent<Renderer>();
+        
         defCol = rend.material.color;
     }
 

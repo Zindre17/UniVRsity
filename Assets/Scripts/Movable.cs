@@ -35,6 +35,7 @@ public class Movable : MonoBehaviour {
     }
 
 	public void Move() {
+        Debug.Log("current point : " + currentPoint);
         currentPoint++;
         if(currentPoint < numberOfWayPoints) {
             moving = true;
@@ -48,7 +49,7 @@ public class Movable : MonoBehaviour {
         }
     }
 	void Update () {
-        if (moving) {
+        if (moving ) {
             direction = (wayPoints[currentPoint] - transform.position).normalized;  
             transform.position += direction * speed * Time.deltaTime;
             if(Vector3.Distance(transform.position, wayPoints[currentPoint])< radiusBuffer) {
