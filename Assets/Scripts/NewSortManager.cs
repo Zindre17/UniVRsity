@@ -6,16 +6,10 @@ using UnityEngine.UI;
 
 public class NewSortManager : MonoBehaviour {
 
+    #region variables
+
     //the singleton instance
     public static NewSortManager instance;
-
-    private void Awake()
-    {
-        if (instance != null)
-            Destroy(this);
-        else
-            instance = this;
-    }
 
     // A transform to use as the center of the spawning area
     public Transform spawnCenter;
@@ -63,11 +57,14 @@ public class NewSortManager : MonoBehaviour {
     // used to only enable swap and keep when items are beeing compared, and also disable selections
     private bool comparing = false;
 
-    // UI Text elements for representing the algorithms state and pseudo code
+    // UI Text elements for representing the algorithms state, pseudo code, and temporary messages/feedback
     public Text state;
     public Text pseudo;
     public Text message;
 
+    #endregion
+
+    #region event subscription and unsubscrption
     //Subscribe to all events
     private void OnEnable()
     {
@@ -77,6 +74,7 @@ public class NewSortManager : MonoBehaviour {
         EventManager.OnUISelect += TryUISelect;
         EventManager.OnMovementStarted += AddInMotion;
         EventManager.OnMovementFinished += RemoveInMotion;
+        EventManager.OnMenuSelect += HandleMenuSelect;
         //EventManager.OnActionAccepted += CompleteAction;
         //EventManager.OnActionRejected += RejectAction;
     }
@@ -89,19 +87,123 @@ public class NewSortManager : MonoBehaviour {
         EventManager.OnUISelect -= TryUISelect;
         EventManager.OnMovementStarted -= AddInMotion;
         EventManager.OnMovementFinished -= RemoveInMotion;
+        EventManager.OnMenuSelect -= HandleMenuSelect;
         //EventManager.OnActionAccepted -= CompleteAction;
         //EventManager.OnActionRejected -= RejectAction;
     }
 
-    // returns false when the user can select an item, otherwise false
-    private bool CanSelect() {
-        return inMotion == 0 && !comparing;
+    #endregion
+
+    #region Awake, Start, Update
+
+    private void Awake()
+    {
+        if (instance != null)
+            Destroy(this);
+        else
+            instance = this;
     }
 
-    // the function subscribed to the OnActionRejected event
-    private void RejectAction() {
+    private void Start()
+    {
+
+        arrayToSort = new List<SortingElement>(arrayLength);
+        selected = new List<SortingElement>(arrayLength);
+        GenerateRandomArray();
+
+        switch (alg)
+        {
+            case SortingAlgorithm.Bubble:
+                sortingAlgorithm = new NewBubbleSort(arrayLength, randomArray);
+                break;
+            case SortingAlgorithm.Insertion:
+                sortingAlgorithm = new InsertionSort(arrayLength, randomArray);
+                break;
+            default:
+                sortingAlgorithm = new NewBubbleSort(arrayLength, randomArray);
+                break;
+        }
+        UpdateAvailableActions();
+        if (state != null) state.text = sortingAlgorithm.GetState();
+        if (pseudo != null) pseudo.text = sortingAlgorithm.GetPseudo();
+    }
+
+    private void Update()
+    {
+        if (spawnedElements < arrayLength && timeBetweenSpawns <= Time.time - lastSpawnTime)
+        {
+            lastSpawnTime = Time.time;
+            SpawnElement();
+        }
+    }
+
+    #endregion
+
+    #region Menu interaction
+    //handle menu interaction events
+    private void HandleMenuSelect(MenuSelectable s)
+    {
+        switch (s.option)
+        {
+            case MenuSelectable.MenuOption.Back:
+                Back();
+                break;
+            case MenuSelectable.MenuOption.Demo:
+                Demo();
+                break;
+            case MenuSelectable.MenuOption.New:
+                New();
+                break;
+            case MenuSelectable.MenuOption.Restart:
+                Restart();
+                break;
+        }
+    }
+
+    //Change to Previous scene (in hierarchy)
+    private void Back()
+    {
 
     }
+
+    //initiate demonstration of sorting algorithm
+    private void Demo()
+    {
+
+    }
+
+    //Restart with new random array
+    private void New()
+    {
+        selected = null;
+        for (int i = arrayToSort.Count - 1; i > -1; i--)
+        {
+            SortingElement se = arrayToSort[i];
+            arrayToSort.Remove(arrayToSort[i]);
+            Destroy(se.gameObject);
+        }
+        spawnedElements = 0;
+
+        Start();
+    }
+
+    //restart with the same array
+    private void Restart()
+    {
+        selected = null;
+        for(int i = arrayToSort.Count-1; i > -1; i--)
+        {
+            SortingElement se = arrayToSort[i];
+            arrayToSort.Remove(arrayToSort[i]);
+            Destroy(se.gameObject);
+        }
+        spawnedElements = 0;
+        lastSpawnTime = 0;
+    }
+
+    #endregion
+
+    #region Event handlers
 
     // the function subscribed to the OnMovementStarted event
     private void AddInMotion() {
@@ -138,39 +240,24 @@ public class NewSortManager : MonoBehaviour {
         }
     }
 
-    private bool CanUISelect() {
-        return inMotion == 0;
-    }
-
-    private void GenerateAction(GameAction.GameActionType type) {
-        switch (type) {
-            case GameAction.GameActionType.Compare:
-                action = new CompareAction(selected[0].Index, selected[1].Index);
-                break;
-            case GameAction.GameActionType.Swap:
-                action = new SwapAction(selected[0].Index, selected[1].Index);
-                break;
-            case GameAction.GameActionType.Keep:
-                action = new KeepAction(selected[0].Index, selected[1].Index);
-                break;
-            case GameAction.GameActionType.Pivot:
-                action = new PivotAction(selected[0].Index);
-                break;
-        }
-    }
-
     // the function subscribed to the OnSelect event
     //This function should check if the selection is already selected.
     //If it is, Deselect it; if it isn't, select it if there is room for more selections
-    private void TrySelect(NewSelectable s){
-        
-        if (s != null) {
-            if (CanSelect()) {
-                if (s.Selected) {
+    private void TrySelect(NewSelectable s)
+    {
+
+        if (s != null)
+        {
+            if (CanSelect())
+            {
+                if (s.Selected)
+                {
                     Deselect(s);
                     UpdateAvailableActions();
-                } else {
-                    Select(s);            
+                }
+                else
+                {
+                    Select(s);
                     UpdateAvailableActions();
                 }
             }
@@ -178,67 +265,11 @@ public class NewSortManager : MonoBehaviour {
         }
     }
 
-    private void Deselect(NewSelectable s) {
-        SortingElement e = s.GetComponent<SortingElement>();
-        s.Selected = false;
-        selected.Remove(e);
-    }
+    #endregion
 
-    private void Select(NewSelectable s) {
-        SortingElement e = s.GetComponent<SortingElement>();
-        s.Selected = true;
-        selected.Add(e);
-    }
-
-    private void Start()
-    {
-
-        arrayToSort = new List<SortingElement>(arrayLength);
-        selected = new List<SortingElement>(arrayLength);
-        GenerateRandomArray();
-
-        switch (alg)
-        {
-            case SortingAlgorithm.Bubble:
-                sortingAlgorithm = new NewBubbleSort(arrayLength, randomArray);
-                break;
-            case SortingAlgorithm.Insertion:
-                sortingAlgorithm = new InsertionSort(arrayLength, randomArray);
-                break;
-            default:
-                sortingAlgorithm = new NewBubbleSort(arrayLength, randomArray);
-                break;
-        }
-        UpdateAvailableActions();
-        if (state != null) state.text = sortingAlgorithm.GetState();
-        if (pseudo != null) pseudo.text = sortingAlgorithm.GetPseudo();
-    }
-
-
-    private void GenerateRandomArray() {
-        randomArray = new int[arrayLength];
-        sortedArray = new int[arrayLength];
-        for (int i = 0; i < arrayLength; i++) {
-            int num = UnityEngine.Random.Range(1, 16);
-            randomArray[i] = num;
-            sortedArray[i] = num;
-        }
-        Array.Sort(sortedArray);
-    }
-    
-    //actions
-
+    #region Actions and Action handlers
     private void ActionRejected() {
         StartCoroutine(ShowMessage("The algorithm expected a different action, try again", 3f));
-    }
-
-    private IEnumerator ShowMessage(string _message, float seconds) {
-        if (message != null) {
-            message.text = _message;
-            message.enabled = true;
-            yield return new WaitForSeconds(seconds);
-            message.enabled = false;
-        }
     }
 
     private void ActionAccepted() {
@@ -338,18 +369,26 @@ public class NewSortManager : MonoBehaviour {
 
     }
 
+    #endregion
+
+    #region Private helper functions
+
     //enable actions which are availble with current selections
     private void UpdateAvailableActions()
     {
-        if (comparing) {
+        if (comparing)
+        {
             if (swap != null) swap.Interactable = true;
             if (keep != null) keep.Interactable = true;
             if (compare != null) compare.Interactable = false;
             if (pivot != null) pivot.Interactable = false;
             if (store != null) store.Interactable = false;
             if (move != null) move.Interactable = true;
-        } else {
-            if(selected.Count == 1) {
+        }
+        else
+        {
+            if (selected.Count == 1)
+            {
                 if (swap != null) swap.Interactable = false;
                 if (keep != null) keep.Interactable = false;
                 if (compare != null) compare.Interactable = false;
@@ -357,7 +396,7 @@ public class NewSortManager : MonoBehaviour {
                 if (store != null) store.Interactable = false;
                 if (move != null) move.Interactable = true;
             }
-            else if(selected.Count == 2)
+            else if (selected.Count == 2)
             {
                 if (swap != null) swap.Interactable = true;
                 if (keep != null) keep.Interactable = false;
@@ -378,32 +417,87 @@ public class NewSortManager : MonoBehaviour {
         }
     }
 
-   
+    private IEnumerator ShowMessage(string _message, float seconds)
+    {
+        if (message != null)
+        {
+            message.text = _message;
+            message.enabled = true;
+            yield return new WaitForSeconds(seconds);
+            message.enabled = false;
+        }
+    }
 
-    private void SpawnElement() {
+    private void SpawnElement()
+    {
         GameObject newE = Instantiate(elementPrefab, spawnCenter);
         SortingElement e = newE.GetComponent<SortingElement>();
         e.Index = spawnedElements;
         e.Size = randomArray[spawnedElements];
         arrayToSort.Add(e);
         float i = .5f - arrayLength / 2;
-        newE.transform.Translate(new Vector3((spawnedElements+i) * movementMagnitude, 0, 0));
+        newE.transform.Translate(new Vector3((spawnedElements + i) * movementMagnitude, 0, 0));
         newE.transform.localScale = new Vector3(1, e.Size, 1);
         newE.GetComponent<NewSelectable>().Correct = e.Size == sortedArray[e.Index];
         spawnedElements++;
-        if (spawnedElements == arrayLength) OnSpawnedElementsComplete();
     }
 
-    private void OnSpawnedElementsComplete() {
-        UpdateAvailableActions();
-    }
-
-    private void Update() {
-        if(spawnedElements < arrayLength && timeBetweenSpawns <= Time.time - lastSpawnTime) {
-            lastSpawnTime = Time.time;
-            SpawnElement();
+    private void GenerateRandomArray()
+    {
+        randomArray = new int[arrayLength];
+        sortedArray = new int[arrayLength];
+        for (int i = 0; i < arrayLength; i++)
+        {
+            int num = UnityEngine.Random.Range(1, 16);
+            randomArray[i] = num;
+            sortedArray[i] = num;
         }
-        
+        Array.Sort(sortedArray);
     }
 
+    private bool CanUISelect()
+    {
+        return inMotion == 0;
+    }
+
+    private void GenerateAction(GameAction.GameActionType type)
+    {
+        switch (type)
+        {
+            case GameAction.GameActionType.Compare:
+                action = new CompareAction(selected[0].Index, selected[1].Index);
+                break;
+            case GameAction.GameActionType.Swap:
+                action = new SwapAction(selected[0].Index, selected[1].Index);
+                break;
+            case GameAction.GameActionType.Keep:
+                action = new KeepAction(selected[0].Index, selected[1].Index);
+                break;
+            case GameAction.GameActionType.Pivot:
+                action = new PivotAction(selected[0].Index);
+                break;
+        }
+    }
+
+    private void Deselect(NewSelectable s)
+    {
+        SortingElement e = s.GetComponent<SortingElement>();
+        s.Selected = false;
+        selected.Remove(e);
+    }
+
+    private void Select(NewSelectable s)
+    {
+        SortingElement e = s.GetComponent<SortingElement>();
+        s.Selected = true;
+        selected.Add(e);
+    }
+
+    // returns false when the user can select an item, otherwise false
+    private bool CanSelect()
+    {
+        return inMotion == 0 && !comparing;
+    }
+
+    #endregion
 }

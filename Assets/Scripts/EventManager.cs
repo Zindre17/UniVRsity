@@ -43,6 +43,9 @@ public class EventManager : MonoBehaviour {
     public delegate void UISelectAction(UISelectable s);
     public static event UISelectAction OnUISelect;
 
+    public delegate void MenuSelectAction(MenuSelectable s);
+    public static event MenuSelectAction OnMenuSelect;
+
     public delegate void MovementStartedAction();
     public static event MovementStartedAction OnMovementStarted;
 
@@ -54,6 +57,7 @@ public class EventManager : MonoBehaviour {
 
     public delegate void ActionAcceptedAction();
     public static event ActionAcceptedAction OnActionAccepted;
+
 
     private void Start() {
         if (laserOrigin == null)
@@ -85,6 +89,11 @@ public class EventManager : MonoBehaviour {
                 UISelectable uis = hit.collider.GetComponent<UISelectable>();
                 if (uis != null)
                     OnUISelect(uis);
+                MenuSelectable ms = hit.collider.GetComponent<MenuSelectable>();
+                if (ms != null)
+                {
+                    OnMenuSelect(ms);
+                }
             }
 
         } else
