@@ -11,10 +11,10 @@ public class NewBubbleSort : ISortingAlgorithm {
     private int steps = 0;
 
     private readonly string pseudo =
-        "for( i = 0 to i = A.length - 2 ) \n" +
-        "   for(j = A.length - 1 down to i + 1 \n" +
-        "       if( A[j-1] > A[j]): \n" +
-        "           swap(A[j], A[j-1]"
+        "for i = 0 to i = A.length - 2  \n" +
+        "   for j = A.length - 1 down to i + 1 \n" +
+        "       if A[j] < A[j-1]) \n" +
+        "           exchange A[j] with A[j-1]"
         ;
 
     private string state =
