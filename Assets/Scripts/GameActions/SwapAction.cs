@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
-public class SwapAction : Action
+public class SwapAction : GameAction
 {
     public int index1, index2;
 
     public SwapAction(int _index1, int _index2)
     {
-        type = ActionType.Swap;
+        type = GameActionType.Swap;
         index1 = _index1;
         index2 = _index2;
     }

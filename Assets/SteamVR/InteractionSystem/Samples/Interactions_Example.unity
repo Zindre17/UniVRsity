@@ -21364,11 +21364,6 @@ Prefab:
       propertyPath: attachmentFlags
       value: 45
       objectReference: {fileID: 0}
-    - target: {fileID: 114000010486924546, guid: 4d7627d70abb4e247b7d958e6634b2f1,
-        type: 2}
-      propertyPath: hideSkeletonOnAttach
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d7627d70abb4e247b7d958e6634b2f1, type: 2}
   m_IsPrefabAsset: 0
