@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
+using System.Collections;
 
 public class Movable : MonoBehaviour {
 
@@ -6,53 +8,52 @@ public class Movable : MonoBehaviour {
     public float speed = 1;
     public float radiusBuffer = 0.01f;
 
-    private int numberOfWayPoints = 0;
-    private Vector3[] wayPoints;
-    private int currentPoint = -1;
     private bool moving = false;
-    private Vector3 direction;
-
-    private void Start() {
-        wayPoints = new Vector3[maxPoints];
-    }
-	
-    public void SetPath(Vector3[] path) {
-        numberOfWayPoints = path.Length;
-        wayPoints = path;
-        currentPoint = -1;
-        EventManager.StartedMovement();
-        Move();
-    }
-
-    public void SetPath(Vector3 point) {
-        wayPoints = new Vector3[] { point };
-        numberOfWayPoints = 1;
-        currentPoint = -1;
-        EventManager.StartedMovement();
-        Move();
-    }
-
-	public void Move() {
-        Debug.Log("current point : " + currentPoint);
-        currentPoint++;
-        if(currentPoint < numberOfWayPoints) {
-            moving = true;
-        } else {
-            EventManager.FinishedMovement();
-            moving = false;
-            currentPoint = -1;
-            numberOfWayPoints = 0;
-            //Selectable s = GetComponentInChildren<Selectable>();
-            //if(s!=null) s.Toggle();
-        }
-    }
-	void Update () {
-        if (moving ) {
-            direction = (wayPoints[currentPoint] - transform.position).normalized;  
-            transform.position += direction * speed * Time.deltaTime;
-            if(Vector3.Distance(transform.position, wayPoints[currentPoint])< radiusBuffer) {
-                Move();
+    public bool Moving {
+        get { return moving; }
+        set {
+            if(moving != value) {
+                moving = value;
+                if (value) {
+                    EventManager.StartedMovement();
+                    MoveToNext();
+                } else {
+                    EventManager.FinishedMovement();
+                }
             }
         }
-	}
+    }
+    private Vector3 direction;
+
+    private Queue<Vector3> moveQueue;
+
+    private void Start() {
+        moveQueue = new Queue<Vector3>();
+    }
+	
+    public void AddWayPoint(Vector3 point) {
+        moveQueue.Enqueue(point);
+        if (!Moving)
+            Moving = true;
+    }
+
+    private void MoveToNext() {
+        if(moveQueue.Count != 0) {
+            StartCoroutine(MoveTo(moveQueue.Dequeue()));
+        } else {
+            Moving = false;
+        }
+    }
+
+    private IEnumerator MoveTo(Vector3 point) {
+        float dist = Vector3.Distance(point, transform.position);
+        while(dist > radiusBuffer) {
+            direction = (point - transform.position).normalized;
+            dist = Vector3.Distance(point, transform.position);
+            transform.position = transform.position + direction * speed * Time.deltaTime;
+            yield return null;
+        }
+        MoveToNext();
+    }
+    
 }

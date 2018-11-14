@@ -17,7 +17,7 @@ public class NewBubbleSort : ISortingAlgorithm {
         "           exchange A[j] with A[j-1]"
         ;
 
-    private string state =
+    private readonly string state =
         "i = {0} \n " +
         "j = {1} \n " +
         "steps completed: {2} \n";
@@ -65,12 +65,9 @@ public class NewBubbleSort : ISortingAlgorithm {
         if (expectedActionType == GameAction.GameActionType.Swap)
             Swap(j, j - 1);
         if (!complete) {
-            if(expectedActionType == GameAction.GameActionType.Compare) {
-                if(arrayToSort[j-1] > arrayToSort[j]) {
-                    expectedActionType = GameAction.GameActionType.Swap;
-                } else {
-                    expectedActionType = GameAction.GameActionType.Keep;
-                }
+            
+            if(expectedActionType == GameAction.GameActionType.Compare && arrayToSort[j - 1] > arrayToSort[j]) {    
+                expectedActionType = GameAction.GameActionType.Swap;
             } else {
                 expectedActionType = GameAction.GameActionType.Compare;
                 if (j > i + 1) {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(EventManager))]
 public class NewSortManager : MonoBehaviour {
 
     #region variables
@@ -20,7 +21,8 @@ public class NewSortManager : MonoBehaviour {
     //UI buttons for actions
     public UISelectable compare, swap, keep, pivot, move, store;
 
-    //The current attempted action
+    //The current attempted action and previuosly completed action
+    private GameAction prevAction;
     private GameAction action;
 
     // Lists of SortingElements. One for all the elements, and one for the currently selected elements;
@@ -61,7 +63,8 @@ public class NewSortManager : MonoBehaviour {
     public Text state;
     public Text pseudo;
     public Text message;
-
+    
+    public Transform storeCenter;
     #endregion
 
     #region event subscription and unsubscrption
@@ -135,6 +138,7 @@ public class NewSortManager : MonoBehaviour {
             lastSpawnTime = Time.time;
             SpawnElement();
         }
+        //UpdateAvailableActions();
     }
 
     #endregion
@@ -208,13 +212,16 @@ public class NewSortManager : MonoBehaviour {
     // the function subscribed to the OnMovementStarted event
     private void AddInMotion() {
         inMotion++;
-        
+        Debug.Log(inMotion);
     }
 
     // the function subscribed to the OnMovementFinished event
     private void RemoveInMotion() {
         inMotion--;
-        
+        if (inMotion == 0) {
+            ActionCompleted();
+        }
+        Debug.Log(inMotion);
     }
 
     // the function subscribed to the OnStartHOver event
@@ -243,7 +250,7 @@ public class NewSortManager : MonoBehaviour {
     // the function subscribed to the OnSelect event
     //This function should check if the selection is already selected.
     //If it is, Deselect it; if it isn't, select it if there is room for more selections
-    private void TrySelect(NewSelectable s)
+    private void TrySelect(SortingElement s)
     {
 
         if (s != null)
@@ -268,6 +275,22 @@ public class NewSortManager : MonoBehaviour {
     #endregion
 
     #region Actions and Action handlers
+
+    private void ActionCompleted() {
+        // Deselct all selections after swap and store
+        if (prevAction != null) {
+            if (prevAction.type == GameAction.GameActionType.Swap ||
+                prevAction.type == GameAction.GameActionType.Store) {
+
+                for(int i = selected.Count -1; i < selected.Count; i--) {
+                    Deselect(selected[i]);
+                }
+
+            }
+        }
+        UpdateAvailableActions();
+    }
+
     private void ActionRejected() {
         StartCoroutine(ShowMessage("The algorithm expected a different action, try again", 3f));
     }
@@ -295,10 +318,18 @@ public class NewSortManager : MonoBehaviour {
         }
         sortingAlgorithm.Next();
         if (state != null) state.text = sortingAlgorithm.GetState();
+        prevAction = action;
     }
 
     private void Store() {
-
+        SortingElement s = selected[0];
+        GameObject o = Instantiate(elementPrefab);
+        SortingElement clone = o.GetComponent<SortingElement>();
+        clone.Index = s.Index;
+        clone.Size = s.Size;
+        clone.ArrayPos = s.ArrayPos;
+        clone.transform.position = s.transform.position;
+        s.Store(storeCenter.position);
     }
 
     private void Move() {
@@ -310,35 +341,11 @@ public class NewSortManager : MonoBehaviour {
     {
         SortingElement s1 = selected[0];
         SortingElement s2 = selected[1];
-
-        int temp = s1.Index;
-        s1.Index = s2.Index;
-        s2.Index = temp;
-
-        s1.GetComponent<NewSelectable>().Correct = s1.Size == sortedArray[s1.Index];
-        s2.GetComponent<NewSelectable>().Correct = s2.Size == sortedArray[s2.Index];
-
-        Vector3 s1Pos = new Vector3(s1.transform.position.x, s1.transform.position.y, s1.transform.position.z);
-        Vector3 s2Pos = new Vector3(s2.transform.position.x, s2.transform.position.y, s2.transform.position.z);
-
-        Vector3[] s1Path, s2Path;
-        if (comparing) {
-            //one moved straigth for the others pos, then in, while the others moves forward, to the others pos, then in
-            s1Path = new Vector3[] { s2Pos , s2Pos + Vector3.forward * movementMagnitude};
-            s2Path = new Vector3[] { s2Pos - Vector3.forward * movementMagnitude, s1Pos - Vector3.forward * movementMagnitude, s1Pos + Vector3.forward * movementMagnitude };
-        } else {
-            //one moved two forward, the other 1 forward, then to each others starting point plus the forward, then in
-            s1Path = new Vector3[] { s1Pos - Vector3.forward * movementMagnitude, s2Pos - Vector3.forward * movementMagnitude, s2Pos };
-            s2Path = new Vector3[] { s2Pos - Vector3.forward * movementMagnitude * 2, s1Pos - Vector3.forward * movementMagnitude *2, s1Pos};
-        }
-
-        s1.GetComponent<Movable>().SetPath(s1Path);
-        s2.GetComponent<Movable>().SetPath(s2Path);
-
-        //Deselect(s1.GetComponent<NewSelectable>());
-        //Deselect(s2.GetComponent<NewSelectable>());
-        comparing = false;
+        s1.Swap(s2);
+        s1.Correct = s1.Size == sortedArray[s1.Index];
+        s2.Correct = s2.Size == sortedArray[s2.Index];
         UpdateAvailableActions();
+
     }
 
     //move elements in comparison position back to their original position
@@ -347,21 +354,25 @@ public class NewSortManager : MonoBehaviour {
         SortingElement s1 = selected[0];
         SortingElement s2 = selected[1];
 
-        s1.GetComponent<Movable>().SetPath(s1.transform.position + Vector3.forward * movementMagnitude);
-        s2.GetComponent<Movable>().SetPath(s2.transform.position + Vector3.forward * movementMagnitude);
+        s1.Selected = false;
+        s2.Selected = false;
+        //s1.GetComponent<Movable>().SetPath(s1.transform.position + Vector3.forward * movementMagnitude);
+        //s2.GetComponent<Movable>().SetPath(s2.transform.position + Vector3.forward * movementMagnitude);
 
-        comparing = false;
+        //comparing = false;
         UpdateAvailableActions();
     }
 
     //move the 2 selected elemets forwards (into comparison position)
     private void Compare() {
-        comparing = true;
+        //comparing = true;
         SortingElement s1 = selected[0];
         SortingElement s2 = selected[1];
 
-        s1.GetComponent<Movable>().SetPath(s1.transform.position - Vector3.forward * movementMagnitude);
-        s2.GetComponent<Movable>().SetPath(s2.transform.position - Vector3.forward * movementMagnitude);
+        s1.Compared = true;
+        s2.Compared = true;
+        //s1.GetComponent<Movable>().SetPath(s1.transform.position - Vector3.forward * movementMagnitude);
+        //s2.GetComponent<Movable>().SetPath(s2.transform.position - Vector3.forward * movementMagnitude);
         UpdateAvailableActions();
     }
 
@@ -376,37 +387,23 @@ public class NewSortManager : MonoBehaviour {
     //enable actions which are availble with current selections
     private void UpdateAvailableActions()
     {
-        if (comparing)
+        if (CanUISelect())
         {
-            if (swap != null) swap.Interactable = true;
-            if (keep != null) keep.Interactable = true;
-            if (compare != null) compare.Interactable = false;
-            if (pivot != null) pivot.Interactable = false;
-            if (store != null) store.Interactable = false;
-            if (move != null) move.Interactable = true;
-        }
-        else
-        {
-            if (selected.Count == 1)
-            {
+            if (selected.Count == 1) {
                 if (swap != null) swap.Interactable = false;
                 if (keep != null) keep.Interactable = false;
                 if (compare != null) compare.Interactable = false;
                 if (pivot != null) pivot.Interactable = true;
-                if (store != null) store.Interactable = false;
+                if (store != null) store.Interactable = true;
                 if (move != null) move.Interactable = true;
-            }
-            else if (selected.Count == 2)
-            {
+            } else if (selected.Count == 2) {
                 if (swap != null) swap.Interactable = true;
                 if (keep != null) keep.Interactable = false;
                 if (compare != null) compare.Interactable = true;
                 if (pivot != null) pivot.Interactable = false;
                 if (store != null) store.Interactable = false;
                 if (move != null) move.Interactable = false;
-            }
-            else
-            {
+            } else {
                 if (swap != null) swap.Interactable = false;
                 if (keep != null) keep.Interactable = false;
                 if (compare != null) compare.Interactable = false;
@@ -414,6 +411,15 @@ public class NewSortManager : MonoBehaviour {
                 if (store != null) store.Interactable = false;
                 if (move != null) move.Interactable = false;
             }
+        }
+        else
+        {
+            if (swap != null) swap.Interactable = false;
+            if (keep != null) keep.Interactable = false;
+            if (compare != null) compare.Interactable = false;
+            if (pivot != null) pivot.Interactable = false;
+            if (store != null) store.Interactable = false;
+            if (move != null) move.Interactable = false;
         }
     }
 
@@ -430,15 +436,19 @@ public class NewSortManager : MonoBehaviour {
 
     private void SpawnElement()
     {
-        GameObject newE = Instantiate(elementPrefab, spawnCenter);
-        SortingElement e = newE.GetComponent<SortingElement>();
+        //instatiate new sorting element and set correct size and index
+        SortingElement e = Instantiate(elementPrefab).GetComponent<SortingElement>();
         e.Index = spawnedElements;
         e.Size = randomArray[spawnedElements];
-        arrayToSort.Add(e);
-        float i = .5f - arrayLength / 2;
-        newE.transform.Translate(new Vector3((spawnedElements + i) * movementMagnitude, 0, 0));
-        newE.transform.localScale = new Vector3(1, e.Size, 1);
-        newE.GetComponent<NewSelectable>().Correct = e.Size == sortedArray[e.Index];
+
+        float i = arrayLength % 2 == 0 ? 0.5f - arrayLength / 2 : -arrayLength / 2;
+        e.transform.position = spawnCenter.position + new Vector3((spawnedElements + i) * movementMagnitude, 0, 0);
+
+        // add to array of all sorting elements
+        arrayToSort.Add(e); 
+        
+        e.Correct = e.Size == sortedArray[e.Index];
+        e.ArrayPos = e.transform.position;
         spawnedElements++;
     }
 
@@ -476,27 +486,31 @@ public class NewSortManager : MonoBehaviour {
             case GameAction.GameActionType.Pivot:
                 action = new PivotAction(selected[0].Index);
                 break;
+            case GameAction.GameActionType.Store:
+                action = new StoreAction(selected[0].Index);
+                break;
+            case GameAction.GameActionType.Move:
+                action = new MoveAction(selected[0].Index, selected[1].Index);
+                break;
         }
     }
 
-    private void Deselect(NewSelectable s)
+    private void Deselect(SortingElement s)
     {
-        SortingElement e = s.GetComponent<SortingElement>();
         s.Selected = false;
-        selected.Remove(e);
+        selected.Remove(s);
     }
 
-    private void Select(NewSelectable s)
+    private void Select(SortingElement s)
     {
-        SortingElement e = s.GetComponent<SortingElement>();
         s.Selected = true;
-        selected.Add(e);
+        selected.Add(s);
     }
 
     // returns false when the user can select an item, otherwise false
     private bool CanSelect()
     {
-        return inMotion == 0 && !comparing;
+        return inMotion == 0;
     }
 
     #endregion

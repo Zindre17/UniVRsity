@@ -46,7 +46,7 @@ public class InsertionSort :ISortingAlgorithm {
             } else if (action.type == GameAction.GameActionType.Compare) {
                 CompareAction a = (CompareAction)action;
                 CompareAction na = (CompareAction)nextAction;
-                return a.index1 == na.index1 && a.store == na.store && a.index2 == na.index2;
+                return a.index1 == na.index1 && a.index2 == na.index2;
             } else if (action.type == GameAction.GameActionType.Move) {
                 MoveAction a = (MoveAction)action;
                 MoveAction na = (MoveAction)nextAction;
@@ -60,7 +60,7 @@ public class InsertionSort :ISortingAlgorithm {
     }
 
     public string GetState() {
-        return key == -1?string.Format(state, i, j, "empty"): string.Format(state, i, j, key);
+        return key == -1?string.Format(state, i, j, "empty", steps): string.Format(state, i, j, key, steps);
     }
 
     public void Next() {
@@ -68,7 +68,7 @@ public class InsertionSort :ISortingAlgorithm {
         if (nextAction.type == GameAction.GameActionType.Store) {
             key = arrayToSort[j];
             i = j - 1;
-            nextAction = new CompareAction(i);
+            nextAction = new CompareAction(i, -1);
         } else if (nextAction.type == GameAction.GameActionType.Compare) {
             if(arrayToSort[i] > key) {
                 nextAction = new MoveAction(i + 1, i);
@@ -87,7 +87,7 @@ public class InsertionSort :ISortingAlgorithm {
                 if (i == -1)
                     nextAction = new MoveAction(i + 1);
                 else
-                    nextAction = new CompareAction(i);
+                    nextAction = new CompareAction(i, -1);
             }
             //if (i > -1) {
             //    if(arrayToSort[i] > key) {             

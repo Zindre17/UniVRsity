@@ -37,7 +37,7 @@ public class EventManager : MonoBehaviour {
     public delegate void EndHoverAction(Hoverable h);
     public static event EndHoverAction OnEndHover;
 
-    public delegate void SelectAction(NewSelectable s);
+    public delegate void SelectAction(SortingElement s);
     public static event SelectAction OnSelect;
 
     public delegate void UISelectAction(UISelectable s);
@@ -57,7 +57,6 @@ public class EventManager : MonoBehaviour {
 
     public delegate void ActionAcceptedAction();
     public static event ActionAcceptedAction OnActionAccepted;
-
 
     private void Start() {
         if (laserOrigin == null)
@@ -82,7 +81,7 @@ public class EventManager : MonoBehaviour {
 
             if (IsSelecting() && Time.time - buttonPressBuffer > lastButtonPress) {
                 lastButtonPress = Time.time;
-                NewSelectable s = hit.collider.GetComponentInParent<NewSelectable>();
+                SortingElement s = hit.collider.GetComponentInParent<SortingElement>();
                 if (s != null) {
                     OnSelect(s);
                 }
