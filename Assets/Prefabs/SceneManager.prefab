@@ -68,6 +68,7 @@ MonoBehaviour:
   state: {fileID: 0}
   pseudo: {fileID: 0}
   message: {fileID: 0}
+  storeCenter: {fileID: 0}
 --- !u!114 &114849273489082744
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -11,6 +11,15 @@ public class SwapAction : GameAction
         index2 = _index2;
     }
 
+    public override bool EqualTo(GameAction other) {
+        if (other == null) return false;
+        if (other.type == type) {
+            SwapAction o = (SwapAction)other;
+            return (o.index1 == index1 && o.index2 == index2) || (o.index1 == index2 && o.index2 == index1);
+        }
+        return false;
+    }
+
     //public override void DoAction()
     //{
     //    int temp = s1.Index;

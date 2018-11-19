@@ -3,19 +3,7 @@ using UnityEngine;
 
 public class EventManager : MonoBehaviour {
 
-    //public delegate void ClickAction();
-    //public static event ClickAction OnClicked;
-
-
-    //void OnGUI()
-    //{
-    //    if (GUI.Button(new Rect(Screen.width / 2 - 50, 5, 100, 30), "Click"))
-    //    {
-    //        if (OnClicked != null)
-    //            OnClicked();
-    //    }
-    //}
-
+    
     [SteamVR_DefaultActionSet("selection")]
     public SteamVR_ActionSet actionSet;
 
@@ -31,32 +19,38 @@ public class EventManager : MonoBehaviour {
     private float lastButtonPress = 0;
     private float buttonPressBuffer = .1f;
 
-    public delegate void StartHoverAction(Hoverable h);
-    public static event StartHoverAction OnStartHover;
+    public delegate void StartHoverEvent(Hoverable h);
+    public static event StartHoverEvent OnStartHover;
 
-    public delegate void EndHoverAction(Hoverable h);
-    public static event EndHoverAction OnEndHover;
+    public delegate void EndHoverEvent(Hoverable h);
+    public static event EndHoverEvent OnEndHover;
 
-    public delegate void SelectAction(SortingElement s);
-    public static event SelectAction OnSelect;
+    public delegate void SelectEvent(SortingElement s);
+    public static event SelectEvent OnSelect;
 
-    public delegate void UISelectAction(UISelectable s);
-    public static event UISelectAction OnUISelect;
+    public delegate void UISelectEvent(UISelectable s);
+    public static event UISelectEvent OnUISelect;
 
-    public delegate void MenuSelectAction(MenuSelectable s);
-    public static event MenuSelectAction OnMenuSelect;
+    public delegate void MenuSelectEvent(MenuSelectable s);
+    public static event MenuSelectEvent OnMenuSelect;
 
-    public delegate void MovementStartedAction();
-    public static event MovementStartedAction OnMovementStarted;
+    public delegate void MovementStartedEvent();
+    public static event MovementStartedEvent OnMovementStarted;
 
-    public delegate void MovementFinishedAction();
-    public static event MovementFinishedAction OnMovementFinished;
+    public delegate void MovementFinishedEvent();
+    public static event MovementFinishedEvent OnMovementFinished;
 
-    public delegate void ActionRejectedAction();
-    public static event ActionRejectedAction OnActionRejected;
+    public delegate void ActionRejectedEvent();
+    public static event ActionRejectedEvent OnActionRejected;
 
-    public delegate void ActionAcceptedAction();
-    public static event ActionAcceptedAction OnActionAccepted;
+    public delegate void ActionAcceptedEvent();
+    public static event ActionAcceptedEvent OnActionAccepted;
+
+    public delegate void ActionCompletedEvent();
+    public static event ActionCompletedEvent OnActionCompleted;
+
+    public delegate void AlgorithmCompletedEvent();
+    public static event AlgorithmCompletedEvent OnAlgorithmCompleted;
 
     private void Start() {
         if (laserOrigin == null)
@@ -128,5 +122,13 @@ public class EventManager : MonoBehaviour {
     public static void AcceptAction() {
         if (OnActionAccepted != null)
             OnActionAccepted();
+    }
+
+    public static void ActionCompleted() {
+        if (OnActionCompleted != null) OnActionCompleted();
+    }
+
+    public static void AlgorithmCompleted() {
+        if (OnAlgorithmCompleted != null) OnAlgorithmCompleted();
     }
 }

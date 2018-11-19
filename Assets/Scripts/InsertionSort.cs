@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 public class InsertionSort :ISortingAlgorithm {
 
     private readonly string pseudo =
@@ -11,48 +13,66 @@ public class InsertionSort :ISortingAlgorithm {
         "   A[i+1] = key";
 
     private readonly string state =
-        "j = {0} \n" +
-        "i = {1} \n" +
+        "i = {0} \n" +
+        "j = {1} \n" +
         "key = {2} \n" +
         "completed steps: {3}";
 
-    private int i, j, key;
-
-    private int steps;
+    private int steps = 0;
 
     private int arrayLength;
     private int[] arrayToSort;
+    private bool complete = false;
 
-    private GameAction nextAction;
+    private struct State {
+        public int i, j, key;
+        public State(int _i, int _j, int _key) {
+            i = _i;
+            j = _j;
+            key = _key;
+        }
+    }
+
+    private List<GameAction> actions;
+    private List<State> states;
 
     public InsertionSort(int _arrayLength, int[] array) {
         arrayLength = _arrayLength;
         arrayToSort = (int[])array.Clone();
-        j = 1;
-        i = 0;
-        key = -1;
-        steps = 0;
-        nextAction = new StoreAction(j);
+        actions = new List<GameAction>();
+        states = new List<State>();
+        GenerateActions();
     }
 
-    public event Complete OnComplete;
+    private void GenerateActions() {
+        int[] ar = (int[])arrayToSort.Clone();
+        int i = -1;
+        int key = -1;
+        int j;
+        for (j = 1; j < arrayLength; j++) {
+            states.Add(new State(i, j, key));
+            key = arrayToSort[j];
+            actions.Add(new StoreAction(j));
+            i = j - 1;
+            while(i > -1 ) {
+                states.Add(new State(i, j, key));
+                actions.Add(new CompareAction(-1, i));
+                if (arrayToSort[i] < key)
+                    break;
+                states.Add(new State(i, j, key));
+                actions.Add(new MoveAction(i, i + 1));
+                arrayToSort[i + 1] = arrayToSort[i];
+                i--;
+            }
+            states.Add(new State(i, j, key));
+            actions.Add(new MoveAction(-1, i + 1));
+            arrayToSort[i + 1] = key;
+        }
+        states.Add(new State(i, j, key));
+    }
 
     public bool CorrectAction(GameAction action) {
-        if (action.type == nextAction.type) {
-            if (action.type == GameAction.GameActionType.Store) {
-                StoreAction a = (StoreAction)action;
-                StoreAction na = (StoreAction)nextAction;
-                return a.index == na.index;
-            } else if (action.type == GameAction.GameActionType.Compare) {
-                CompareAction a = (CompareAction)action;
-                CompareAction na = (CompareAction)nextAction;
-                return a.index1 == na.index1 && a.index2 == na.index2;
-            } else if (action.type == GameAction.GameActionType.Move) {
-                MoveAction a = (MoveAction)action;
-                MoveAction na = (MoveAction)nextAction;
-                return a.source == na.source && a.target == na.target && a.store == na.store;
-            }      
-        } return false;
+        return actions[steps].EqualTo(action);
     }
 
     public string GetPseudo() {
@@ -60,50 +80,17 @@ public class InsertionSort :ISortingAlgorithm {
     }
 
     public string GetState() {
-        return key == -1?string.Format(state, i, j, "empty", steps): string.Format(state, i, j, key, steps);
+        State s = states[steps];
+        return s.key ==-1?string.Format(state, s.i, s.j, "empty", steps): string.Format(state, s.i, s.j, s.key, steps);
     }
 
     public void Next() {
+        if (complete) return;
         steps++;
-        if (nextAction.type == GameAction.GameActionType.Store) {
-            key = arrayToSort[j];
-            i = j - 1;
-            nextAction = new CompareAction(i, -1);
-        } else if (nextAction.type == GameAction.GameActionType.Compare) {
-            if(arrayToSort[i] > key) {
-                nextAction = new MoveAction(i + 1, i);
-            } else {
-                nextAction = new MoveAction(i + 1);
-            }
-        } else if(nextAction.type == GameAction.GameActionType.Move){
-            MoveAction a = (MoveAction)nextAction;
-            if (a.store) {
-                arrayToSort[i + 1] = key;
-                j++;
-                nextAction = new StoreAction(j);
-            } else {
-                arrayToSort[i + 1] = arrayToSort[i];
-                i--;
-                if (i == -1)
-                    nextAction = new MoveAction(i + 1);
-                else
-                    nextAction = new CompareAction(i, -1);
-            }
-            //if (i > -1) {
-            //    if(arrayToSort[i] > key) {             
-            //        arrayToSort[i + 1] = arrayToSort[i];
-            //        i--;
-            //        nextAction = i == -1 ? (GameAction) new MoveAction(i + 1): new CompareAction(i + 1);
-            //    } else {
-            //        arrayToSort[i + 1] = key;
-            //        j++;
-            //        nextAction = new StoreAction(j);
-            //    }
-            //} else {
-            //    arrayToSort[i + 1] = key;
-            //    nextAction = GameAction.GameActionType.Move;
-            //}
-        } 
+        if (steps == actions.Count) {
+            EventManager.AlgorithmCompleted();
+            complete = true;
+        }
     }
 
     
@@ -112,4 +99,11 @@ public class InsertionSort :ISortingAlgorithm {
         throw new System.NotImplementedException();
     }
 
+    public GameAction GetAction() {
+        return actions[steps];
+    }
+
+    public GameAction GetAction(int step) {
+        return actions[step];
+    }
 }

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(NewSelectable))]
+[RequireComponent(typeof(Selectable))]
 [RequireComponent(typeof(Movable))]
 [RequireComponent(typeof(Hoverable))]
 public class SortingElement : MonoBehaviour {
@@ -48,9 +48,6 @@ public class SortingElement : MonoBehaviour {
             if (selected != value) {
                 selected = value;
                 selectable.Selected = value;
-                if (Compared) {
-                    Compared = false;
-                }
             }
         }
     }
@@ -62,13 +59,16 @@ public class SortingElement : MonoBehaviour {
         set;
     }
 
-    private NewSelectable selectable;
+    private Selectable selectable;
     private Movable movable;
     private Hoverable hoverable;
 
+    private int count = 0;
+    private SortingElement second = null;
+
     private void Awake() {
         if (selectable == null)
-            selectable = GetComponent<NewSelectable>();
+            selectable = GetComponent<Selectable>();
         if (movable == null)
             movable = GetComponent<Movable>();
         if (hoverable == null)
@@ -76,6 +76,7 @@ public class SortingElement : MonoBehaviour {
     }
 
     private void MoveToComparedPos() {
+        movable.OnComplete += SingleComplete;
         movable.AddWayPoint(transform.position - Vector3.forward * movementMagnitude);
     }
 
@@ -84,6 +85,11 @@ public class SortingElement : MonoBehaviour {
     }
 
     public void Swap(SortingElement other) {
+
+        second = other;
+        second.movable.OnComplete += DoubleComplete;
+        movable.OnComplete += DoubleComplete;
+
         // swap default position
         Vector3 temp = ArrayPos;
         ArrayPos = other.ArrayPos;
@@ -126,8 +132,53 @@ public class SortingElement : MonoBehaviour {
     }
 
     public void Store(Vector3 storepos) {
+        movable.OnComplete += SingleComplete;
         Index = -1;
+        ArrayPos = storepos;
+        Correct = false;
+        movable.speed = 2f;
         movable.AddWayPoint(new Vector3(transform.position.x, transform.position.y, storepos.z));
         movable.AddWayPoint(storepos);
+    }
+
+    public void CopyTo(SortingElement target) {
+        movable.OnComplete += SingleComplete;
+        if(Index == -1) {
+            Vector3 pos = transform.position;
+            Vector3 tar = target.transform.position;
+            movable.AddWayPoint(new Vector3(tar.x, pos.y, pos.z));
+            if (compared)
+                movable.AddWayPoint(tar - Vector3.forward * movementMagnitude);
+            else
+                movable.AddWayPoint(tar);
+        } else {
+            if (compared) {
+                movable.AddWayPoint(transform.position - Vector3.forward * movementMagnitude);
+                movable.AddWayPoint(target.transform.position);
+            } else {
+                movable.AddWayPoint(transform.position - Vector3.forward * movementMagnitude);
+                movable.AddWayPoint(target.transform.position - Vector3.forward * movementMagnitude);
+                movable.AddWayPoint(target.transform.position);
+            }
+        }
+        Index = target.Index;
+        ArrayPos = target.ArrayPos;
+        Destroy(target.gameObject);
+    }
+
+    private void SingleComplete() {
+        movable.OnComplete -= SingleComplete;
+        movable.speed = 1f;
+        EventManager.ActionCompleted();
+    }
+
+    private void DoubleComplete() {
+        count++;
+        if(count == 2) {
+            count = 0;
+            movable.OnComplete -= DoubleComplete;
+            second.movable.OnComplete -= DoubleComplete;
+            EventManager.ActionCompleted();
+        }
     }
 }

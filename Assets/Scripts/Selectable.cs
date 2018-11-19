@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewSelectable : MonoBehaviour {
+public class Selectable : MonoBehaviour {
 
     public Renderer rend;
     private Color defCol;

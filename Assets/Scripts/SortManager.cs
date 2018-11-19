@@ -5,12 +5,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(EventManager))]
-public class NewSortManager : MonoBehaviour {
+public class SortManager : MonoBehaviour {
 
     #region variables
 
     //the singleton instance
-    public static NewSortManager instance;
+    public static SortManager instance;
 
     // A transform to use as the center of the spawning area
     public Transform spawnCenter;
@@ -27,7 +27,7 @@ public class NewSortManager : MonoBehaviour {
 
     // Lists of SortingElements. One for all the elements, and one for the currently selected elements;
     private List<SortingElement> arrayToSort, selected;
-
+    private SortingElement stored = null;
     // Interger arrays. One for the randomly generated values, and one for the sorted version of the same values;
     private int[] sortedArray, randomArray;
 
@@ -65,6 +65,12 @@ public class NewSortManager : MonoBehaviour {
     public Text message;
     
     public Transform storeCenter;
+
+    private bool inMultiStep = false;
+    private UISelectable lastPress;
+
+    private bool demo = false;
+    private bool doStep = false;
     #endregion
 
     #region event subscription and unsubscrption
@@ -78,6 +84,8 @@ public class NewSortManager : MonoBehaviour {
         EventManager.OnMovementStarted += AddInMotion;
         EventManager.OnMovementFinished += RemoveInMotion;
         EventManager.OnMenuSelect += HandleMenuSelect;
+        EventManager.OnActionCompleted += ActionCompleted;
+        EventManager.OnAlgorithmCompleted += AlgorithmCompleted;
         //EventManager.OnActionAccepted += CompleteAction;
         //EventManager.OnActionRejected += RejectAction;
     }
@@ -91,6 +99,8 @@ public class NewSortManager : MonoBehaviour {
         EventManager.OnMovementStarted -= AddInMotion;
         EventManager.OnMovementFinished -= RemoveInMotion;
         EventManager.OnMenuSelect -= HandleMenuSelect;
+        EventManager.OnActionCompleted -= ActionCompleted;
+        EventManager.OnAlgorithmCompleted -= AlgorithmCompleted;
         //EventManager.OnActionAccepted -= CompleteAction;
         //EventManager.OnActionRejected -= RejectAction;
     }
@@ -117,13 +127,13 @@ public class NewSortManager : MonoBehaviour {
         switch (alg)
         {
             case SortingAlgorithm.Bubble:
-                sortingAlgorithm = new NewBubbleSort(arrayLength, randomArray);
+                sortingAlgorithm = new BubbleSort(arrayLength, randomArray);
                 break;
             case SortingAlgorithm.Insertion:
                 sortingAlgorithm = new InsertionSort(arrayLength, randomArray);
                 break;
             default:
-                sortingAlgorithm = new NewBubbleSort(arrayLength, randomArray);
+                sortingAlgorithm = new BubbleSort(arrayLength, randomArray);
                 break;
         }
         UpdateAvailableActions();
@@ -139,9 +149,104 @@ public class NewSortManager : MonoBehaviour {
             SpawnElement();
         }
         //UpdateAvailableActions();
+        if (demo && doStep) {
+            StartCoroutine(DoStep());
+        }
     }
 
     #endregion
+
+    private IEnumerator DoStep() {
+        doStep = false;
+        action = sortingAlgorithm.GetAction();
+        float timeBetweenAction = 1f;
+        switch (action.type) {
+            case GameAction.GameActionType.Compare:
+                CompareAction a = (CompareAction)action;
+                if(selected.Count > 0) {
+                    for(int i = selected.Count-1; i>-1; i--) {
+                        if(selected[i].Index != a.index1 && selected[i].Index != a.index2) {
+                            Deselect(selected[i]);
+                            yield return new WaitForSeconds(timeBetweenAction);
+                        }
+                    }
+                }
+                if (a.index1 == -1 && !selected.Contains(stored)) {
+                    Select(stored);
+                    yield return new WaitForSeconds(timeBetweenAction);
+                } else if (!selected.Contains(arrayToSort[a.index1])) {
+                    Select(arrayToSort[a.index1]);
+                    yield return new WaitForSeconds(timeBetweenAction);
+                }
+                if (a.index2 == -1 && !selected.Contains(stored)) {
+                    Select(stored);
+                    yield return new WaitForSeconds(timeBetweenAction);
+                } else if (!selected.Contains(arrayToSort[a.index2])) {
+                    Select(arrayToSort[a.index2]);
+                    yield return new WaitForSeconds(timeBetweenAction);
+                }
+                break;
+            case GameAction.GameActionType.Move:
+                
+                MoveAction m = (MoveAction)action;
+                if (selected.Count > 0) {
+                    for (int i = selected.Count - 1; i > -1; i--) {
+                        if (i==0 && selected[0].Index != m.source) {
+                            Deselect(selected[0]);
+                            yield return new WaitForSeconds(timeBetweenAction);
+                        } else {
+                            Deselect(selected[0]);
+                            yield return new WaitForSeconds(timeBetweenAction);
+                        }
+                    }
+                }
+                if (m.source == -1 && !selected.Contains(stored)) {
+                    Select(stored);
+                    yield return new WaitForSeconds(timeBetweenAction);
+                } else if (!selected.Contains(arrayToSort[m.source])) {
+                    Select(arrayToSort[m.source]);
+                    yield return new WaitForSeconds(timeBetweenAction);
+                }
+                Select(arrayToSort[m.target]);
+                break;
+            case GameAction.GameActionType.Store:
+                StoreAction s = (StoreAction)action;
+                if (selected.Count > 0) {
+                    for (int i = selected.Count - 1; i > -1; i--) {
+                        if (selected[i].Index != s.index) {
+                            Deselect(selected[i]);
+                            yield return new WaitForSeconds(timeBetweenAction);
+                        }
+                    }
+                }
+                if (!selected.Contains(arrayToSort[s.index])) {
+                    Select(arrayToSort[s.index]);
+                    yield return new WaitForSeconds(timeBetweenAction);
+                }
+                break;
+            case GameAction.GameActionType.Swap:
+                SwapAction p = (SwapAction)action;
+                if (selected.Count > 0) {
+                    for (int i = selected.Count - 1; i > -1; i--) {
+                        if (selected[i].Index != p.index1 && selected[i].Index != p.index2) {
+                            Deselect(selected[i]);
+                            yield return new WaitForSeconds(timeBetweenAction);
+                        }
+                    }
+                }
+                if (!selected.Contains(arrayToSort[p.index1])) {
+                    Select(arrayToSort[p.index1]);
+                    yield return new WaitForSeconds(timeBetweenAction);
+                }
+                if (!selected.Contains(arrayToSort[p.index2])) {
+                    Select(arrayToSort[p.index2]);
+                    yield return new WaitForSeconds(timeBetweenAction);
+                }
+                break;
+
+        }
+        ActionAccepted();
+    }
 
     #region Menu interaction
     //handle menu interaction events
@@ -173,7 +278,8 @@ public class NewSortManager : MonoBehaviour {
     //initiate demonstration of sorting algorithm
     private void Demo()
     {
-
+        demo = true;
+        doStep = true;
     }
 
     //Restart with new random array
@@ -209,19 +315,19 @@ public class NewSortManager : MonoBehaviour {
 
     #region Event handlers
 
+    private void AlgorithmCompleted() {
+        if (demo) demo = false;
+        StartCoroutine(ShowMessage("algorithm completed!!", 10f));
+    }
+
     // the function subscribed to the OnMovementStarted event
     private void AddInMotion() {
         inMotion++;
-        Debug.Log(inMotion);
     }
 
     // the function subscribed to the OnMovementFinished event
     private void RemoveInMotion() {
         inMotion--;
-        if (inMotion == 0) {
-            ActionCompleted();
-        }
-        Debug.Log(inMotion);
     }
 
     // the function subscribed to the OnStartHOver event
@@ -238,15 +344,32 @@ public class NewSortManager : MonoBehaviour {
     private void TryUISelect(UISelectable s) {
         if (s.Interactable && CanUISelect()) {
             s.Press();
-            GenerateAction(s.actionType);
-            if (sortingAlgorithm.CorrectAction(action)) {
-                ActionAccepted();
+            lastPress = s;
+            if (s.IsMultiStep) {
+                StartMultiStepAction(s);
             } else {
-                ActionRejected();
+                TryAction(s);       
             }
         }
     }
 
+    private void TryAction(UISelectable s) {
+        //generate action corresponding to selections and ui press
+        GenerateAction(s.actionType);
+        //check if the generated action is correct and perform/not perform according to evaluation
+        if (sortingAlgorithm.CorrectAction(action)) {
+            ActionAccepted();
+        } else {
+            ActionRejected();
+        }
+        inMultiStep = false;
+        s.InProgress = false;
+    }
+
+    private void StartMultiStepAction(UISelectable s) {
+        s.InProgress = true;
+        inMultiStep = true;
+    }
     // the function subscribed to the OnSelect event
     //This function should check if the selection is already selected.
     //If it is, Deselect it; if it isn't, select it if there is room for more selections
@@ -267,6 +390,9 @@ public class NewSortManager : MonoBehaviour {
                     Select(s);
                     UpdateAvailableActions();
                 }
+                if (inMultiStep) {
+                    TryAction(lastPress);
+                }
             }
 
         }
@@ -277,16 +403,29 @@ public class NewSortManager : MonoBehaviour {
     #region Actions and Action handlers
 
     private void ActionCompleted() {
-        // Deselct all selections after swap and store
+        prevAction = action;
+        for(int x = 0; x < arrayToSort.Count; x++) {
+            arrayToSort[x].Correct = arrayToSort[x].Size == sortedArray[x];
+        }
+
+        if (action.type != GameAction.GameActionType.Compare) {
+            for (int i = 0; i < arrayToSort.Count; i++) {
+                if (arrayToSort[i].Compared) arrayToSort[i].Compared = false;
+            }
+        }
+        // Decpompare if not last action was compare and deselct all selections after swap and store
         if (prevAction != null) {
             if (prevAction.type == GameAction.GameActionType.Swap ||
-                prevAction.type == GameAction.GameActionType.Store) {
-
-                for(int i = selected.Count -1; i < selected.Count; i--) {
+                prevAction.type == GameAction.GameActionType.Store ||
+                prevAction.type == GameAction.GameActionType.Move) {
+                for (int i = selected.Count -1; i > -1; i--) {
                     Deselect(selected[i]);
                 }
-
             }
+            
+        }
+        if (demo) {
+            doStep = true;
         }
         UpdateAvailableActions();
     }
@@ -318,22 +457,42 @@ public class NewSortManager : MonoBehaviour {
         }
         sortingAlgorithm.Next();
         if (state != null) state.text = sortingAlgorithm.GetState();
-        prevAction = action;
     }
 
     private void Store() {
         SortingElement s = selected[0];
-        GameObject o = Instantiate(elementPrefab);
-        SortingElement clone = o.GetComponent<SortingElement>();
-        clone.Index = s.Index;
-        clone.Size = s.Size;
-        clone.ArrayPos = s.ArrayPos;
-        clone.transform.position = s.transform.position;
+        if (stored != null) {
+            Deselect(stored);
+            Destroy(stored.gameObject);
+        }
+        stored = s;
+        arrayToSort[s.Index] = CloneSortingElement(s);
         s.Store(storeCenter.position);
     }
 
     private void Move() {
+        SortingElement source = selected[0];
+        SortingElement target = selected[1];
+        if (source.Index == -1) {
+            stored = CloneSortingElement(source);
+            arrayToSort[target.Index] = source;
+        } else {
+            arrayToSort[source.Index] = CloneSortingElement(source);
+            arrayToSort[target.Index] = source;
+        }
+        Deselect(target);
+        source.CopyTo(target);
+    }
 
+    private SortingElement CloneSortingElement(SortingElement s) {
+        GameObject o = Instantiate(elementPrefab);
+        SortingElement c = o.GetComponent<SortingElement>();
+        c.Index = s.Index;
+        c.Size = s.Size;
+        c.ArrayPos = s.ArrayPos;
+        c.transform.position = s.ArrayPos;
+        c.Correct = s.Correct;
+        return c;
     }
 
     //swap indexes of the 2 selected elements and animate the swap of physical position
@@ -341,6 +500,11 @@ public class NewSortManager : MonoBehaviour {
     {
         SortingElement s1 = selected[0];
         SortingElement s2 = selected[1];
+
+        SortingElement temp = arrayToSort[s1.Index];
+        arrayToSort[s1.Index] = arrayToSort[s2.Index];
+        arrayToSort[s2.Index] = temp;
+        
         s1.Swap(s2);
         s1.Correct = s1.Size == sortedArray[s1.Index];
         s2.Correct = s2.Size == sortedArray[s2.Index];
@@ -369,6 +533,11 @@ public class NewSortManager : MonoBehaviour {
         SortingElement s1 = selected[0];
         SortingElement s2 = selected[1];
 
+        for (int i = 0; i < arrayToSort.Count; i++) {
+            if (arrayToSort[i].Compared && arrayToSort[i].Index != s1.Index && arrayToSort[i].Index != s2.Index)
+                arrayToSort[i].Compared = false;
+        }
+
         s1.Compared = true;
         s2.Compared = true;
         //s1.GetComponent<Movable>().SetPath(s1.transform.position - Vector3.forward * movementMagnitude);
@@ -387,7 +556,7 @@ public class NewSortManager : MonoBehaviour {
     //enable actions which are availble with current selections
     private void UpdateAvailableActions()
     {
-        if (CanUISelect())
+        if (CanUISelect() && !inMultiStep && !demo)
         {
             if (selected.Count == 1) {
                 if (swap != null) swap.Interactable = false;
@@ -510,7 +679,7 @@ public class NewSortManager : MonoBehaviour {
     // returns false when the user can select an item, otherwise false
     private bool CanSelect()
     {
-        return inMotion == 0;
+        return inMotion == 0 && !demo;
     }
 
     #endregion

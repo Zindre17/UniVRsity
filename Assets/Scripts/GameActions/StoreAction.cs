@@ -7,4 +7,14 @@ public class StoreAction : GameAction {
         type = GameActionType.Store;
         index = _index;
     }
+
+    public override bool EqualTo(GameAction other) {
+        if (other == null) return false;
+        if (other.type == type) {
+            StoreAction o = (StoreAction)other;
+            return o.index == index;
+        }
+        return false;
+    }
+    
 }

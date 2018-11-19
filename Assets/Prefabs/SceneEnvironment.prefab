@@ -6221,6 +6221,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   disabledColor: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 1}
   pressedColor: {r: 0.022917405, g: 0.69039845, b: 0.9716981, a: 1}
+  inProgressColor: {r: 0, g: 0, b: 0, a: 0}
   actionType: 5
 --- !u!114 &114104228215251108
 MonoBehaviour:
@@ -6268,6 +6269,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   disabledColor: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 1}
   pressedColor: {r: 0.022917405, g: 0.69039845, b: 0.9716981, a: 1}
+  inProgressColor: {r: 0, g: 0, b: 0, a: 0}
   actionType: 1
 --- !u!114 &114127111632455532
 MonoBehaviour:
@@ -6352,6 +6354,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   disabledColor: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 1}
   pressedColor: {r: 0.022917405, g: 0.69039845, b: 0.9716981, a: 1}
+  inProgressColor: {r: 0, g: 0, b: 0, a: 0}
   actionType: 0
 --- !u!114 &114180810810551700
 MonoBehaviour:
@@ -6783,6 +6786,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   disabledColor: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 1}
   pressedColor: {r: 0.022917405, g: 0.69039845, b: 0.9716981, a: 1}
+  inProgressColor: {r: 0, g: 0, b: 0, a: 0}
   actionType: 4
 --- !u!114 &114415672395788820
 MonoBehaviour:
@@ -6823,6 +6827,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   disabledColor: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 1}
   pressedColor: {r: 0.022917405, g: 0.69039845, b: 0.9716981, a: 1}
+  inProgressColor: {r: 0, g: 0, b: 0, a: 0}
   actionType: 3
 --- !u!114 &114465078968099008
 MonoBehaviour:
@@ -7053,6 +7058,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   disabledColor: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 1}
   pressedColor: {r: 0.022917405, g: 0.69039845, b: 0.9716981, a: 1}
+  inProgressColor: {r: 0, g: 0, b: 0, a: 0}
   actionType: 1
 --- !u!114 &114577762820889648
 MonoBehaviour:
@@ -7252,6 +7258,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   disabledColor: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 1}
   pressedColor: {r: 0.022917405, g: 0.69039845, b: 0.9716981, a: 1}
+  inProgressColor: {r: 0, g: 0, b: 0, a: 0}
   actionType: 1
 --- !u!114 &114777191625448700
 MonoBehaviour:
@@ -7655,6 +7662,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   disabledColor: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 1}
   pressedColor: {r: 0.022917405, g: 0.69039845, b: 0.9716981, a: 1}
+  inProgressColor: {r: 0, g: 0, b: 0, a: 0}
   actionType: 2
 --- !u!136 &136947791215324464
 CapsuleCollider:

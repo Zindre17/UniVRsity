@@ -27,6 +27,9 @@ public class Movable : MonoBehaviour {
 
     private Queue<Vector3> moveQueue;
 
+    public delegate void CompleteAction();
+    public event CompleteAction OnComplete;
+
     private void Start() {
         moveQueue = new Queue<Vector3>();
     }
@@ -42,6 +45,7 @@ public class Movable : MonoBehaviour {
             StartCoroutine(MoveTo(moveQueue.Dequeue()));
         } else {
             Moving = false;
+            if (OnComplete != null) OnComplete();
         }
     }
 

@@ -141,9 +141,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementMagnitude: 0.4
-  selectable: {fileID: 114406329780323826}
-  movable: {fileID: 114760072440715482}
-  hoverable: {fileID: 114494914437329470}
 --- !u!114 &114406329780323826
 MonoBehaviour:
   m_ObjectHideFlags: 1

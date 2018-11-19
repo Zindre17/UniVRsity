@@ -11,7 +11,10 @@ public abstract class GameAction {
 
     public GameActionType type;
 
-    //public abstract override bool Equals(object obj);
+    public abstract bool EqualTo(GameAction other);
 
+    public static bool IsMultiStep(GameActionType type) {
+        return type == GameActionType.Move;
+    }
 }
 
