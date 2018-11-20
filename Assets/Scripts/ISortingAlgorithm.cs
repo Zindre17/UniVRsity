@@ -3,6 +3,7 @@ public interface ISortingAlgorithm {
 
     void Next();
     void Prev();
+    void Restart();
     string GetPseudo();
     string GetState();
     bool CorrectAction(GameAction action);

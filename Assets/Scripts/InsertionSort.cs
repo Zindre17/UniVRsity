@@ -106,4 +106,9 @@ public class InsertionSort :ISortingAlgorithm {
     public GameAction GetAction(int step) {
         return actions[step];
     }
+
+    public void Restart() {
+        steps = 0;
+        complete = false;
+    }
 }

@@ -143,22 +143,29 @@ public class SortingElement : MonoBehaviour {
 
     public void CopyTo(SortingElement target) {
         movable.OnComplete += SingleComplete;
+        Vector3 pos = transform.position;
+        Vector3 tar = target.transform.position;
         if(Index == -1) {
-            Vector3 pos = transform.position;
-            Vector3 tar = target.transform.position;
             movable.AddWayPoint(new Vector3(tar.x, pos.y, pos.z));
-            if (compared)
-                movable.AddWayPoint(tar - Vector3.forward * movementMagnitude);
-            else
+            if (target.compared)
                 movable.AddWayPoint(tar);
+            else
+                movable.AddWayPoint(tar - Vector3.forward * movementMagnitude);
         } else {
             if (compared) {
-                movable.AddWayPoint(transform.position - Vector3.forward * movementMagnitude);
-                movable.AddWayPoint(target.transform.position);
+                if (target.compared)
+                    movable.AddWayPoint(tar);
+                else
+                    movable.AddWayPoint(tar - Vector3.forward * movementMagnitude);
             } else {
                 movable.AddWayPoint(transform.position - Vector3.forward * movementMagnitude);
-                movable.AddWayPoint(target.transform.position - Vector3.forward * movementMagnitude);
-                movable.AddWayPoint(target.transform.position);
+                if (target.compared) {
+                    movable.AddWayPoint(tar);
+                    movable.AddWayPoint(tar + Vector3.forward * movementMagnitude);
+                } else {
+                    movable.AddWayPoint(tar - Vector3.forward * movementMagnitude);
+                    movable.AddWayPoint(tar);
+                }
             }
         }
         Index = target.Index;

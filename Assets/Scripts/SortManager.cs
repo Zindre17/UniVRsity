@@ -292,6 +292,9 @@ public class SortManager : MonoBehaviour {
             arrayToSort.Remove(arrayToSort[i]);
             Destroy(se.gameObject);
         }
+
+        if (stored != null)
+            Destroy(stored.gameObject);
         spawnedElements = 0;
 
         Start();
@@ -300,13 +303,18 @@ public class SortManager : MonoBehaviour {
     //restart with the same array
     private void Restart()
     {
-        selected = null;
+        for(int j = selected.Count-1; j> -1 ; j--) {
+            Deselect(selected[j]);
+        }
         for(int i = arrayToSort.Count-1; i > -1; i--)
         {
             SortingElement se = arrayToSort[i];
             arrayToSort.Remove(arrayToSort[i]);
             Destroy(se.gameObject);
         }
+        if (stored != null)
+            Destroy(stored.gameObject);
+        sortingAlgorithm.Restart();
         spawnedElements = 0;
         lastSpawnTime = 0;
     }

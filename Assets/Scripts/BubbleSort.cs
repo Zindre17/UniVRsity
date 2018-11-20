@@ -113,4 +113,8 @@ public class BubbleSort : ISortingAlgorithm {
         return actions[step];
     }
 
+    public void Restart() {
+        complete = false;
+        steps = 0;
+    }
 }
