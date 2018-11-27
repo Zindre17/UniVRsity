@@ -21,6 +21,9 @@ public class SortManager : MonoBehaviour {
     //UI buttons for actions
     public UISelectable compare, swap, keep, pivot, move, store;
 
+    //Menu buttons
+    public MenuSelectable demoMenu, newMenu, restartMenu, backMenu;
+
     //The current attempted action and previuosly completed action
     private GameAction prevAction;
     private GameAction action;
@@ -252,6 +255,7 @@ public class SortManager : MonoBehaviour {
     //handle menu interaction events
     private void HandleMenuSelect(MenuSelectable s)
     {
+        s.Press();
         switch (s.option)
         {
             case MenuSelectable.MenuOption.Back:
