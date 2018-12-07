@@ -52,6 +52,9 @@ public class EventManager : MonoBehaviour {
     public delegate void AlgorithmCompletedEvent();
     public static event AlgorithmCompletedEvent OnAlgorithmCompleted;
 
+    public delegate void AlgorithmChangedEvent(SortManager.SortingAlgorithm alg);
+    public static event AlgorithmChangedEvent OnAlgorithmChanged;
+
     private void Start() {
         if (laserOrigin == null)
             laserOrigin = transform;
@@ -86,6 +89,10 @@ public class EventManager : MonoBehaviour {
                 if (ms != null)
                 {
                     OnMenuSelect(ms);
+                }
+                AlgorithmSelectable als = hit.collider.GetComponent<AlgorithmSelectable>();
+                if (als != null) {
+                    als.Press();
                 }
             }
 
@@ -130,5 +137,9 @@ public class EventManager : MonoBehaviour {
 
     public static void AlgorithmCompleted() {
         if (OnAlgorithmCompleted != null) OnAlgorithmCompleted();
+    }
+
+    public static void AlgorithmChanged(SortManager.SortingAlgorithm alg) {
+        if (OnAlgorithmChanged != null) OnAlgorithmChanged(alg);
     }
 }

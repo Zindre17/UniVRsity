@@ -111,4 +111,8 @@ public class InsertionSort :ISortingAlgorithm {
         steps = 0;
         complete = false;
     }
+
+    public string GetName() {
+        return "Insertion sort";
+    }
 }

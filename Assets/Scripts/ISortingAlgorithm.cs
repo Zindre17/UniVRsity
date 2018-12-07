@@ -6,6 +6,7 @@ public interface ISortingAlgorithm {
     void Restart();
     string GetPseudo();
     string GetState();
+    string GetName();
     bool CorrectAction(GameAction action);
     GameAction GetAction();
     GameAction GetAction(int step);

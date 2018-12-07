@@ -19,7 +19,7 @@ public class SortManager : MonoBehaviour {
     public GameObject elementPrefab;
 
     //UI buttons for actions
-    public UISelectable compare, swap, keep, pivot, move, store;
+    public UISelectable compare, swap, move, store;
 
     //Menu buttons
     public MenuSelectable demoMenu, newMenu, restartMenu, backMenu;
@@ -40,7 +40,7 @@ public class SortManager : MonoBehaviour {
     // Enum for selecting the algoritm to learn/use
     public enum SortingAlgorithm { Bubble, Insertion }
     // The default algo is Bubble sort
-    public SortingAlgorithm alg = SortingAlgorithm.Bubble;
+    private SortingAlgorithm lastAlg;
     
     //Length of the array to be sorted
     [Range(4,10)]
@@ -55,6 +55,7 @@ public class SortManager : MonoBehaviour {
 
     // used to keep track of how many elements have been spawned
     private int spawnedElements = 0;
+    private bool spawn = false;
     [Range(0,1)]
     public float timeBetweenSpawns = .4f;
     private float lastSpawnTime = 0;
@@ -66,6 +67,8 @@ public class SortManager : MonoBehaviour {
     public Text state;
     public Text pseudo;
     public Text message;
+    public Text comparison;
+    public Text algorithmName;
     
     public Transform storeCenter;
 
@@ -89,6 +92,7 @@ public class SortManager : MonoBehaviour {
         EventManager.OnMenuSelect += HandleMenuSelect;
         EventManager.OnActionCompleted += ActionCompleted;
         EventManager.OnAlgorithmCompleted += AlgorithmCompleted;
+        EventManager.OnAlgorithmChanged += SetupAlgorithm;
         //EventManager.OnActionAccepted += CompleteAction;
         //EventManager.OnActionRejected += RejectAction;
     }
@@ -104,31 +108,22 @@ public class SortManager : MonoBehaviour {
         EventManager.OnMenuSelect -= HandleMenuSelect;
         EventManager.OnActionCompleted -= ActionCompleted;
         EventManager.OnAlgorithmCompleted -= AlgorithmCompleted;
+        EventManager.OnAlgorithmChanged -= SetupAlgorithm;
         //EventManager.OnActionAccepted -= CompleteAction;
         //EventManager.OnActionRejected -= RejectAction;
     }
 
     #endregion
 
-    #region Awake, Start, Update
-
-    private void Awake()
-    {
-        if (instance != null)
-            Destroy(this);
-        else
-            instance = this;
-    }
-
-    private void Start()
-    {
-
+    private void SetupAlgorithm(SortingAlgorithm alg) {
+        if (arrayToSort != null) DeleteAll();
         arrayToSort = new List<SortingElement>(arrayLength);
         selected = new List<SortingElement>(arrayLength);
+        spawnedElements = 0;
+        spawn = true;
         GenerateRandomArray();
 
-        switch (alg)
-        {
+        switch (alg) {
             case SortingAlgorithm.Bubble:
                 sortingAlgorithm = new BubbleSort(arrayLength, randomArray);
                 break;
@@ -142,10 +137,35 @@ public class SortManager : MonoBehaviour {
         UpdateAvailableActions();
         if (state != null) state.text = sortingAlgorithm.GetState();
         if (pseudo != null) pseudo.text = sortingAlgorithm.GetPseudo();
+        if (algorithmName != null) algorithmName.text = sortingAlgorithm.GetName();
     }
+
+    private void DeleteAll() {
+        selected = null;
+        for (int i = arrayToSort.Count - 1; i > -1; i--) {
+            SortingElement se = arrayToSort[i];
+            arrayToSort.Remove(arrayToSort[i]);
+            Destroy(se.gameObject);
+        }
+
+        if (stored != null)
+            Destroy(stored.gameObject);
+    }
+    #region Awake, Start, Update
+
+    private void Awake()
+    {
+        if (instance != null)
+            Destroy(this);
+        else
+            instance = this;
+    }
+
+    
 
     private void Update()
     {
+        if (spawn == false) return;
         if (spawnedElements < arrayLength && timeBetweenSpawns <= Time.time - lastSpawnTime)
         {
             lastSpawnTime = Time.time;
@@ -289,24 +309,15 @@ public class SortManager : MonoBehaviour {
     //Restart with new random array
     private void New()
     {
-        selected = null;
-        for (int i = arrayToSort.Count - 1; i > -1; i--)
-        {
-            SortingElement se = arrayToSort[i];
-            arrayToSort.Remove(arrayToSort[i]);
-            Destroy(se.gameObject);
-        }
-
-        if (stored != null)
-            Destroy(stored.gameObject);
-        spawnedElements = 0;
-
-        Start();
+        if (spawn == false) return;
+        DeleteAll();
+        SetupAlgorithm(lastAlg);
     }
 
     //restart with the same array
     private void Restart()
     {
+        if (spawn == false) return;
         for(int j = selected.Count-1; j> -1 ; j--) {
             Deselect(selected[j]);
         }
@@ -552,6 +563,26 @@ public class SortManager : MonoBehaviour {
 
         s1.Compared = true;
         s2.Compared = true;
+
+        if (s1.Equals(stored)) {
+            if(s1.Size >= s2.Size) {
+                comparison.text = string.Format("stored >= A[{0}]",s2.Index);
+            } else {
+                comparison.text = string.Format("stored < A[{0}]", s2.Index);
+            }
+        } else if(s2.Equals(stored)) {
+            if(s2.Size >= s1.Size) {
+                comparison.text = string.Format("stored >= A[{0}]", s1.Index);
+            } else {
+                comparison.text = string.Format("stored < A[{0}]", s1.Index);
+            }
+        } else {
+            if(s1.Size >= s2.Size) {
+                comparison.text = string.Format("A[{0}] >= A[{1}]", s1.Index, s2.Index);
+            } else {
+                comparison.text = string.Format("A[{0}] < A[{1}]", s1.Index, s2.Index);
+            }
+        }
         //s1.GetComponent<Movable>().SetPath(s1.transform.position - Vector3.forward * movementMagnitude);
         //s2.GetComponent<Movable>().SetPath(s2.transform.position - Vector3.forward * movementMagnitude);
         UpdateAvailableActions();
@@ -572,23 +603,17 @@ public class SortManager : MonoBehaviour {
         {
             if (selected.Count == 1) {
                 if (swap != null) swap.Interactable = false;
-                if (keep != null) keep.Interactable = false;
                 if (compare != null) compare.Interactable = false;
-                if (pivot != null) pivot.Interactable = true;
                 if (store != null) store.Interactable = true;
                 if (move != null) move.Interactable = true;
             } else if (selected.Count == 2) {
                 if (swap != null) swap.Interactable = true;
-                if (keep != null) keep.Interactable = false;
                 if (compare != null) compare.Interactable = true;
-                if (pivot != null) pivot.Interactable = false;
                 if (store != null) store.Interactable = false;
                 if (move != null) move.Interactable = false;
             } else {
                 if (swap != null) swap.Interactable = false;
-                if (keep != null) keep.Interactable = false;
                 if (compare != null) compare.Interactable = false;
-                if (pivot != null) pivot.Interactable = false;
                 if (store != null) store.Interactable = false;
                 if (move != null) move.Interactable = false;
             }
@@ -596,9 +621,7 @@ public class SortManager : MonoBehaviour {
         else
         {
             if (swap != null) swap.Interactable = false;
-            if (keep != null) keep.Interactable = false;
             if (compare != null) compare.Interactable = false;
-            if (pivot != null) pivot.Interactable = false;
             if (store != null) store.Interactable = false;
             if (move != null) move.Interactable = false;
         }

@@ -117,4 +117,8 @@ public class BubbleSort : ISortingAlgorithm {
         complete = false;
         steps = 0;
     }
+
+    public string GetName() {
+        return "Bubble sort";
+    }
 }
