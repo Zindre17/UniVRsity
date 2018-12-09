@@ -119,6 +119,8 @@ public class SortManager : MonoBehaviour {
         if (arrayToSort != null) DeleteAll();
         arrayToSort = new List<SortingElement>(arrayLength);
         selected = new List<SortingElement>(arrayLength);
+        inMultiStep = false;
+        move.InProgress = false;
         spawnedElements = 0;
         spawn = true;
         GenerateRandomArray();
@@ -161,7 +163,9 @@ public class SortManager : MonoBehaviour {
             instance = this;
     }
 
-    
+    private void Start() {
+        UpdateAvailableActions();
+    }
 
     private void Update()
     {
@@ -185,6 +189,7 @@ public class SortManager : MonoBehaviour {
         float timeBetweenAction = 1f;
         switch (action.type) {
             case GameAction.GameActionType.Compare:
+                ShowStep("Compare");
                 CompareAction a = (CompareAction)action;
                 if(selected.Count > 0) {
                     for(int i = selected.Count-1; i>-1; i--) {
@@ -210,7 +215,7 @@ public class SortManager : MonoBehaviour {
                 }
                 break;
             case GameAction.GameActionType.Move:
-                
+                ShowStep("Copy To");
                 MoveAction m = (MoveAction)action;
                 if (selected.Count > 0) {
                     for (int i = selected.Count - 1; i > -1; i--) {
@@ -233,6 +238,7 @@ public class SortManager : MonoBehaviour {
                 Select(arrayToSort[m.target]);
                 break;
             case GameAction.GameActionType.Store:
+                ShowStep("Store");
                 StoreAction s = (StoreAction)action;
                 if (selected.Count > 0) {
                     for (int i = selected.Count - 1; i > -1; i--) {
@@ -248,6 +254,7 @@ public class SortManager : MonoBehaviour {
                 }
                 break;
             case GameAction.GameActionType.Swap:
+                ShowStep("Swap");
                 SwapAction p = (SwapAction)action;
                 if (selected.Count > 0) {
                     for (int i = selected.Count - 1; i > -1; i--) {
@@ -302,8 +309,14 @@ public class SortManager : MonoBehaviour {
     //initiate demonstration of sorting algorithm
     private void Demo()
     {
-        demo = true;
-        doStep = true;
+        if (!demo) {
+            demo = true;
+            doStep = true;
+        } else {
+            doStep = false;
+            demo = false;
+            message.enabled = false;
+        }
     }
 
     //Restart with new random array
@@ -332,6 +345,8 @@ public class SortManager : MonoBehaviour {
         sortingAlgorithm.Restart();
         spawnedElements = 0;
         lastSpawnTime = 0;
+        demo = false;
+        doStep = false;
     }
 
     #endregion
@@ -403,7 +418,7 @@ public class SortManager : MonoBehaviour {
         {
             if (CanSelect())
             {
-                if (s.Selected)
+                if (s.Selected && !inMultiStep)
                 {
                     Deselect(s);
                     UpdateAvailableActions();
@@ -599,7 +614,7 @@ public class SortManager : MonoBehaviour {
     //enable actions which are availble with current selections
     private void UpdateAvailableActions()
     {
-        if (CanUISelect() && !inMultiStep && !demo)
+        if (CanUISelect() && !inMultiStep && !demo && spawnedElements == arrayLength)
         {
             if (selected.Count == 1) {
                 if (swap != null) swap.Interactable = false;
@@ -636,6 +651,11 @@ public class SortManager : MonoBehaviour {
             yield return new WaitForSeconds(seconds);
             message.enabled = false;
         }
+    }
+
+    private void ShowStep(string action) {
+        message.enabled = true;
+        message.text = action;
     }
 
     private void SpawnElement()
