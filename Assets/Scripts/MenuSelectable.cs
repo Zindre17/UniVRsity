@@ -29,7 +29,7 @@ public class MenuSelectable : MonoBehaviour {
         StartCoroutine(ButtonPressed());
     }
 
-    private void Detoggle() {
+    public void Detoggle() {
         toggled = false;
         EventManager.OnAlgorithmCompleted -= Detoggle;
         UpdateColor();

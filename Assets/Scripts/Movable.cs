@@ -51,12 +51,14 @@ public class Movable : MonoBehaviour {
 
     private IEnumerator MoveTo(Vector3 point) {
         float dist = Vector3.Distance(point, transform.position);
-        while(dist > radiusBuffer) {
-            direction = (point - transform.position).normalized;
-            dist = Vector3.Distance(point, transform.position);
+        float distTraveled = 0f;
+        Vector3 direction = (point - transform.position).normalized;
+        while (distTraveled < dist) {
+            distTraveled += speed * Time.deltaTime;
             transform.position = transform.position + direction * speed * Time.deltaTime;
             yield return null;
         }
+        transform.position = point;
         MoveToNext();
     }
     

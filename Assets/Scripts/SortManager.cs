@@ -282,6 +282,7 @@ public class SortManager : MonoBehaviour {
     //handle menu interaction events
     private void HandleMenuSelect(MenuSelectable s)
     {
+
         s.Press();
         switch (s.option)
         {
@@ -289,7 +290,10 @@ public class SortManager : MonoBehaviour {
                 Back();
                 break;
             case MenuSelectable.MenuOption.Demo:
-                Demo();
+                if (arrayLength == spawnedElements)
+                    Demo();
+                else
+                    s.Detoggle();
                 break;
             case MenuSelectable.MenuOption.New:
                 New();
@@ -323,6 +327,14 @@ public class SortManager : MonoBehaviour {
     private void New()
     {
         if (spawn == false) return;
+        if (demo)
+        {
+            demo = false;
+            doStep = false;
+            demoMenu.Detoggle();
+            message.enabled = false;
+            inMotion = 0;
+        }
         DeleteAll();
         SetupAlgorithm(lastAlg);
     }
@@ -331,6 +343,14 @@ public class SortManager : MonoBehaviour {
     private void Restart()
     {
         if (spawn == false) return;
+        if (demo)
+        {
+            demo = false;
+            doStep = false;
+            demoMenu.Detoggle();
+            message.enabled = false;
+            inMotion = 0;
+        }
         for(int j = selected.Count-1; j> -1 ; j--) {
             Deselect(selected[j]);
         }
