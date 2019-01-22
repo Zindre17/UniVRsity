@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1966672454617394
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4967751397526800}
+  - component: {fileID: 114205690747863036}
+  - component: {fileID: 114849273489082744}
+  m_Layer: 0
+  m_Name: SceneManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4967751397526800
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1966672454617394}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114205690747863036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1966672454617394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dea8a25ba9cec8b45a03de6a3291911b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnCenter: {fileID: 0}
+  elementPrefab: {fileID: 1386513676272926, guid: 8bbc1e2613d7dc54ea832d313fd3284e,
+    type: 3}
+  compare: {fileID: 0}
+  swap: {fileID: 0}
+  move: {fileID: 0}
+  store: {fileID: 0}
+  demoMenu: {fileID: 0}
+  newMenu: {fileID: 0}
+  restartMenu: {fileID: 0}
+  backMenu: {fileID: 0}
+  arrayLength: 7
+  movementMagnitude: 0.6
+  timeBetweenSpawns: 0.4
+  state: {fileID: 0}
+  pseudo: {fileID: 0}
+  message: {fileID: 0}
+  comparison: {fileID: 0}
+  algorithmName: {fileID: 0}
+  storeCenter: {fileID: 0}
+--- !u!114 &114849273489082744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1966672454617394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83cf6c60ab1eed8459220d6237c841e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionSet: {fileID: 11400000, guid: 67cd9fd64b7eb73429ebd01aa9760b26, type: 2}
+  a_select: {fileID: 11400000, guid: 3113de51a1d06c64090f40bb8f170821, type: 2}
+  maxDistance: 20
+  laserOrigin: {fileID: 0}
