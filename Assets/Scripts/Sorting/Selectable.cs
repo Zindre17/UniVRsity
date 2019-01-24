@@ -38,8 +38,8 @@ public class Selectable : MonoBehaviour {
     public static event IsDeselected OnDeselected;
 
     private void Awake() {
-        if(rend == null)
-            rend = GetComponent<Renderer>();
+        if (rend == null)
+            rend = GetComponentInChildren<Renderer>();
         if(rend!=null)
             defCol = rend.material.color;
     }
@@ -54,6 +54,8 @@ public class Selectable : MonoBehaviour {
     }
 
     private void UpdateColor() {
+        if (rend == null)
+            return;
         if (selected) {
             rend.material.color = selectedColor;
             return;

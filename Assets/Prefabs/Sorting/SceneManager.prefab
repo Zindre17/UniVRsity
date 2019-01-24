@@ -55,8 +55,8 @@ MonoBehaviour:
   newMenu: {fileID: 0}
   restartMenu: {fileID: 0}
   backMenu: {fileID: 0}
-  arrayLength: 7
-  movementMagnitude: 0.6
+  arrayLength: 8
+  movementMagnitude: 0.4
   timeBetweenSpawns: 0.4
   state: {fileID: 0}
   pseudo: {fileID: 0}
