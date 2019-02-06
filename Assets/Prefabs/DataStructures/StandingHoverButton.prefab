@@ -118,7 +118,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 344097242747817802}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.106, y: 0.19999993, z: 0.102}
+  m_LocalPosition: {x: 0.1, y: 0.15, z: 0.1}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children:
   - {fileID: 344097242985431208}
@@ -168,9 +168,9 @@ MonoBehaviour:
   onButtonDown:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5259697480114186550}
-        m_MethodName: OnButtonDown
-        m_Mode: 0
+      - m_Target: {fileID: 0}
+        m_MethodName: Pop
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -184,8 +184,8 @@ MonoBehaviour:
   onButtonUp:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5259697480114186550}
-        m_MethodName: OnButtonUp
+      - m_Target: {fileID: 0}
+        m_MethodName: 
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
