@@ -41,12 +41,11 @@ public class SortingElement : MonoBehaviour {
         }
     }
 
-    private bool selected = false;
+    
     public bool Selected {
-        get { return selected; }
+        get { return selectable.Selected; }
         set {
-            if (selected != value) {
-                selected = value;
+            if (selectable.Selected != value) {
                 selectable.Selected = value;
             }
         }
@@ -82,6 +81,16 @@ public class SortingElement : MonoBehaviour {
 
     private void MoveFromComparedPos() {
         movable.AddWayPoint(transform.position + Vector3.forward * movementMagnitude);
+    }
+
+    public void Swap() {
+        if (compared) {
+            SingleComplete();
+            return;
+        }
+        movable.OnComplete += SingleComplete;
+        movable.AddWayPoint(transform.position - Vector3.forward * movementMagnitude);
+        movable.AddWayPoint(transform.position);
     }
 
     public void Swap(SortingElement other) {
@@ -171,6 +180,15 @@ public class SortingElement : MonoBehaviour {
         Index = target.Index;
         ArrayPos = target.ArrayPos;
         Destroy(target.gameObject);
+    }
+
+    public void Depivot() {
+        selectable.Pivot = false;
+    }
+
+    public void Pivot() {
+        selectable.Pivot = true;
+        SingleComplete();
     }
 
     private void SingleComplete() {

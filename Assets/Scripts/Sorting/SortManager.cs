@@ -19,7 +19,7 @@ public class SortManager : MonoBehaviour {
     public GameObject elementPrefab;
 
     //UI buttons for actions
-    public UISelectable compare, swap, move, store;
+    public UISelectable compare, swap, move, store, pivot;
 
     //Menu buttons
     public MenuSelectable demoMenu, newMenu, restartMenu, backMenu;
@@ -38,7 +38,7 @@ public class SortManager : MonoBehaviour {
     private ISortingAlgorithm sortingAlgorithm;
 
     // Enum for selecting the algoritm to learn/use
-    public enum SortingAlgorithm { Bubble, Insertion }
+    public enum SortingAlgorithm { Bubble, Insertion, Quick }
     // The default algo is Bubble sort
     private SortingAlgorithm lastAlg;
     
@@ -66,9 +66,12 @@ public class SortManager : MonoBehaviour {
     // UI Text elements for representing the algorithms state, pseudo code, and temporary messages/feedback
     public Text state;
     public Text pseudo;
+    public Text pseudoExtra;
     public Text message;
     public Text comparison;
     public Text algorithmName;
+
+    public GameObject pseudoExtraScreen;
     
     public Transform storeCenter;
 
@@ -77,6 +80,11 @@ public class SortManager : MonoBehaviour {
 
     private bool demo = false;
     private bool doStep = false;
+
+    private SortingElement prevPivot;
+
+    private bool focusHasChanged = false;
+    private int fcStart, fcEnd;
     #endregion
 
     #region event subscription and unsubscrption
@@ -93,6 +101,7 @@ public class SortManager : MonoBehaviour {
         EventManager.OnActionCompleted += ActionCompleted;
         EventManager.OnAlgorithmCompleted += AlgorithmCompleted;
         EventManager.OnAlgorithmChanged += SetupAlgorithm;
+        EventManager.OnArrayInFocusChanged += FocusChanged;
         //EventManager.OnActionAccepted += CompleteAction;
         //EventManager.OnActionRejected += RejectAction;
     }
@@ -109,6 +118,7 @@ public class SortManager : MonoBehaviour {
         EventManager.OnActionCompleted -= ActionCompleted;
         EventManager.OnAlgorithmCompleted -= AlgorithmCompleted;
         EventManager.OnAlgorithmChanged -= SetupAlgorithm;
+        EventManager.OnArrayInFocusChanged -= FocusChanged;
         //EventManager.OnActionAccepted -= CompleteAction;
         //EventManager.OnActionRejected -= RejectAction;
     }
@@ -131,6 +141,9 @@ public class SortManager : MonoBehaviour {
                 break;
             case SortingAlgorithm.Insertion:
                 sortingAlgorithm = new InsertionSort(arrayLength, randomArray);
+                break;
+            case SortingAlgorithm.Quick:
+                sortingAlgorithm = new QuickSort(arrayLength, randomArray);
                 break;
             default:
                 sortingAlgorithm = new BubbleSort(arrayLength, randomArray);
@@ -187,6 +200,7 @@ public class SortManager : MonoBehaviour {
         doStep = false;
         action = sortingAlgorithm.GetAction();
         float timeBetweenAction = 1f;
+        yield return new WaitForSeconds(timeBetweenAction);
         switch (action.type) {
             case GameAction.GameActionType.Compare:
                 ShowStep("Compare");
@@ -270,6 +284,22 @@ public class SortManager : MonoBehaviour {
                 }
                 if (!selected.Contains(arrayToSort[p.index2])) {
                     Select(arrayToSort[p.index2]);
+                    yield return new WaitForSeconds(timeBetweenAction);
+                }
+                break;
+            case GameAction.GameActionType.Pivot:
+                ShowStep("Pivot");
+                PivotAction v = (PivotAction)action;
+                if(selected.Count > 0) {
+                    for (int i = selected.Count - 1; i > -1; i--) {
+                        if (selected[i].Index != v.pivotIndex) {
+                            Deselect(selected[i]);
+                            yield return new WaitForSeconds(timeBetweenAction);
+                        }
+                    }
+                }
+                if (!selected.Contains(arrayToSort[v.pivotIndex])) {
+                    Select(arrayToSort[v.pivotIndex]);
                     yield return new WaitForSeconds(timeBetweenAction);
                 }
                 break;
@@ -373,6 +403,25 @@ public class SortManager : MonoBehaviour {
 
     #region Event handlers
 
+    private void FocusChanged(int start, int end) {
+        if(spawnedElements != arrayLength) {
+            focusHasChanged = true;
+            fcStart = start;
+            fcEnd = end;
+            return;
+        }
+        if(end <= arrayLength - 1) {
+            for(int i = 0; i<arrayLength; i++) {
+                Selectable s = arrayToSort[i].GetComponent<Selectable>();
+                if(i < start || i > end) {
+                    s.InFocus = false;
+                } else {
+                    s.InFocus = true;
+                }
+            }
+        }
+    }
+
     private void AlgorithmCompleted() {
         if (demo) demo = false;
         StartCoroutine(ShowMessage("algorithm completed!!", 10f));
@@ -475,7 +524,8 @@ public class SortManager : MonoBehaviour {
         if (prevAction != null) {
             if (prevAction.type == GameAction.GameActionType.Swap ||
                 prevAction.type == GameAction.GameActionType.Store ||
-                prevAction.type == GameAction.GameActionType.Move) {
+                prevAction.type == GameAction.GameActionType.Move ||
+                prevAction.type == GameAction.GameActionType.Pivot) {
                 for (int i = selected.Count -1; i > -1; i--) {
                     Deselect(selected[i]);
                 }
@@ -557,17 +607,21 @@ public class SortManager : MonoBehaviour {
     private void Swap()
     {
         SortingElement s1 = selected[0];
-        SortingElement s2 = selected[1];
 
-        SortingElement temp = arrayToSort[s1.Index];
-        arrayToSort[s1.Index] = arrayToSort[s2.Index];
-        arrayToSort[s2.Index] = temp;
-        
-        s1.Swap(s2);
-        s1.Correct = s1.Size == sortedArray[s1.Index];
-        s2.Correct = s2.Size == sortedArray[s2.Index];
+        if (selected.Count > 1) {
+            SortingElement s2 = selected[1];
+
+            SortingElement temp = arrayToSort[s1.Index];
+            arrayToSort[s1.Index] = arrayToSort[s2.Index];
+            arrayToSort[s2.Index] = temp;
+
+            s1.Swap(s2);
+            s1.Correct = s1.Size == sortedArray[s1.Index];
+            s2.Correct = s2.Size == sortedArray[s2.Index];
+        } else {
+            s1.Swap();
+        }
         UpdateAvailableActions();
-
     }
 
     //move elements in comparison position back to their original position
@@ -624,7 +678,11 @@ public class SortManager : MonoBehaviour {
     }
 
     private void Pivot() {
-
+        if (prevPivot != null)
+            prevPivot.Depivot();
+        prevPivot = selected[0];
+        prevPivot.Pivot();
+        UpdateAvailableActions();
     }
 
     #endregion
@@ -637,20 +695,23 @@ public class SortManager : MonoBehaviour {
         if (CanUISelect() && !inMultiStep && !demo && spawnedElements == arrayLength)
         {
             if (selected.Count == 1) {
-                if (swap != null) swap.Interactable = false;
+                if (swap != null) swap.Interactable = true;
                 if (compare != null) compare.Interactable = false;
                 if (store != null) store.Interactable = true;
                 if (move != null) move.Interactable = true;
+                if (pivot != null) pivot.Interactable = true;
             } else if (selected.Count == 2) {
                 if (swap != null) swap.Interactable = true;
                 if (compare != null) compare.Interactable = true;
                 if (store != null) store.Interactable = false;
                 if (move != null) move.Interactable = false;
+                if (pivot != null) pivot.Interactable = false;
             } else {
                 if (swap != null) swap.Interactable = false;
                 if (compare != null) compare.Interactable = false;
                 if (store != null) store.Interactable = false;
                 if (move != null) move.Interactable = false;
+                if (pivot != null) pivot.Interactable = false;
             }
         }
         else
@@ -659,6 +720,7 @@ public class SortManager : MonoBehaviour {
             if (compare != null) compare.Interactable = false;
             if (store != null) store.Interactable = false;
             if (move != null) move.Interactable = false;
+            if (pivot != null) pivot.Interactable = false;
         }
     }
 
@@ -694,6 +756,15 @@ public class SortManager : MonoBehaviour {
         e.Correct = e.Size == sortedArray[e.Index];
         e.ArrayPos = e.transform.position;
         spawnedElements++;
+        if(spawnedElements == arrayLength) {
+            ArrayLoaded();
+        }
+    }
+
+    private void ArrayLoaded() {
+        if (focusHasChanged) {
+            FocusChanged(fcStart, fcEnd);
+        }
     }
 
     private void GenerateRandomArray()
@@ -722,7 +793,10 @@ public class SortManager : MonoBehaviour {
                 action = new CompareAction(selected[0].Index, selected[1].Index);
                 break;
             case GameAction.GameActionType.Swap:
-                action = new SwapAction(selected[0].Index, selected[1].Index);
+                if (selected.Count > 1)
+                    action = new SwapAction(selected[0].Index, selected[1].Index);
+                else
+                    action = new SwapAction(selected[0].Index, selected[0].Index);
                 break;
             case GameAction.GameActionType.Keep:
                 action = new KeepAction(selected[0].Index, selected[1].Index);
@@ -742,13 +816,15 @@ public class SortManager : MonoBehaviour {
     private void Deselect(SortingElement s)
     {
         s.Selected = false;
-        selected.Remove(s);
+        if(selected.Contains(s))
+            selected.Remove(s);
     }
 
     private void Select(SortingElement s)
     {
         s.Selected = true;
-        selected.Add(s);
+        if(s.Selected)
+            selected.Add(s);
     }
 
     // returns false when the user can select an item, otherwise false

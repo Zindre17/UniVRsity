@@ -3,14 +3,15 @@ using System.Collections.Generic;
 
 public class InsertionSort :ISortingAlgorithm {
 
-    private readonly string pseudo =
+    private readonly string[] pseudo = new string[] {
         "for j = 1 to A.length -1 \n" +
         "   key = A[j] \n" +
         "   i = j - 1 \n" +
         "   while i > -1 and A[i] > key \n" +
         "       A[i+1] = A[i] \n" +
         "       i = i - 1 \n" +
-        "   A[i+1] = key";
+        "   A[i+1] = key"
+    };
 
     private readonly string state =
         "i = {0} \n" +
@@ -75,7 +76,7 @@ public class InsertionSort :ISortingAlgorithm {
         return actions[steps].EqualTo(action);
     }
 
-    public string GetPseudo() {
+    public string[] GetPseudo() {
         return pseudo;
     }
 

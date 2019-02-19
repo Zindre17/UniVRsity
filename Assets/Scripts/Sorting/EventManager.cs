@@ -55,6 +55,9 @@ public class EventManager : MonoBehaviour {
     public delegate void AlgorithmChangedEvent(SortManager.SortingAlgorithm alg);
     public static event AlgorithmChangedEvent OnAlgorithmChanged;
 
+    public delegate void ArrayInFocusChanged(int start, int end);
+    public static event ArrayInFocusChanged OnArrayInFocusChanged;
+
     private void Start() {
         if (laserOrigin == null)
             laserOrigin = transform;
@@ -141,5 +144,11 @@ public class EventManager : MonoBehaviour {
 
     public static void AlgorithmChanged(SortManager.SortingAlgorithm alg) {
         if (OnAlgorithmChanged != null) OnAlgorithmChanged(alg);
+    }
+
+    public static void FocusChanged(int start, int end) {
+        if(start < end && OnArrayInFocusChanged != null) {
+            OnArrayInFocusChanged(start, end);
+        }
     }
 }

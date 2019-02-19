@@ -18,12 +18,12 @@ public class BubbleSort : ISortingAlgorithm {
         }
     }
 
-    private readonly string pseudo =
+    private readonly string[] pseudo = new string[] {
         "for i = 0 to i = A.length - 2  \n" +
         "   for j = A.length - 1 down to i + 1 \n" +
         "       if A[j] < A[j-1]) \n" +
         "           exchange A[j] with A[j-1]"
-        ;
+    };
 
     private readonly string state =
         "i = {0} \n " +
@@ -77,7 +77,7 @@ public class BubbleSort : ISortingAlgorithm {
         return actions[steps].EqualTo(action);
     }
 
-    public string GetPseudo() {
+    public string[] GetPseudo() {
         return pseudo;
     }
 
