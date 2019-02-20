@@ -90,23 +90,25 @@ public class MergeSort : ISortingAlgorithm {
     }
 
     public bool CorrectAction(GameAction action) {
-        throw new System.NotImplementedException();
+        return action.EqualTo(GetAction());
     }
 
     public GameAction GetAction() {
-        throw new System.NotImplementedException();
+        return actions[steps];
     }
 
     public GameAction GetAction(int step) {
-        throw new System.NotImplementedException();
+        if (step < actions.Count)
+            return actions[step];
+        else return null;
     }
 
     public string GetName() {
-        throw new System.NotImplementedException();
+        return "Mergesort";
     }
 
-    public string GetPseudo() {
-        throw new System.NotImplementedException();
+    public string[] GetPseudo() {
+        return pseudo;
     }
 
     public string GetState() {

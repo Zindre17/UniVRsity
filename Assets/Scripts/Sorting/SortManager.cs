@@ -151,7 +151,13 @@ public class SortManager : MonoBehaviour {
         }
         UpdateAvailableActions();
         if (state != null) state.text = sortingAlgorithm.GetState();
-        if (pseudo != null) pseudo.text = sortingAlgorithm.GetPseudo();
+        string[] p = sortingAlgorithm.GetPseudo();
+        if (pseudo != null) pseudo.text = p[0];
+        if (pseudoExtra != null && p.Length > 1) {
+            pseudoExtra.text = p[1];
+            pseudoExtraScreen.SetActive(true);
+        } else
+            pseudoExtraScreen.SetActive(false);
         if (algorithmName != null) algorithmName.text = sortingAlgorithm.GetName();
     }
 
