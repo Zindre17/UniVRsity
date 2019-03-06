@@ -7,8 +7,14 @@ public class Stage : MonoBehaviour
     public GameObject stack;
     public GameObject queue;
     public GameObject linkedList;
+    public GameObject useCaseObject;
+    public UIWalls uiWalls;
+
+    private UseCase useCase;
 
     private List<GameObject> structures;
+    private Data data;
+    private Mode mode;
 
     private void Start() {
         structures = new List<GameObject> {
@@ -16,20 +22,55 @@ public class Stage : MonoBehaviour
             queue,
             linkedList
         };
+
+        data = Data.Stack;
+        mode = Mode.Play;
+
+        if (useCaseObject != null) {
+            useCase = useCaseObject.GetComponent<UseCase>();
+        }
     }
 
-    public enum Mode {
-        stack = 0,
-        queue = 1,
-        linked = 2
+    public enum Data {
+        Stack = 0,
+        Queue = 1,
+        LinkedList = 2
     }
 
-    public void ChangeMode(int mode) {
+    public enum Mode { 
+        UseCase,
+        Play
+    }
+
+
+    public void ChangeDataModel(UIButton button) {
+        if (!(button is ModeButton)) return;
+        data = ((ModeButton)button).model;
+        ChangeDataModel((int)data);
+    }
+
+    private void ChangeDataModel(int mode) {
         for(int i = 0; i < structures.Count; i++) {
             if (i == mode)
                 structures[i].SetActive(true);
             else
                 structures[i].SetActive(false);
         }
+    }
+
+    public void GoToUseCase() {
+        mode = Mode.UseCase;
+        ChangeDataModel(-1); //no data model active
+        useCaseObject.SetActive(true);
+        useCase.Data = data;
+        uiWalls.ChangeMode(mode);
+    }
+
+    public void GoToPlayMode() {
+        mode = Mode.Play;
+        useCaseObject.SetActive(false);
+        uiWalls.ChangeMode(mode);
+        ChangeDataModel((int)data);
+
     }
 }

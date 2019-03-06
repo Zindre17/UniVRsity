@@ -1,0 +1,12 @@
+newmtl Default-Material
+Kd 1 1 1
+d 1
+
+newmtl InnerCube
+Kd 1 1 1
+d 1
+
+newmtl OuterCube
+Kd 0.4811321 0.4425507 0.4425507
+d 1
+

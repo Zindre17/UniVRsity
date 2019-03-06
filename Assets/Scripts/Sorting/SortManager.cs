@@ -156,8 +156,10 @@ public class SortManager : MonoBehaviour {
         if (pseudoExtra != null && p.Length > 1) {
             pseudoExtra.text = p[1];
             pseudoExtraScreen.SetActive(true);
-        } else
+        } else {
             pseudoExtraScreen.SetActive(false);
+            pseudoExtra.text = "";
+        }
         if (algorithmName != null) algorithmName.text = sortingAlgorithm.GetName();
     }
 

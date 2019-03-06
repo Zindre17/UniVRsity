@@ -46,7 +46,6 @@ public class InsertionSort :ISortingAlgorithm {
     }
 
     private void GenerateActions() {
-        int[] ar = (int[])arrayToSort.Clone();
         int i = -1;
         int key = -1;
         int j;
