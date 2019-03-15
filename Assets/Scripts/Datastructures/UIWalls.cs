@@ -6,7 +6,14 @@ public class UIWalls : MonoBehaviour
 {
     public GameObject structureSelect;
     public GameObject actions;
-    public GameObject menu;
+
+    private void OnEnable() {
+        EventHandler.OnModeChanged += ChangeMode;
+    }
+
+    private void OnDisable() {
+        EventHandler.OnModeChanged -= ChangeMode;
+    }
 
     public void ChangeMode(Stage.Mode mode) {
         switch (mode) {
@@ -22,12 +29,10 @@ public class UIWalls : MonoBehaviour
     private void StartPlayMode() {
         structureSelect.SetActive(true);
         actions.SetActive(false);
-        menu.SetActive(false);
     }
 
     private void StartUseCaseMode() {
         structureSelect.SetActive(false);
         actions.SetActive(true);
-        menu.SetActive(true);
     }
 }

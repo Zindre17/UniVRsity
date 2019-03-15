@@ -20,5 +20,12 @@ public class ColorManager : MonoBehaviour
         seedColor,
         patternColor,
         unvisitedColor,
-        nextColor;
+        addedColor,
+        nextColor,
+        hintColor;
+
+    public Color
+        buttonColor,
+        toggleButtonOnColor,
+        toggleButtonOffColor;
 }

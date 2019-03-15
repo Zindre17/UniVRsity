@@ -23,8 +23,6 @@ public class DataStructure : MonoBehaviour
     private GameObject poppedI;
 
     private void Start() {
-        items = new List<GameObject>();
-        data = new List<Pixel>();
         itemThickness = dataItemPrefab.transform.localScale.y;
     }
 
@@ -32,13 +30,13 @@ public class DataStructure : MonoBehaviour
         this.mode = mode;
         switch (mode) {
             case Stage.Data.Stack:
-                text.text = "stack";
+                text.text = "Stack";
                 break;
             case Stage.Data.Queue:
-                text.text = "queue";
+                text.text = "Queue";
                 break;
             case Stage.Data.LinkedList:
-                text.text = "linked list";
+                text.text = "Linked list";
                 break;
 
         }
@@ -51,6 +49,9 @@ public class DataStructure : MonoBehaviour
 
     public Pixel Pop() {
         if (data.Count == 0) return null;
+        if(poppedP != null) {
+            Destroy(poppedI.gameObject);
+        }
         switch (mode) {
             case Stage.Data.Stack:
                 return StackPop();
@@ -58,6 +59,22 @@ public class DataStructure : MonoBehaviour
                 return QueuePop();
         }
         return null;
+    }
+
+    private void Awake() {
+        data = new List<Pixel>();
+        items = new List<GameObject>();
+    }
+
+    public void Restart() {
+        if (poppedI != null) Destroy(poppedI.gameObject);
+        if (poppedP != null) poppedP = null;
+        data.Clear();
+        for (int i = items.Count-1; i > -1; i--) {
+            GameObject o = items[i];
+            items.Remove(o);
+            Destroy(o);
+        }
     }
 
     private Pixel StackPop() {
@@ -99,20 +116,25 @@ public class DataStructure : MonoBehaviour
         float elapsed = 0f;
         float part1 = .35f;
         Vector3 start = o.transform.position;
-        Vector3 end = popSpawn.position;
+        Vector3 end = popSpawn.position + Vector3.up*0.3f;
         Vector3 mid = new Vector3(end.x, start.y, end.z);
         Vector3 path1 = mid - start;
         Vector3 path2 = end - mid;
+        Vector3 endAngle = new Vector3(0, 30, 90);
         while (elapsed < duration) {
-            if(elapsed < part1) {
+            float percent;
+            if (elapsed < part1) {
                 o.transform.position = start + path1 * (elapsed / part1);
             } else {
-                o.transform.position = mid + path2 * (elapsed - part1) / (duration - part1);
+                percent = (elapsed - part1) / (duration - part1);
+                o.transform.position = mid + path2 * percent;
+                o.transform.localRotation = Quaternion.Euler(endAngle * percent);
             }
             elapsed += Time.deltaTime;
             yield return null;
         }
         o.transform.position = end;
+        o.transform.localRotation = Quaternion.Euler(endAngle);
         if (queue) {
             int i = 0;
             float interval = 0.1f;
@@ -145,6 +167,7 @@ public class DataStructure : MonoBehaviour
             elapsed += Time.deltaTime;
             yield return null;
         }
+        o.transform.localScale = origSize;
         o.transform.position = finalPos;
     }
 }

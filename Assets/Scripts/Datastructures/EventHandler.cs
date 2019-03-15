@@ -23,6 +23,12 @@ public class EventHandler : MonoBehaviour
     public delegate void PixelSelectEvent(Pixel p);
     public static event PixelSelectEvent OnPixelSelected;
 
+    public delegate void SeedChangedEvent(int index);
+    public static event SeedChangedEvent OnSeedChanged;
+
+    public delegate void ModeChangedEvent(Stage.Mode mode);
+    public static event ModeChangedEvent OnModeChanged;
+
     private void Start() {
         actionSet.ActivateSecondary();
     }
@@ -62,4 +68,13 @@ public class EventHandler : MonoBehaviour
     private bool IsSelecting() {
         return a_select.GetStateDown(SteamVR_Input_Sources.Any);
     }
+
+    public static void ChangeSeed(int index) {
+        if (OnSeedChanged != null) OnSeedChanged(index);
+    }
+
+    public static void ChangeMode(Stage.Mode mode) {
+        if (OnModeChanged != null) OnModeChanged(mode);
+    }
+
 }

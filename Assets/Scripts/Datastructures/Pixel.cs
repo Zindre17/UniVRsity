@@ -1,16 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Pixel : MonoBehaviour
 {
-    private ColorManager colors;
-    private Hoverable hoverable;
-    private bool legal = true;
-
     public int index;
-
-    private Renderer rend;
+    private ColorManager cm;
+    public Renderer rend;
     private bool selected = false;
     public bool Selected {
         get { return selected; }
@@ -21,20 +18,16 @@ public class Pixel : MonoBehaviour
             }
         }
     }
-    private bool visited = false;
-    public bool Visited {
-        get { return visited; }
+    private bool next = false;
+    public bool Next {
+        get { return next; }
         set {
-            if (visited != value) {
-                visited = value;
-                if (value) {
-                    hoverable.Legal = false;
-                }
+            if (next != value) {
+                next = value;
             }
         }
     }
 
-    private bool pattern = false;
     private bool seed = false;
     public bool Seed {
         get { return seed; }
@@ -57,12 +50,9 @@ public class Pixel : MonoBehaviour
             }
         }
     }
-    
 
     private void Awake() {
-        rend = GetComponentInChildren<Renderer>();
-        hoverable = GetComponentInChildren<Hoverable>();
-        colors = ColorManager.instance;
+        cm = ColorManager.instance;
     }
 
     private void Start() {
@@ -70,24 +60,43 @@ public class Pixel : MonoBehaviour
     }
 
     private void SetColor(bool b) {
-        color = b ? colors.darkColor : colors.lightColor;
+        color = b ? cm.darkColor : cm.lightColor;
         UpdateColor();
+    }
+
+    public void Hint(Action function = null) {
+        StartCoroutine(HintAnimation(function:function));
+    }
+
+    private IEnumerator HintAnimation(Action function = null) {
+        Color hint = cm.hintColor;
+        Color def = selected ? cm.selectedColor : rend.materials[0].color;
+        yield return new WaitForSeconds(.1f);
+        rend.materials[1].color = hint;
+        yield return new WaitForSeconds(.3f);
+        rend.materials[1].color = def;
+        yield return new WaitForSeconds(.3f);
+        rend.materials[1].color = hint;
+        yield return new WaitForSeconds(.3f);
+        rend.materials[1].color = def;
+        if (function != null) function();
     }
 
     private void UpdateColor() {
         Color c = color;
         Color oc = color;
+        Color ic = color;
         if (selected) {
-            c = colors.selectedColor;
-        }if(seed) {
-            oc = colors.seedColor;
-        } else if (pattern) {
-            oc = colors.patternColor;
-        } else if (visited) {
-            oc = colors.visitedColor;
+            oc = cm.selectedColor;
+        }
+        if (next) {
+            ic = cm.nextColor;
+        }else if (seed) {
+            ic = cm.seedColor;
         }    
-        rend.materials[1].color = c;
-        rend.materials[2].color = oc;
+        rend.materials[0].color = c;
+        rend.materials[1].color = oc;
+        rend.materials[2].color = ic;
     }
 
 }
