@@ -8,4 +8,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainHub.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/AlgDat/AlgDatHub.unity
+    guid: d4bb643a9dd1b8d44b774d3a67b873b4
+  - enabled: 1
+    path: Assets/Scenes/AlgDat/Datastructures.unity
+    guid: 9311b0f86ea3c3544bb82a11aed0ec5a
+  - enabled: 1
+    path: Assets/Scenes/AlgDat/SortingAlgorithms.unity
+    guid: 85d592dd80884b84a8177a8669635543
   m_configObjects: {}

@@ -1,19 +1,24 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 //[RequireComponent( typeof(Collider))]
 public class Orb : MonoBehaviour
 {
-    public SceneChanger.Level level;
+    [Serializable]
+    public class OrbBreakEvent : UnityEvent { }
+    public OrbBreakEvent breakEvent;
+
+    private bool triggered = false;
 
     private void OnCollisionEnter(Collision collision) {
         if (collision.collider.CompareTag("Environment")){
-            SceneChanger.instance.FadeToLevel((int)level);
+            if (breakEvent != null && !triggered) {
+                triggered = true;
+                breakEvent.Invoke();
+            }
         }
-    }
-
-    private void OnCollisionStay(Collision collision) {
-        Debug.Log("collision");
     }
 }

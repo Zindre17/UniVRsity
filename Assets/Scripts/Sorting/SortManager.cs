@@ -345,7 +345,7 @@ public class SortManager : MonoBehaviour {
     //Change to Previous scene (in hierarchy)
     private void Back()
     {
-
+        ((AlgDatSceneChanger)AlgDatSceneChanger.instance).GoToCourseMain();
     }
 
     //initiate demonstration of sorting algorithm
