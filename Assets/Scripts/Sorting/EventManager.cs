@@ -81,10 +81,15 @@ public class EventManager : MonoBehaviour {
 
             if (IsSelecting() && Time.time - buttonPressBuffer > lastButtonPress) {
                 lastButtonPress = Time.time;
+                UIButton b = hit.collider.GetComponentInParent<UIButton>();
+                if (b != null) {
+                    b.Press();
+                }
                 SortingElement s = hit.collider.GetComponentInParent<SortingElement>();
                 if (s != null) {
                     OnSelect(s);
                 }
+                /*
                 UISelectable uis = hit.collider.GetComponent<UISelectable>();
                 if (uis != null)
                     OnUISelect(uis);
@@ -97,6 +102,7 @@ public class EventManager : MonoBehaviour {
                 if (als != null) {
                     als.Press();
                 }
+                */
             }
 
         } else
