@@ -10,6 +10,7 @@ public class UseCase : MonoBehaviour
     public PatternRep patternRep;
     public GameObject scene;
     public ActionController actionController;
+    public GameObject tutorial;
 
     [Range(4,16)]
     public int resolution = 8;
@@ -17,6 +18,7 @@ public class UseCase : MonoBehaviour
     private RegionGrowAlgorithm algorithm;
     private Stage.Data data;
     private bool demo = false;
+    private bool started = false;
 
     public void ChangeDataModel(Stage.Data model) {
         data = model;
@@ -33,7 +35,7 @@ public class UseCase : MonoBehaviour
         }
     }
 
-    private void Start() {
+    private void Awake() {
         algorithm = new RegionGrowAlgorithm(resolution, data);
         EventHandler.OnSeedChanged += ReSeed;
     }
@@ -47,7 +49,14 @@ public class UseCase : MonoBehaviour
         patternRep.Seed(index);
         algorithm.SetSeedPoint(index);
     }
+
+    public void Started() {
+        started = true;
+        tutorial.SetActive(false);
+    }
+
     public void Push() {
+        if (!started) return;
         Pixel p = imageHandler.GetSelectedPixel();
         if (p == null) {
             ShowHint();
@@ -62,6 +71,7 @@ public class UseCase : MonoBehaviour
     }
 
     public void Pop() {
+        if (!started) return;
         if (algorithm.PerformStep(new ImageAction(0, ImageAction.ActionType.Pop))) {
             Pixel p = dataStructure.Pop();
             if (p == null) return;
@@ -72,6 +82,7 @@ public class UseCase : MonoBehaviour
     }
 
     public void Check() {
+        if (!started) return;
         Pixel p = imageHandler.GetSelectedPixel();
         if (p == null) {
             ShowHint();
@@ -88,6 +99,7 @@ public class UseCase : MonoBehaviour
     }
 
     public void Demo() {
+        if (!started) return;
         demo = !demo;
         Select();
     }
@@ -116,7 +128,9 @@ public class UseCase : MonoBehaviour
 
     
     public void Restart() {
+        started = false;
         demo = false;
+        tutorial.SetActive(true);
         algorithm.Restart();
         imageRep.Restart(resolution);
         patternRep.Restart(resolution);

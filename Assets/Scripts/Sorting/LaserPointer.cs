@@ -1,23 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Valve.VR;
+﻿using UnityEngine;
 
 public class LaserPointer : MonoBehaviour {
 
-    public float thickness = 0.03f;
-    public float maxLength = 20f;
+    private readonly float thickness = 0.01f;
+    private readonly float maxLength = 20f;
 
     public GameObject pointer;
 
     private void Start()
     {
-        if(pointer == null)
-        {
-
-        }
-
-        transform.localScale = new Vector3(thickness, maxLength, thickness);
+        transform.localScale = new Vector3(thickness, thickness, maxLength);
     }
 
     private void Update()

@@ -9,7 +9,7 @@ public class ActionButton : UIButton {
     }
 
     private IEnumerator HintAnimation() {
-        Color hint = colorManager.hintColor;
+        Color hint = colorManager.hint;
         yield return new WaitForSeconds(.1f);
         rend.material.color = hint;
         yield return new WaitForSeconds(.3f);

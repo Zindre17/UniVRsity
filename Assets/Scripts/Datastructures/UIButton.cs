@@ -19,7 +19,7 @@ public abstract class UIButton :MonoBehaviour
 
     private void Start() {
         colorManager = ColorManager.instance;
-        defaultColor = colorManager.buttonColor;
+        defaultColor = colorManager.button;
         rend.material.color = defaultColor;
         origin = transform.localPosition;
     }
@@ -30,7 +30,7 @@ public abstract class UIButton :MonoBehaviour
     }
 
     public void Select() {
-        rend.material.color = colorManager.toggleButtonOnColor;
+        rend.material.color = colorManager.toggleButtonOn;
     }
 
     public void Deselect() {
@@ -42,7 +42,7 @@ public abstract class UIButton :MonoBehaviour
         onButtonPressed.Invoke(this);
         float duration = 0.3f;
         float elapsed = 0f;
-        Vector3 path = Vector3.forward*.1f;
+        Vector3 path = Vector3.forward*.09f;
         Vector3 end = origin + path;
         float part1 = duration / 2;
         while(elapsed < duration) {

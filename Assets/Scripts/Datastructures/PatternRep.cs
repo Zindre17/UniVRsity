@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using Tools;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,9 +12,11 @@ public class PatternRep : MonoBehaviour
     private List<Renderer> image;
     public GameObject pixelPrefab;
 
-    private ColorManager cm;
+    private ColorManager colorManager;
 
     private void UpdateMeasurements() {
+        if (colorManager == null) colorManager = ColorManager.instance;
+        if (image == null) image = new List<Renderer>();
         float max = 1;
         float margin = max / 20;
         spacing = (max - 2 * margin) / (resolution * 10 - 2);
@@ -26,11 +28,11 @@ public class PatternRep : MonoBehaviour
             GameObject o;
             if (i < existingPixels) {
                 o = image[i].gameObject;
-                image[i].material.color = cm.lightColor;
+                image[i].material.color = colorManager.light;
             } else {
                 o = Instantiate(pixelPrefab, bottomLeft);
                 Renderer r = o.GetComponent<Renderer>();
-                r.material.color = cm.lightColor;
+                r.material.color = colorManager.light;
                 image.Add(r);
             }
             float xp, yp, zp;
@@ -46,12 +48,12 @@ public class PatternRep : MonoBehaviour
 
     public void Pattern(int index) {
         if(index > 0 && index < image.Count)
-            image[index].material.color = cm.darkColor;
+            image[index].material.color = colorManager.dark;
     }
 
     private void Awake() {
         image = new List<Renderer>();
-        cm = ColorManager.instance;
+        colorManager = ColorManager.instance;
     }
 
     public void Restart(int _resolution) {
@@ -61,7 +63,7 @@ public class PatternRep : MonoBehaviour
 
     private void ClearPattern() {
         foreach (Renderer r in image) {
-            r.material.color = cm.lightColor;
+            r.material.color = colorManager.light;
         }
     }
 

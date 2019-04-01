@@ -8,22 +8,26 @@ public class DataStructure : MonoBehaviour
     public Transform spawnPoint;
     public TMP_Text text;
     public GameObject dataItemPrefab;
-
+    private Vector3 dataItemScale;
     public Transform popSpawn;
+    public StaticLaser laser;
 
     private List<GameObject> items;
     private List<Pixel> data;
 
     private Stage.Data mode;
 
-    private float itemThickness;
+    private float itemThickness = 0;
     private readonly float spacing = 0.05f;
 
     private Pixel poppedP;
     private GameObject poppedI;
 
     private void Start() {
-        itemThickness = dataItemPrefab.transform.localScale.y;
+        dataItemScale = new Vector3(.6f, .6f, .6f);
+        StructureItem i = dataItemPrefab.GetComponent<StructureItem>();
+        itemThickness = i.Width;
+        laser.Hide();
     }
 
     public void SetMode(Stage.Data mode) {
@@ -38,7 +42,6 @@ public class DataStructure : MonoBehaviour
             case Stage.Data.LinkedList:
                 text.text = "Linked list";
                 break;
-
         }
     }
 
@@ -50,6 +53,7 @@ public class DataStructure : MonoBehaviour
     public Pixel Pop() {
         if (data.Count == 0) return null;
         if(poppedP != null) {
+            laser.Hide();
             Destroy(poppedI.gameObject);
         }
         switch (mode) {
@@ -67,6 +71,7 @@ public class DataStructure : MonoBehaviour
     }
 
     public void Restart() {
+        laser.Hide();
         if (poppedI != null) Destroy(poppedI.gameObject);
         if (poppedP != null) poppedP = null;
         data.Clear();
@@ -82,7 +87,7 @@ public class DataStructure : MonoBehaviour
         data.Remove(poppedP);
         poppedI = items[items.Count - 1];
         items.Remove(poppedI);
-        StartCoroutine(PopAnimation(poppedI,false));
+        StartCoroutine(PopAnimation(poppedI,poppedP,false));
         return poppedP;
     }
 
@@ -91,12 +96,15 @@ public class DataStructure : MonoBehaviour
         data.Remove(poppedP);
         poppedI = items[0];
         items.Remove(poppedI);
-        StartCoroutine(PopAnimation(poppedI,true));
+        StartCoroutine(PopAnimation(poppedI, poppedP,true));
         return poppedP;
     }
 
     private void Spawn(Vector3 origin) {
         GameObject o = Instantiate(dataItemPrefab, origin, Quaternion.identity, transform);
+        o.transform.localScale = dataItemScale;
+        if (itemThickness == 0) 
+            itemThickness = (o.GetComponent<StructureItem>()).Width * dataItemScale.y;
         items.Add(o);
         StartCoroutine(PushAnimation(o));
     }
@@ -111,7 +119,7 @@ public class DataStructure : MonoBehaviour
     }
 
 
-    private IEnumerator PopAnimation(GameObject o,bool queue) {
+    private IEnumerator PopAnimation(GameObject o, Pixel p,bool queue) {
         float duration = .7f;
         float elapsed = 0f;
         float part1 = .35f;
@@ -120,7 +128,7 @@ public class DataStructure : MonoBehaviour
         Vector3 mid = new Vector3(end.x, start.y, end.z);
         Vector3 path1 = mid - start;
         Vector3 path2 = end - mid;
-        Vector3 endAngle = new Vector3(0, 30, 90);
+        Vector3 endAngle = new Vector3(0, 45, 90);
         while (elapsed < duration) {
             float percent;
             if (elapsed < part1) {
@@ -135,6 +143,7 @@ public class DataStructure : MonoBehaviour
         }
         o.transform.position = end;
         o.transform.localRotation = Quaternion.Euler(endAngle);
+        laser.Target(o.transform,p.GetSurface(), true);
         if (queue) {
             int i = 0;
             float interval = 0.1f;
@@ -146,7 +155,6 @@ public class DataStructure : MonoBehaviour
             }
         }
     }
-
 
     private IEnumerator PushAnimation(GameObject o) {
         float duration = .7f;

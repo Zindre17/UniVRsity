@@ -12,6 +12,7 @@ public class Stage : MonoBehaviour
 
     private void Start() {
         GoToPlayMode();
+        ChangeDataModel(Data.None);
     }
 
     public enum Data {
@@ -26,12 +27,15 @@ public class Stage : MonoBehaviour
         Play
     }
 
+    private void ChangeDataModel(Data model) {
+        data = model;
+        play.ChangeDataModel(data);
+        useCase.ChangeDataModel(data);
+    }
 
     public void ChangeDataModel(UIButton button) {
         if (!(button is ModeButton)) return;
-        data = ((ModeButton)button).model;
-        play.ChangeDataModel(data);
-        useCase.ChangeDataModel(data);
+        ChangeDataModel(((ModeButton)button).model);
     }
 
 

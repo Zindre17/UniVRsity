@@ -112,12 +112,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!4 &75393928 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 260320941581468049, guid: 8c57d32ab8e7f8f4a926be4660abaa19,
-    type: 3}
-  m_PrefabInstance: {fileID: 748948601}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &148537155
 GameObject:
   m_ObjectHideFlags: 0
@@ -421,6 +415,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8c57d32ab8e7f8f4a926be4660abaa19, type: 3}
+--- !u!4 &748948602 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8343007050158328066, guid: 8c57d32ab8e7f8f4a926be4660abaa19,
+    type: 3}
+  m_PrefabInstance: {fileID: 748948601}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1078715532
 GameObject:
   m_ObjectHideFlags: 0
@@ -494,19 +494,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2abf948f184be34b87fa685dcf9d0be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lightColor: {r: 0, g: 0, b: 0, a: 0}
-  darkColor: {r: 0, g: 0, b: 0, a: 0}
-  selectedColor: {r: 0, g: 0, b: 0, a: 0}
-  visitedColor: {r: 0, g: 0, b: 0, a: 0}
-  seedColor: {r: 0, g: 0, b: 0, a: 0}
-  patternColor: {r: 0, g: 0, b: 0, a: 0}
-  unvisitedColor: {r: 0, g: 0, b: 0, a: 0}
-  addedColor: {r: 0, g: 0, b: 0, a: 0}
-  nextColor: {r: 0, g: 0, b: 0, a: 0}
-  hintColor: {r: 0, g: 0, b: 0, a: 0}
-  buttonColor: {r: 0, g: 0, b: 0, a: 0}
-  toggleButtonOnColor: {r: 0, g: 0, b: 0, a: 0}
-  toggleButtonOffColor: {r: 0, g: 0, b: 0, a: 0}
+  light: {r: 0.8980392, g: 0.8980392, b: 0.8980392, a: 1}
+  dark: {r: 0.25882354, g: 0.25882354, b: 0.25882354, a: 1}
+  selected: {r: 0.15686275, g: 0.69411767, b: 0.74509805, a: 1}
+  visited: {r: 0.9529412, g: 0.9529412, b: 0.9529412, a: 1}
+  seed: {r: 0.21568628, g: 0.8666667, b: 0.11764706, a: 1}
+  pattern: {r: 0.9137255, g: 0.52156866, b: 0.11764706, a: 1}
+  unvisited: {r: 0.7294118, g: 0.7294118, b: 0.7294118, a: 0.5176471}
+  added: {r: 0.21960784, g: 0.25882354, b: 0.44313726, a: 1}
+  next: {r: 0.90588236, g: 0.78431374, b: 0.1254902, a: 1}
+  hint: {r: 0.5529412, g: 0.8862745, b: 0.12156863, a: 1}
+  button: {r: 0.5882353, g: 0.83137256, b: 0.85882354, a: 1}
+  toggleButtonOn: {r: 0.19607843, g: 0.69803923, b: 0.5764706, a: 1}
+  toggleButtonOff: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &1130722997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -521,7 +521,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actionSet: {fileID: 11400000, guid: 67cd9fd64b7eb73429ebd01aa9760b26, type: 2}
   a_select: {fileID: 11400000, guid: 3113de51a1d06c64090f40bb8f170821, type: 2}
-  pointer: {fileID: 75393928}
+  pointer: {fileID: 748948602}
   maxDistance: 15
 --- !u!4 &1130722998
 Transform:

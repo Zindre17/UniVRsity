@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Play : MonoBehaviour
 {
-    public GameObject Stack;
+    public DStack Stack;
     public GameObject Queue;
     public GameObject LinkedList;
     public GameObject scene;
@@ -30,8 +30,12 @@ public class Play : MonoBehaviour
     }
 
     private void UpdateModel(bool stack, bool queue, bool linked) {
-        Stack.SetActive(stack);
-        Queue.SetActive(queue);
+        Stack.gameObject.SetActive(stack||queue);
+        if (stack)
+            Stack.Queue = false;
+        if (queue)
+            Stack.Queue = true;
+        Queue.SetActive(false);
         LinkedList.SetActive(linked);
     }
 

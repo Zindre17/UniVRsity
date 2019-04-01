@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Pixel : MonoBehaviour
 {
     public int index;
-    private ColorManager cm;
+    private ColorManager colorManager;
     public Renderer rend;
+    public Transform surface;
     private bool selected = false;
     public bool Selected {
         get { return selected; }
@@ -52,7 +52,7 @@ public class Pixel : MonoBehaviour
     }
 
     private void Awake() {
-        cm = ColorManager.instance;
+        colorManager = ColorManager.instance;
     }
 
     private void Start() {
@@ -60,7 +60,7 @@ public class Pixel : MonoBehaviour
     }
 
     private void SetColor(bool b) {
-        color = b ? cm.darkColor : cm.lightColor;
+        color = b ? colorManager.dark: colorManager.light;
         UpdateColor();
     }
 
@@ -68,9 +68,13 @@ public class Pixel : MonoBehaviour
         StartCoroutine(HintAnimation(function:function));
     }
 
+    public Vector3 GetSurface() {
+        return surface.position;
+    }
+
     private IEnumerator HintAnimation(Action function = null) {
-        Color hint = cm.hintColor;
-        Color def = selected ? cm.selectedColor : rend.materials[0].color;
+        Color hint = colorManager.hint;
+        Color def = selected ? colorManager.selected: rend.materials[0].color;
         yield return new WaitForSeconds(.1f);
         rend.materials[1].color = hint;
         yield return new WaitForSeconds(.3f);
@@ -87,12 +91,12 @@ public class Pixel : MonoBehaviour
         Color oc = color;
         Color ic = color;
         if (selected) {
-            oc = cm.selectedColor;
+            oc = colorManager.selected;
         }
         if (next) {
-            ic = cm.nextColor;
+            ic = colorManager.next;
         }else if (seed) {
-            ic = cm.seedColor;
+            ic = colorManager.seed;
         }    
         rend.materials[0].color = c;
         rend.materials[1].color = oc;

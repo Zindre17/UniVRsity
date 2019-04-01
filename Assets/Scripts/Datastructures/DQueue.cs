@@ -33,10 +33,13 @@ public class DQueue : MonoBehaviour
 
     private StructureItem Spawn(int value) {
         GameObject o;
+        /*
         if (size == 1)
             o = Instantiate(itemPrefab, spawnpoint.position, spawnpoint.rotation, transform);
         else
             o = Instantiate(itemPrefab, structure[size-2].transform.position - new Vector3(0.06f, 0, 0), spawnpoint.rotation, transform);
+        */
+        o = Instantiate(itemPrefab, spawnpoint);
         origSize = o.transform.localScale;
         StructureItem i = o.GetComponent<StructureItem>();
         if(i != null) {

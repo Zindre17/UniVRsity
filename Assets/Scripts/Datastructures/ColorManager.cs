@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 
-public class ColorManager : MonoBehaviour
-{
+public class ColorManager : MonoBehaviour {
     public static ColorManager instance;
 
     private void Awake() {
-        if(instance == null) {
+        if (instance == null) {
             instance = this;
         } else {
             Destroy(this.gameObject);
@@ -13,19 +12,19 @@ public class ColorManager : MonoBehaviour
     }
 
     public Color
-        lightColor,
-        darkColor,
-        selectedColor,
-        visitedColor,
-        seedColor,
-        patternColor,
-        unvisitedColor,
-        addedColor,
-        nextColor,
-        hintColor;
+        light,
+        dark,
+        selected,
+        visited,
+        seed,
+        pattern,
+        unvisited,
+        added,
+        next,
+        hint;
 
     public Color
-        buttonColor,
-        toggleButtonOnColor,
-        toggleButtonOffColor;
+        button,
+        toggleButtonOn,
+        toggleButtonOff;
 }

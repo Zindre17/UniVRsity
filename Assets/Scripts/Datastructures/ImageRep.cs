@@ -6,7 +6,7 @@ public class ImageRep : MonoBehaviour
     private List<Renderer> image;
     public GameObject pixelPrefab;
 
-    private ColorManager cm;
+    private ColorManager colorManager;
 
     private int resolution;
     
@@ -14,6 +14,8 @@ public class ImageRep : MonoBehaviour
     public Transform bottomLeft;
 
     private void UpdateMeasurements() {
+        if (colorManager == null) colorManager = ColorManager.instance;
+        if (image == null) image = new List<Renderer>();
         float max = 1;
         float margin = max / 20;
         spacing = (max - 2 * margin) / (resolution * 10 - 2);
@@ -25,11 +27,11 @@ public class ImageRep : MonoBehaviour
             GameObject o;
             if (i < existingPixels) {
                 o = image[i].gameObject;
-                image[i].material.color = cm.unvisitedColor;
+                image[i].material.color = colorManager.unvisited;
             } else {
                 o = Instantiate(pixelPrefab, bottomLeft);
                 Renderer r = o.GetComponent<Renderer>();
-                r.material.color = cm.unvisitedColor;
+                r.material.color = colorManager.unvisited;
                 image.Add(r);
             }
             float xp, yp, zp;
@@ -47,32 +49,32 @@ public class ImageRep : MonoBehaviour
 
     private void Awake() {
         image = new List<Renderer>();
-        cm = ColorManager.instance;
+        colorManager = ColorManager.instance;
     }
 
     private void ClearRep() {
         foreach(Renderer r in image) {
-            r.material.color = cm.unvisitedColor;
+            r.material.color = colorManager.unvisited;
         }
     }
 
     public void Visit(int index, bool pattern) {
         
-        image[index].material.color = pattern?cm.patternColor:cm.visitedColor;
+        image[index].material.color = pattern?colorManager.pattern:colorManager.visited;
     }
 
     public void Next(int index) {
-        image[index].material.color = cm.nextColor;
+        image[index].material.color = colorManager.next;
     }
 
     public void Added(int index) {
-        image[index].material.color = cm.addedColor;
+        image[index].material.color = colorManager.added;
     }
 
     public void Seed(int index) {
         if (index < 0 || index > image.Count) return;
         ClearRep();
-        image[index].material.color = cm.seedColor;
+        image[index].material.color = colorManager.seed;
     }
 
     public void Restart(int _resolution) {
