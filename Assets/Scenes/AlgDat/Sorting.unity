@@ -148,7 +148,6 @@ Transform:
   - {fileID: 1137294165}
   - {fileID: 112023765}
   - {fileID: 1759734425}
-  - {fileID: 1470437989}
   - {fileID: 1289790039}
   - {fileID: 1647308500}
   m_Father: {fileID: 0}
@@ -178,7 +177,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 112023764}
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -8, y: 4.34, z: -0.32}
+  m_LocalPosition: {x: -8.035, y: 4.34, z: -0.32}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 870611569}
@@ -529,15 +528,40 @@ MonoBehaviour:
   m_GameObject: {fileID: 248020338}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b90e616510329346b0577232e9320f2, type: 3}
+  m_Script: {fileID: 11500000, guid: b9e13f8d83f4af64aa988df7bb128f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   onButtonPressed:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 372430384}
+        m_MethodName: CopyTo
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 248020337}
+  hoverable: {fileID: 248020340}
+  multistep: 1
+--- !u!114 &248020340 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5157884323355657308, guid: 533ee08ea3d235a499226b9e16f38e94,
+    type: 3}
+  m_PrefabInstance: {fileID: 248020335}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 248020338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95a94fd23201d7344839b912b3ad8ddd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &251508809
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -684,15 +708,40 @@ MonoBehaviour:
   m_GameObject: {fileID: 251508812}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b90e616510329346b0577232e9320f2, type: 3}
+  m_Script: {fileID: 11500000, guid: b9e13f8d83f4af64aa988df7bb128f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   onButtonPressed:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 372430384}
+        m_MethodName: Store
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 251508811}
+  hoverable: {fileID: 251508814}
+  multistep: 0
+--- !u!114 &251508814 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5157884323355657308, guid: 533ee08ea3d235a499226b9e16f38e94,
+    type: 3}
+  m_PrefabInstance: {fileID: 251508809}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 251508812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95a94fd23201d7344839b912b3ad8ddd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &264709893
 GameObject:
   m_ObjectHideFlags: 0
@@ -1021,7 +1070,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onButtonPressed:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 372430384}
+        m_MethodName: Restart
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 350281466}
@@ -1413,7 +1473,8 @@ PrefabInstance:
       propertyPath: laserOrigin
       value: 
       objectReference: {fileID: 739776599}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 114205690747863036, guid: 37832c8d5cb6844428a65433607f7cb7, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 37832c8d5cb6844428a65433607f7cb7, type: 3}
 --- !u!1 &372430381 stripped
 GameObject:
@@ -1444,7 +1505,9 @@ MonoBehaviour:
   next: {r: 0.90588236, g: 0.78431374, b: 0.1254902, a: 1}
   hint: {r: 0.5529412, g: 0.8862745, b: 0.12156863, a: 1}
   button: {r: 0.5882353, g: 0.83137256, b: 0.85882354, a: 1}
-  toggleButtonOn: {r: 0.19607843, g: 0.69803923, b: 0.5764706, a: 1}
+  inactive: {r: 0.3584906, g: 0.3584906, b: 0.3584906, a: 1}
+  inProgress: {r: 0.8962264, g: 0.83865315, b: 0.28324133, a: 1}
+  toggleButtonOn: {r: 0.08566215, g: 0.7264151, b: 0.2106288, a: 1}
   toggleButtonOff: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &372430383
 MonoBehaviour:
@@ -1458,6 +1521,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 008c2ab468b576b418b6d41d787021da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &372430384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 372430381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e41136451e9048a4685a1ed4bd96f30d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  array: {fileID: 1243635344}
+  state: {fileID: 1647308501}
+  title: {fileID: 794338284}
+  message: {fileID: 908295602}
+  toggles: {fileID: 372430385}
+  actions: {fileID: 1759734426}
+--- !u!114 &372430385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 372430381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3228a072374cf340a87e487b14fbf8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bubble: {fileID: 487909650}
+  insertion: {fileID: 1722760100}
+  quick: {fileID: 707695842}
+  demo: {fileID: 1222788095}
+  copyTo: {fileID: 248020339}
 --- !u!1 &395139855
 GameObject:
   m_ObjectHideFlags: 0
@@ -1911,7 +2009,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onButtonPressed:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 372430384}
+        m_MethodName: Bubble
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 487909648}
@@ -2214,7 +2323,7 @@ MonoBehaviour:
   m_text: feedback
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 7fc9a8313f1878047ab8670014a6b549, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2331,7 +2440,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  - {fileID: 2100000, guid: 7fc9a8313f1878047ab8670014a6b549, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2535,7 +2644,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onButtonPressed:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 372430384}
+        m_MethodName: Quick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 707695840}
@@ -2697,6 +2817,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6107175141348032661, guid: 8c57d32ab8e7f8f4a926be4660abaa19,
+        type: 3}
+      propertyPath: trackedObject
+      value: 
+      objectReference: {fileID: 948503847}
+    - target: {fileID: 6347265340160570842, guid: 8c57d32ab8e7f8f4a926be4660abaa19,
+        type: 3}
+      propertyPath: trackedObject
+      value: 
+      objectReference: {fileID: 1473374396}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8c57d32ab8e7f8f4a926be4660abaa19, type: 3}
 --- !u!4 &739776598 stripped
@@ -2811,6 +2941,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 794338283}
+  - component: {fileID: 794338284}
   m_Layer: 0
   m_Name: Title
   m_TagString: Untagged
@@ -2833,6 +2964,19 @@ Transform:
   m_Father: {fileID: 73176941}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &794338284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 794338282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d309fbc6e6dd974a9afb165f4754515, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: {fileID: 1645920575}
 --- !u!1 &860627782
 GameObject:
   m_ObjectHideFlags: 0
@@ -2894,7 +3038,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 870611568}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.018}
+  m_LocalPosition: {x: 0, y: 0, z: -0.049}
   m_LocalScale: {x: 0.2, y: 0.2, z: 1}
   m_Children: []
   m_Father: {fileID: 112023765}
@@ -3082,6 +3226,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 908295601}
+  - component: {fileID: 908295602}
   m_Layer: 0
   m_Name: Messages
   m_TagString: Untagged
@@ -3104,6 +3249,19 @@ Transform:
   m_Father: {fileID: 73176941}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &908295602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 908295600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ebe4831280aae74796350a3f7f6b172, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  message: {fileID: 612909083}
 --- !u!1 &944815849
 GameObject:
   m_ObjectHideFlags: 0
@@ -3311,6 +3469,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 944815849}
   m_Mesh: {fileID: 0}
+--- !u!114 &948503847 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 676545326475239049, guid: 8c57d32ab8e7f8f4a926be4660abaa19,
+    type: 3}
+  m_PrefabInstance: {fileID: 739776597}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a5fb0ca93b55ef4b8d54b512b103341, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1017089232
 GameObject:
   m_ObjectHideFlags: 0
@@ -3916,7 +4086,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onButtonPressed:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 372430384}
+        m_MethodName: Demo
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 1222788093}
@@ -3929,6 +4110,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1243635343}
+  - component: {fileID: 1243635344}
   m_Layer: 0
   m_Name: Array
   m_TagString: Untagged
@@ -3950,9 +4132,26 @@ Transform:
   - {fileID: 518177694}
   - {fileID: 708711619}
   - {fileID: 1017089233}
+  - {fileID: 1470437989}
   m_Father: {fileID: 73176941}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1243635344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1243635342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4328d008427d4c143ab492d06d493054, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arrayCenter: {fileID: 518177694}
+  storeCenter: {fileID: 1928338147}
+  elementPrefab: {fileID: 1386513676272926, guid: 8bbc1e2613d7dc54ea832d313fd3284e,
+    type: 3}
 --- !u!1 &1289790038
 GameObject:
   m_ObjectHideFlags: 0
@@ -3985,7 +4184,7 @@ Transform:
   - {fileID: 1722760097}
   - {fileID: 707695839}
   m_Father: {fileID: 73176941}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: -45, z: 0}
 --- !u!1 &1294369756
 GameObject:
@@ -4244,7 +4443,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onButtonPressed:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 372430383}
+        m_MethodName: GoToCourseMain
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 1364875945}
@@ -4399,15 +4609,40 @@ MonoBehaviour:
   m_GameObject: {fileID: 1374500190}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b90e616510329346b0577232e9320f2, type: 3}
+  m_Script: {fileID: 11500000, guid: b9e13f8d83f4af64aa988df7bb128f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   onButtonPressed:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 372430384}
+        m_MethodName: Pivot
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 1374500189}
+  hoverable: {fileID: 1374500192}
+  multistep: 0
+--- !u!114 &1374500192 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5157884323355657308, guid: 533ee08ea3d235a499226b9e16f38e94,
+    type: 3}
+  m_PrefabInstance: {fileID: 1374500187}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1374500190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95a94fd23201d7344839b912b3ad8ddd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1470437988
 GameObject:
   m_ObjectHideFlags: 0
@@ -4435,13 +4670,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1470437988}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.05, y: 0.5, z: 6.57}
+  m_LocalPosition: {x: -3.9580002, y: 0, z: -1.8069997}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1928338147}
   - {fileID: 515631994}
-  m_Father: {fileID: 73176941}
-  m_RootOrder: 9
+  m_Father: {fileID: 1243635343}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1470437990
 BoxCollider:
@@ -4501,6 +4736,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1470437988}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1473374396 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 825445592385457536, guid: 8c57d32ab8e7f8f4a926be4660abaa19,
+    type: 3}
+  m_PrefabInstance: {fileID: 739776597}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a5fb0ca93b55ef4b8d54b512b103341, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1552807196
 GameObject:
   m_ObjectHideFlags: 0
@@ -5222,6 +5469,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1647308500}
+  - component: {fileID: 1647308501}
   m_Layer: 0
   m_Name: StateUI
   m_TagString: Untagged
@@ -5246,8 +5494,25 @@ Transform:
   - {fileID: 357703328}
   - {fileID: 860627783}
   m_Father: {fileID: 73176941}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 75, y: 0, z: 0}
+--- !u!114 &1647308501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1647308499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25ceb661a7f577040bf4eb0460cc1d4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: {fileID: 1707710882}
+  pseudo1: {fileID: 944815851}
+  pseudo2: {fileID: 1602384853}
+  compare: {fileID: 2021533710}
+  extension: {fileID: 1701129286}
 --- !u!1 &1701129286
 GameObject:
   m_ObjectHideFlags: 0
@@ -5722,7 +5987,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onButtonPressed:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 372430384}
+        m_MethodName: Insertion
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 1722760098}
@@ -5879,15 +6155,40 @@ MonoBehaviour:
   m_GameObject: {fileID: 1753745182}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b90e616510329346b0577232e9320f2, type: 3}
+  m_Script: {fileID: 11500000, guid: b9e13f8d83f4af64aa988df7bb128f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   onButtonPressed:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 372430384}
+        m_MethodName: Swap
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 1753745181}
+  hoverable: {fileID: 1753745184}
+  multistep: 0
+--- !u!114 &1753745184 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5157884323355657308, guid: 533ee08ea3d235a499226b9e16f38e94,
+    type: 3}
+  m_PrefabInstance: {fileID: 1753745179}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1753745182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95a94fd23201d7344839b912b3ad8ddd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1759734424
 GameObject:
   m_ObjectHideFlags: 0
@@ -5897,6 +6198,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1759734425}
+  - component: {fileID: 1759734426}
   m_Layer: 0
   m_Name: Actions
   m_TagString: Untagged
@@ -5924,6 +6226,23 @@ Transform:
   m_Father: {fileID: 73176941}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
+--- !u!114 &1759734426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1759734424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d193ebfaff6bfb43a35b243e2a0b3c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  compare: {fileID: 1839084268}
+  swap: {fileID: 1753745183}
+  pivot: {fileID: 1374500191}
+  store: {fileID: 251508813}
+  copy: {fileID: 248020339}
 --- !u!1001 &1839084264
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6090,15 +6409,40 @@ MonoBehaviour:
   m_GameObject: {fileID: 1839084267}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b90e616510329346b0577232e9320f2, type: 3}
+  m_Script: {fileID: 11500000, guid: b9e13f8d83f4af64aa988df7bb128f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   onButtonPressed:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 372430384}
+        m_MethodName: Compare
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 1839084266}
+  hoverable: {fileID: 1839084269}
+  multistep: 0
+--- !u!114 &1839084269 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5157884323355657308, guid: 533ee08ea3d235a499226b9e16f38e94,
+    type: 3}
+  m_PrefabInstance: {fileID: 1839084264}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1839084267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95a94fd23201d7344839b912b3ad8ddd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1849954500
 GameObject:
   m_ObjectHideFlags: 0
@@ -7098,7 +7442,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onButtonPressed:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 372430384}
+        m_MethodName: NewArray
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 2140458125}

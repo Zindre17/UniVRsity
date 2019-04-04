@@ -121,4 +121,10 @@ public class BubbleSort : ISortingAlgorithm {
     public string GetName() {
         return "Bubble sort";
     }
+
+    public void Update(int[] newArray) {
+        arrayToSort = (int[])newArray.Clone();
+        Restart();
+        GenerateActions();
+    }
 }

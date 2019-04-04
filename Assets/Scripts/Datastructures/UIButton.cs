@@ -24,7 +24,7 @@ public abstract class UIButton :MonoBehaviour
         origin = transform.localPosition;
     }
 
-    public void Press(bool pause = false,Action function = null) {
+    public virtual void Press(bool pause = false,Action function = null) {
         if (onButtonPressed == null) return;
         StartCoroutine(PressAnimation(pause,function:function));
     }

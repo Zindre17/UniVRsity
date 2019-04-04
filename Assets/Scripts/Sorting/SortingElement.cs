@@ -51,6 +51,14 @@ public class SortingElement : MonoBehaviour {
         }
     }
 
+    public void Set(int i, int v, bool c) {
+        Index = i;
+        Size = v;
+        Correct = c;
+        Selected = false;
+        Compared = false;
+    }
+
     public float movementMagnitude = 0.4f;
 
     public Vector3 ArrayPos {

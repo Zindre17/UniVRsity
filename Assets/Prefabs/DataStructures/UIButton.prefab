@@ -344,4 +344,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hoverColor: {r: 0, g: 0, b: 0, a: 1}
-  illegalColor: {r: 0, g: 0, b: 0, a: 0}
+  illegalColor: {r: 0.8773585, g: 0.120016046, b: 0.120016046, a: 1}

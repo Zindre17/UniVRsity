@@ -72,12 +72,14 @@ public class EventManager : MonoBehaviour {
             Hoverable h = hit.collider.GetComponentInParent<Hoverable>();
             if (h != null) {
                 if (!h.Equals(lastHover)) {
-                    EndHover();
-                    OnStartHover(h);
+                    if (lastHover != null) lastHover.EndHover();
+                    h.StartHover();
                     lastHover = h;
                 }
-            } else 
-                EndHover();
+            } else {
+                if (lastHover != null) lastHover.EndHover();
+                lastHover = null;
+            }
 
             if (IsSelecting() && Time.time - buttonPressBuffer > lastButtonPress) {
                 lastButtonPress = Time.time;
@@ -105,8 +107,7 @@ public class EventManager : MonoBehaviour {
                 */
             }
 
-        } else
-            EndHover();
+        } 
     }
 
     private bool IsSelecting() {

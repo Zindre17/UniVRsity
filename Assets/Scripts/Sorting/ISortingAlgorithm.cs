@@ -4,6 +4,7 @@ public interface ISortingAlgorithm {
     void Next();
     void Prev();
     void Restart();
+    void Update(int[] newArray);
     string[] GetPseudo();
     string GetState();
     string GetName();

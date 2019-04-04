@@ -126,4 +126,10 @@ public class MergeSort : ISortingAlgorithm {
     public void Restart() {
         throw new System.NotImplementedException();
     }
+
+    public void Update(int[] newArray) {
+        Restart();
+        arrayToSort = (int[])newArray.Clone();
+        GenerateActions();
+    }
 }

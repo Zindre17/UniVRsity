@@ -159,4 +159,10 @@ public class QuickSort : ISortingAlgorithm {
         steps = 0;
         complete = false;
     }
+
+    public void Update(int[] newArray) {
+        Restart();
+        arrayToSort = (int[])newArray.Clone();
+        GenerateActions();
+    }
 }

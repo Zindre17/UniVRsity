@@ -115,4 +115,10 @@ public class InsertionSort :ISortingAlgorithm {
     public string GetName() {
         return "Insertion sort";
     }
+
+    public void Update(int[] newArray) {
+        Restart();
+        arrayToSort = (int[])newArray.Clone();
+        GenerateActions();
+    }
 }

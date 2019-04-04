@@ -25,6 +25,8 @@ public class ColorManager : MonoBehaviour {
 
     public Color
         button,
+        inactive,
+        inProgress,
         toggleButtonOn,
         toggleButtonOff;
 }
