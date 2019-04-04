@@ -57,6 +57,7 @@ public class SortingElement : MonoBehaviour {
         Correct = c;
         Selected = false;
         Compared = false;
+        Pivot = false;
     }
 
     public float movementMagnitude = 0.4f;
@@ -190,13 +191,13 @@ public class SortingElement : MonoBehaviour {
         Destroy(target.gameObject);
     }
 
-    public void Depivot() {
-        selectable.Pivot = false;
-    }
-
-    public void Pivot() {
-        selectable.Pivot = true;
-        SingleComplete();
+    public bool Pivot {
+        get { return selectable.Pivot; }
+        set {
+            if(value != selectable.Pivot) {
+                selectable.Pivot = value;
+            }
+        }
     }
 
     private void SingleComplete() {

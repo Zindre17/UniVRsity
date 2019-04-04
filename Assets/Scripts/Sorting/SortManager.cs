@@ -687,9 +687,9 @@ public class SortManager : MonoBehaviour {
 
     private void Pivot() {
         if (prevPivot != null)
-            prevPivot.Depivot();
+            prevPivot.Pivot = false;
         prevPivot = selected[0];
-        prevPivot.Pivot();
+        prevPivot.Pivot = true;
         UpdateAvailableActions();
     }
 

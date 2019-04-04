@@ -5137,6 +5137,8 @@ MonoBehaviour:
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 2076622748}
+  hoverable: {fileID: 0}
+  multistep: 0
 --- !u!1 &891870310
 GameObject:
   m_ObjectHideFlags: 0
@@ -5953,8 +5955,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fab466bc723b4024890890c6859c9a43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionSet: {fileID: 11400000, guid: 67cd9fd64b7eb73429ebd01aa9760b26, type: 2}
-  a_select: {fileID: 11400000, guid: 3113de51a1d06c64090f40bb8f170821, type: 2}
+  actionSet:
+    actionSetPath: /actions/selection
+  a_select:
+    actionPath: /actions/selection/in/select
+    needsReinit: 0
   pointer: {fileID: 48258410}
   maxDistance: 15
 --- !u!4 &1036518908
@@ -6946,6 +6951,8 @@ MonoBehaviour:
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 496405976}
+  hoverable: {fileID: 0}
+  multistep: 0
 --- !u!1 &1284721297
 GameObject:
   m_ObjectHideFlags: 0
@@ -10944,6 +10951,8 @@ MonoBehaviour:
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 389529526}
+  hoverable: {fileID: 0}
+  multistep: 0
 --- !u!1 &1921032458
 GameObject:
   m_ObjectHideFlags: 0
@@ -11247,6 +11256,8 @@ MonoBehaviour:
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 193166855}
+  hoverable: {fileID: 0}
+  multistep: 0
 --- !u!23 &2076622748 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8459628070628048354, guid: 533ee08ea3d235a499226b9e16f38e94,
@@ -11486,6 +11497,8 @@ MonoBehaviour:
   next: {r: 0.90588236, g: 0.78431374, b: 0.1254902, a: 1}
   hint: {r: 0.5529412, g: 0.8862745, b: 0.12156863, a: 1}
   button: {r: 0.5882353, g: 0.83137256, b: 0.85882354, a: 1}
+  inactive: {r: 0, g: 0, b: 0, a: 0}
+  inProgress: {r: 0, g: 0, b: 0, a: 0}
   toggleButtonOn: {r: 0.19607843, g: 0.69803923, b: 0.5764706, a: 1}
   toggleButtonOff: {r: 1, g: 1, b: 1, a: 1}
 --- !u!4 &2117352316

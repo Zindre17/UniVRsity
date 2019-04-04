@@ -23,10 +23,12 @@ public class SortingManager : MonoBehaviour
     private void Awake() {
         selected = new List<SortingElement>();
         EventManager.OnSelect += Select;
+        EventManager.OnActionCompleted += ActionComplete;
     }
 
     private void OnDestroy() {
         EventManager.OnSelect -= Select;
+        EventManager.OnActionCompleted -= ActionComplete;
     }
 
     // selection
@@ -95,12 +97,7 @@ public class SortingManager : MonoBehaviour
     // actions
     public void Compare() {
         action = new CompareAction(selected[0].Index, selected[1].Index);
-        if (alg.CorrectAction(action)) {
-            state.SetCompare(array.Compare((CompareAction)action));
-            DoAction();
-        } else {
-            Hint();
-        }
+        DoAction();
     }
 
     public void Swap() {
@@ -128,7 +125,48 @@ public class SortingManager : MonoBehaviour
     }
 
     private void DoAction() {
-        performingAction = true;
+        if (alg.CorrectAction(action)) {
+            performingAction = true;
+            switch (action.type) {
+                case GameAction.GameActionType.Compare:
+                    state.SetCompare(array.Compare((CompareAction)action));
+                    break;
+                case GameAction.GameActionType.Swap:
+                    ClearSelections();
+                    array.Swap((SwapAction)action);
+                    break;
+                case GameAction.GameActionType.Store:
+                    ClearSelections();
+                    array.Store((StoreAction)action);
+                    break;
+                case GameAction.GameActionType.Pivot:
+                    ClearSelections();
+                    array.Pivot((PivotAction)action);
+                    break;
+                case GameAction.GameActionType.Move:
+                    ClearSelections();
+                    array.CopyTo((MoveAction)action);
+                    break;
+            }
+        } else {
+            Hint();
+        }
+    }
+
+    private void ActionComplete() {
+        alg.Next();
+        if (demo) {
+            DoStep();
+        } else {
+            partialAction = false;
+            performingAction = false;
+            UpdateActions();
+        }
+    }
+
+    private void DoStep() {
+        action = alg.GetAction();
+        DoAction();
     }
 
     private void Hint() {
@@ -165,9 +203,14 @@ public class SortingManager : MonoBehaviour
 
     public void Demo() {
         demo = !demo;
+        if (demo) {
+            if (performingAction || partialAction) return;
+            DoStep();
+        }
     }
 
     public void NewArray() {
+        ResetState();
         ClearSelections();
         UpdateActions();
         array.New();
@@ -176,11 +219,18 @@ public class SortingManager : MonoBehaviour
     }
 
     public void Setup() {
+        ResetState();
         ClearSelections();
         UpdateActions();
         alg.Restart();
         array.Restart();
         ResetUI();
+    }
+
+    private void ResetState() {
+        demo = false;
+        performingAction = false;
+        partialAction = false;
     }
 
     private void ClearSelections() {

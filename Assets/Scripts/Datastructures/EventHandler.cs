@@ -4,10 +4,10 @@ using UnityEngine;
 public class EventHandler : MonoBehaviour
 {
 
-    [SteamVR_DefaultActionSet("selection")]
+    //[SteamVR_DefaultActionSet("selection")]
     public SteamVR_ActionSet actionSet;
 
-    [SteamVR_DefaultAction("select", "selection")]
+    //[SteamVR_DefaultAction("select", "selection")]
     public SteamVR_Action_Boolean a_select;
 
     public Transform pointer;
@@ -30,7 +30,7 @@ public class EventHandler : MonoBehaviour
     public static event ModeChangedEvent OnModeChanged;
 
     private void Start() {
-        actionSet.ActivateSecondary();
+        actionSet.Activate();
     }
 
     void Update()

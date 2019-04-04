@@ -1072,7 +1072,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 372430384}
-        m_MethodName: Restart
+        m_MethodName: Setup
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1473,6 +1473,16 @@ PrefabInstance:
       propertyPath: laserOrigin
       value: 
       objectReference: {fileID: 739776599}
+    - target: {fileID: 114849273489082744, guid: 37832c8d5cb6844428a65433607f7cb7,
+        type: 3}
+      propertyPath: actionSet.actionSetPath
+      value: /actions/selection
+      objectReference: {fileID: 0}
+    - target: {fileID: 114849273489082744, guid: 37832c8d5cb6844428a65433607f7cb7,
+        type: 3}
+      propertyPath: a_select.actionPath
+      value: /actions/selection/in/select
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114205690747863036, guid: 37832c8d5cb6844428a65433607f7cb7, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 37832c8d5cb6844428a65433607f7cb7, type: 3}
@@ -2817,16 +2827,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6107175141348032661, guid: 8c57d32ab8e7f8f4a926be4660abaa19,
-        type: 3}
-      propertyPath: trackedObject
-      value: 
-      objectReference: {fileID: 948503847}
     - target: {fileID: 6347265340160570842, guid: 8c57d32ab8e7f8f4a926be4660abaa19,
         type: 3}
       propertyPath: trackedObject
       value: 
       objectReference: {fileID: 1473374396}
+    - target: {fileID: 6107175141348032661, guid: 8c57d32ab8e7f8f4a926be4660abaa19,
+        type: 3}
+      propertyPath: trackedObject
+      value: 
+      objectReference: {fileID: 948503847}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8c57d32ab8e7f8f4a926be4660abaa19, type: 3}
 --- !u!4 &739776598 stripped

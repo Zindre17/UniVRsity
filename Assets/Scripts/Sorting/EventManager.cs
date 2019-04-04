@@ -4,10 +4,10 @@ using UnityEngine;
 public class EventManager : MonoBehaviour {
 
     
-    [SteamVR_DefaultActionSet("selection")]
+    //[SteamVR_DefaultActionSet("selection")]
     public SteamVR_ActionSet actionSet;
 
-    [SteamVR_DefaultAction("select", "selection")]
+    //[SteamVR_DefaultAction("select", "selection")]
     public SteamVR_Action_Boolean a_select;
 
     [Range(10f, 100f)]
@@ -61,7 +61,7 @@ public class EventManager : MonoBehaviour {
     private void Start() {
         if (laserOrigin == null)
             laserOrigin = transform;
-        actionSet.ActivateSecondary();
+        actionSet.Activate();
     }
 
     private void Update() {

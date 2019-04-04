@@ -336,6 +336,16 @@ PrefabInstance:
       propertyPath: laserOrigin
       value: 
       objectReference: {fileID: 2123811390}
+    - target: {fileID: 114849273489082744, guid: 37832c8d5cb6844428a65433607f7cb7,
+        type: 3}
+      propertyPath: actionSet.actionSetPath
+      value: /actions/selection
+      objectReference: {fileID: 0}
+    - target: {fileID: 114849273489082744, guid: 37832c8d5cb6844428a65433607f7cb7,
+        type: 3}
+      propertyPath: a_select.actionPath
+      value: /actions/selection/in/select
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 37832c8d5cb6844428a65433607f7cb7, type: 3}
 --- !u!1 &704251065 stripped
@@ -379,6 +389,8 @@ MonoBehaviour:
   next: {r: 0.90588236, g: 0.78431374, b: 0.1254902, a: 1}
   hint: {r: 0.5529412, g: 0.8862745, b: 0.12156863, a: 1}
   button: {r: 0.5882353, g: 0.83137256, b: 0.85882354, a: 1}
+  inactive: {r: 0, g: 0, b: 0, a: 0}
+  inProgress: {r: 0, g: 0, b: 0, a: 0}
   toggleButtonOn: {r: 0.19607843, g: 0.69803923, b: 0.5764706, a: 1}
   toggleButtonOff: {r: 1, g: 1, b: 1, a: 1}
 --- !u!23 &941645732
