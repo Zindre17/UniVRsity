@@ -162,6 +162,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 112023765}
+  - component: {fileID: 112023766}
   m_Layer: 0
   m_Name: Menu
   m_TagString: Untagged
@@ -188,6 +189,22 @@ Transform:
   m_Father: {fileID: 73176941}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+--- !u!114 &112023766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 112023764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8cb376622aae8e4382a280f483a6618, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  demo: {fileID: 1222788095}
+  newArray: {fileID: 2140458127}
+  restart: {fileID: 350281468}
+  back: {fileID: 1364875947}
 --- !u!1 &139413225
 GameObject:
   m_ObjectHideFlags: 0
@@ -531,6 +548,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9e13f8d83f4af64aa988df7bb128f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hoverable: {fileID: 248020340}
   onButtonPressed:
     m_PersistentCalls:
       m_Calls:
@@ -548,7 +566,6 @@ MonoBehaviour:
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 248020337}
-  hoverable: {fileID: 248020340}
   multistep: 1
 --- !u!114 &248020340 stripped
 MonoBehaviour:
@@ -711,6 +728,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9e13f8d83f4af64aa988df7bb128f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hoverable: {fileID: 251508814}
   onButtonPressed:
     m_PersistentCalls:
       m_Calls:
@@ -728,7 +746,6 @@ MonoBehaviour:
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 251508811}
-  hoverable: {fileID: 251508814}
   multistep: 0
 --- !u!114 &251508814 stripped
 MonoBehaviour:
@@ -1068,6 +1085,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b90e616510329346b0577232e9320f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hoverable: {fileID: 350281469}
   onButtonPressed:
     m_PersistentCalls:
       m_Calls:
@@ -1085,6 +1103,18 @@ MonoBehaviour:
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 350281466}
+--- !u!114 &350281469 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5157884323355657308, guid: 533ee08ea3d235a499226b9e16f38e94,
+    type: 3}
+  m_PrefabInstance: {fileID: 350281464}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 350281467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95a94fd23201d7344839b912b3ad8ddd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &352124197
 GameObject:
   m_ObjectHideFlags: 0
@@ -1504,21 +1534,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2abf948f184be34b87fa685dcf9d0be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inactive: {r: 0.3584906, g: 0.3584906, b: 0.3584906, a: 1}
+  selected: {r: 0.15686275, g: 0.69411767, b: 0.74509805, a: 1}
+  hint: {r: 0.5529412, g: 0.8862745, b: 0.12156863, a: 1}
+  button: {r: 0.5882353, g: 0.83137256, b: 0.85882354, a: 1}
+  inProgress: {r: 0.8962264, g: 0.83865315, b: 0.28324133, a: 1}
+  toggleButtonOn: {r: 0.08566215, g: 0.7264151, b: 0.2106288, a: 1}
+  toggleButtonOff: {r: 1, g: 1, b: 1, a: 1}
   light: {r: 0.8980392, g: 0.8980392, b: 0.8980392, a: 1}
   dark: {r: 0.25882354, g: 0.25882354, b: 0.25882354, a: 1}
-  selected: {r: 0.15686275, g: 0.69411767, b: 0.74509805, a: 1}
   visited: {r: 0.9529412, g: 0.9529412, b: 0.9529412, a: 1}
   seed: {r: 0.21568628, g: 0.8666667, b: 0.11764706, a: 1}
   pattern: {r: 0.9137255, g: 0.52156866, b: 0.11764706, a: 1}
   unvisited: {r: 0.7294118, g: 0.7294118, b: 0.7294118, a: 0.5176471}
   added: {r: 0.21960784, g: 0.25882354, b: 0.44313726, a: 1}
   next: {r: 0.90588236, g: 0.78431374, b: 0.1254902, a: 1}
-  hint: {r: 0.5529412, g: 0.8862745, b: 0.12156863, a: 1}
-  button: {r: 0.5882353, g: 0.83137256, b: 0.85882354, a: 1}
-  inactive: {r: 0.3584906, g: 0.3584906, b: 0.3584906, a: 1}
-  inProgress: {r: 0.8962264, g: 0.83865315, b: 0.28324133, a: 1}
-  toggleButtonOn: {r: 0.08566215, g: 0.7264151, b: 0.2106288, a: 1}
-  toggleButtonOff: {r: 1, g: 1, b: 1, a: 1}
+  element: {r: 1, g: 1, b: 0, a: 1}
+  pivot: {r: 0, g: 0, b: 0, a: 1}
+  correct: {r: 0.21735056, g: 0.8207547, b: 0.096787095, a: 1}
 --- !u!114 &372430383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1547,25 +1580,8 @@ MonoBehaviour:
   state: {fileID: 1647308501}
   title: {fileID: 794338284}
   message: {fileID: 908295602}
-  toggles: {fileID: 372430385}
   actions: {fileID: 1759734426}
---- !u!114 &372430385
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 372430381}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f3228a072374cf340a87e487b14fbf8c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bubble: {fileID: 487909650}
-  insertion: {fileID: 1722760100}
-  quick: {fileID: 707695842}
-  demo: {fileID: 1222788095}
-  copyTo: {fileID: 248020339}
+  menu: {fileID: 112023766}
 --- !u!1 &395139855
 GameObject:
   m_ObjectHideFlags: 0
@@ -2017,6 +2033,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b90e616510329346b0577232e9320f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hoverable: {fileID: 487909651}
   onButtonPressed:
     m_PersistentCalls:
       m_Calls:
@@ -2031,9 +2048,32 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1289790040}
+        m_MethodName: Select
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 487909650}
+          m_ObjectArgumentAssemblyTypeName: UIButton, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 487909648}
+--- !u!114 &487909651 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5157884323355657308, guid: 533ee08ea3d235a499226b9e16f38e94,
+    type: 3}
+  m_PrefabInstance: {fileID: 487909646}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 487909649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95a94fd23201d7344839b912b3ad8ddd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &515631993
 GameObject:
   m_ObjectHideFlags: 0
@@ -2652,6 +2692,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b90e616510329346b0577232e9320f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hoverable: {fileID: 707695843}
   onButtonPressed:
     m_PersistentCalls:
       m_Calls:
@@ -2666,9 +2707,32 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1289790040}
+        m_MethodName: Select
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 707695842}
+          m_ObjectArgumentAssemblyTypeName: UIButton, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 707695840}
+--- !u!114 &707695843 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5157884323355657308, guid: 533ee08ea3d235a499226b9e16f38e94,
+    type: 3}
+  m_PrefabInstance: {fileID: 707695838}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 707695841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95a94fd23201d7344839b912b3ad8ddd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &708711618
 GameObject:
   m_ObjectHideFlags: 0
@@ -4094,6 +4158,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b90e616510329346b0577232e9320f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hoverable: {fileID: 1222788096}
   onButtonPressed:
     m_PersistentCalls:
       m_Calls:
@@ -4111,6 +4176,18 @@ MonoBehaviour:
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 1222788093}
+--- !u!114 &1222788096 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5157884323355657308, guid: 533ee08ea3d235a499226b9e16f38e94,
+    type: 3}
+  m_PrefabInstance: {fileID: 1222788091}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1222788094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95a94fd23201d7344839b912b3ad8ddd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1243635342
 GameObject:
   m_ObjectHideFlags: 0
@@ -4171,6 +4248,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1289790039}
+  - component: {fileID: 1289790040}
   m_Layer: 0
   m_Name: Algorithm
   m_TagString: Untagged
@@ -4196,6 +4274,18 @@ Transform:
   m_Father: {fileID: 73176941}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: -45, z: 0}
+--- !u!114 &1289790040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1289790038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9956ee27def34bd40bb1f3a1a57a29a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1294369756
 GameObject:
   m_ObjectHideFlags: 0
@@ -4451,6 +4541,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b90e616510329346b0577232e9320f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hoverable: {fileID: 1364875948}
   onButtonPressed:
     m_PersistentCalls:
       m_Calls:
@@ -4468,6 +4559,18 @@ MonoBehaviour:
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 1364875945}
+--- !u!114 &1364875948 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5157884323355657308, guid: 533ee08ea3d235a499226b9e16f38e94,
+    type: 3}
+  m_PrefabInstance: {fileID: 1364875943}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1364875946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95a94fd23201d7344839b912b3ad8ddd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1374500187
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4622,6 +4725,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9e13f8d83f4af64aa988df7bb128f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hoverable: {fileID: 1374500192}
   onButtonPressed:
     m_PersistentCalls:
       m_Calls:
@@ -4639,7 +4743,6 @@ MonoBehaviour:
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 1374500189}
-  hoverable: {fileID: 1374500192}
   multistep: 0
 --- !u!114 &1374500192 stripped
 MonoBehaviour:
@@ -5995,6 +6098,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b90e616510329346b0577232e9320f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hoverable: {fileID: 1722760101}
   onButtonPressed:
     m_PersistentCalls:
       m_Calls:
@@ -6009,9 +6113,32 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1289790040}
+        m_MethodName: Select
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1722760100}
+          m_ObjectArgumentAssemblyTypeName: UIButton, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 1722760098}
+--- !u!114 &1722760101 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5157884323355657308, guid: 533ee08ea3d235a499226b9e16f38e94,
+    type: 3}
+  m_PrefabInstance: {fileID: 1722760096}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1722760099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95a94fd23201d7344839b912b3ad8ddd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1753745179
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6168,6 +6295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9e13f8d83f4af64aa988df7bb128f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hoverable: {fileID: 1753745184}
   onButtonPressed:
     m_PersistentCalls:
       m_Calls:
@@ -6185,7 +6313,6 @@ MonoBehaviour:
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 1753745181}
-  hoverable: {fileID: 1753745184}
   multistep: 0
 --- !u!114 &1753745184 stripped
 MonoBehaviour:
@@ -6422,6 +6549,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9e13f8d83f4af64aa988df7bb128f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hoverable: {fileID: 1839084269}
   onButtonPressed:
     m_PersistentCalls:
       m_Calls:
@@ -6439,7 +6567,6 @@ MonoBehaviour:
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 1839084266}
-  hoverable: {fileID: 1839084269}
   multistep: 0
 --- !u!114 &1839084269 stripped
 MonoBehaviour:
@@ -7450,6 +7577,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b90e616510329346b0577232e9320f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hoverable: {fileID: 2140458128}
   onButtonPressed:
     m_PersistentCalls:
       m_Calls:
@@ -7467,3 +7595,15 @@ MonoBehaviour:
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 2140458125}
+--- !u!114 &2140458128 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5157884323355657308, guid: 533ee08ea3d235a499226b9e16f38e94,
+    type: 3}
+  m_PrefabInstance: {fileID: 2140458123}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2140458126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95a94fd23201d7344839b912b3ad8ddd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
