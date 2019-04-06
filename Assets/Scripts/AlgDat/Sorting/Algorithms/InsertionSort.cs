@@ -33,7 +33,7 @@ public class InsertionSort :SortingAlgorithm {
             while(i > -1 ) {
                 states.Add(string.Format(state, i, j, key, states.Count));
                 actions.Add(new CompareAction(-1, i));
-                if (array[i] < key)
+                if (array[i] <= key)
                     break;
                 states.Add(string.Format(state, i, j, key, states.Count));
                 actions.Add(new MoveAction(i, i + 1));

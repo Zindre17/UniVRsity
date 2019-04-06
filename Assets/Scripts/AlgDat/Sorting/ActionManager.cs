@@ -2,11 +2,14 @@
 
 public class ActionManager : MonoBehaviour
 {
-    public ActionButton compare, swap, pivot, store, copy;
+    public ActionButton compare, swap, pivot, store, copy, merge, split;
 
     public enum State {
         Busy,
         None,
+        Array,
+        Arrays,
+        ManyA,
         Single,
         Double,
         Many
@@ -35,19 +38,28 @@ public class ActionManager : MonoBehaviour
     public void UpdateButtons(State state) {
         switch (state) {
             case State.None:
-                UpdateButtons(false, false, false, false, false);
+                UpdateButtons();
                 break;
             case State.Busy:
-                UpdateButtons(false, false, false, false, false);
+                UpdateButtons();
                 break;
             case State.Single:
-                UpdateButtons(false, true, true, true, true);
+                UpdateButtons(sw: true, p: true, cop: true, st: true);
                 break;
             case State.Double:
-                UpdateButtons(true, true, false, false, false);
+                UpdateButtons(com: true, sw: true);
                 break;
             case State.Many:
-                UpdateButtons(false, false, false, false, false);
+                UpdateButtons();
+                break;
+            case State.Array:
+                UpdateButtons(sp: true);
+                break;
+            case State.Arrays:
+                UpdateButtons(m: true);
+                break;
+            case State.ManyA:
+                UpdateButtons();
                 break;
         }
     }
@@ -56,11 +68,13 @@ public class ActionManager : MonoBehaviour
         copy.InProgress = false;
     }
 
-    private void UpdateButtons(bool com, bool sw, bool p, bool st, bool cop) {
+    private void UpdateButtons(bool com = false, bool sw=false, bool p=false, bool st=false, bool cop=false, bool m = false, bool sp = false) {
         compare.Active = com;
         swap.Active = sw;
         pivot.Active = p;
         store.Active = st;
         copy.Active = cop;
+        split.Active = sp;
+        merge.Active = m;
     }
 }

@@ -28,6 +28,12 @@ public class EventManager : MonoBehaviour {
     public delegate void SelectEvent(SortingElement s);
     public static event SelectEvent OnSelect;
 
+    public delegate void ArraySelectEvent(ArrayManager a);
+    public static event ArraySelectEvent OnArraySelect;
+
+    public delegate void PArraySelectEvent(PartialArray p);
+    public static event PArraySelectEvent OnPArraySelect;
+
     public delegate void UISelectEvent(UISelectable s);
     public static event UISelectEvent OnUISelect;
 
@@ -83,10 +89,22 @@ public class EventManager : MonoBehaviour {
                 UIButton b = hit.collider.GetComponentInParent<UIButton>();
                 if (b != null) {
                     b.Press();
+                    return;
                 }
                 SortingElement s = hit.collider.GetComponentInParent<SortingElement>();
                 if (s != null) {
-                    OnSelect(s);
+                    if(OnSelect != null) OnSelect(s);
+                    return;
+                }
+                ArrayManager a = hit.collider.GetComponentInParent<ArrayManager>();
+                if (a != null) {
+                    if (OnArraySelect != null) OnArraySelect(a);
+                    return;
+                }
+                PartialArray p = hit.collider.GetComponentInParent<PartialArray>();
+                if (p != null) {
+                    if (OnPArraySelect != null) OnPArraySelect(p);
+                    return;
                 }
                 /*
                 UISelectable uis = hit.collider.GetComponent<UISelectable>();

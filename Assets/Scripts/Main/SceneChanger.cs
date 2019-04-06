@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Valve.VR;
 
 public abstract class SceneChanger : MonoBehaviour {
 
@@ -11,6 +12,6 @@ public abstract class SceneChanger : MonoBehaviour {
     }
 	
     internal void FadeToLevel(string nextLevel) {
-        Valve.VR.SteamVR_LoadLevel.Begin(nextLevel);
+        SteamVR_LoadLevel.Begin(nextLevel, fadeOutTime: 3f);
     }
 }

@@ -7,8 +7,11 @@ public class MergeSort : SortingAlgorithm {
 
         pseudo = new string[] {
             "Mergesort(Array a, int p, int r)\n" +
+            "   //if only one element, the array is sorted; nothing to do\n"+
             "   if p < r\n" +
+            "       //find middle of array\n"+
             "       q = floor((p+r)/2)\n" +
+            "       //perform mergesort on the each half of array\n"+
             "       Mergesort(a,p,q)\n" +
             "       Mergesort(a,q+1,r)\n" +
             "       Merge(A,p,q,r)",
@@ -36,7 +39,7 @@ public class MergeSort : SortingAlgorithm {
     }
 
     internal override void GenerateActions() {
-        throw new System.NotImplementedException();
+        actions.Add(new SplitAction(-1));
     }
 
     private void _MergeSort(int[] a, int p, int r) {

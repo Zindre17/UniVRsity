@@ -6,7 +6,9 @@ public abstract class GameAction {
         Keep,
         Pivot,
         Store,
-        Move
+        Move,
+        Merge, 
+        Split
     }
 
     public GameActionType type;

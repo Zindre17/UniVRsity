@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SortingManager : MonoBehaviour
 {
-    public ArrayManager array;
+    public Arrays arrays;
     public StateManager state;
     public TitleManager title;
     public MessagesManager message;
@@ -20,11 +20,70 @@ public class SortingManager : MonoBehaviour
     private GameAction action;
 
     private List<SortingElement> selected;
+    private List<PartialArray> paSelected;
+    private ArrayManager arraySelected;
 
     private void Awake() {
         selected = new List<SortingElement>();
         EventManager.OnSelect += Select;
         EventManager.OnActionCompleted += ActionComplete;
+        EventManager.OnArraySelect += ArraySelect;
+        EventManager.OnPArraySelect += PArraySelect;
+    }
+
+    private void PArraySelect(PartialArray p) {
+        if (demo || performingAction) return;
+        if (paSelected == null)
+            paSelected = new List<PartialArray>();
+        if (paSelected.Contains(p)) {
+            p.Selected = false;
+            paSelected.Remove(p);
+        } else {
+            paSelected.Add(p);
+            p.Selected = true;
+            if (arraySelected != null) {
+                arraySelected.Selected = false;
+                arraySelected = null;
+            }
+            if (selected != null) {
+                if (selected.Count != 0) {
+                    foreach (SortingElement s in selected) {
+                        s.Selected = false;
+                    }
+                    selected.Clear();
+                }
+            }
+        }
+        UpdateActions();
+    }
+
+    private void ArraySelect(ArrayManager a) {
+        if (demo || performingAction) return;
+        if (arraySelected != null) {
+            arraySelected.Selected = false;
+            arraySelected = null;
+        } else {
+            arraySelected = a;
+            arraySelected.Selected = true;
+
+            if (selected != null) {
+                if (selected.Count != 0) {
+                    foreach (SortingElement s in selected) {
+                        s.Selected = false;
+                    }
+                    selected.Clear();
+                }
+            }
+            if (paSelected != null) {
+                if (paSelected.Count != 0) {
+                    foreach (PartialArray p in paSelected) {
+                        p.Selected = false;
+                    }
+                    paSelected.Clear();
+                }
+            }
+        }
+        UpdateActions();
     }
 
     private void Start() {
@@ -59,6 +118,18 @@ public class SortingManager : MonoBehaviour
             } else {
                 s.Selected = true;
                 selected.Add(s);
+                if(arraySelected != null) {
+                    arraySelected.Selected = false;
+                    arraySelected = null;
+                }
+                if(paSelected != null) {
+                    if(paSelected.Count != 0) {
+                        foreach(PartialArray p in paSelected) {
+                            p.Selected = false;
+                        }
+                        paSelected.Clear();
+                    }
+                }
             }
         }
         UpdateActions();
@@ -66,27 +137,28 @@ public class SortingManager : MonoBehaviour
 
     // algorithm selection
     public void Bubble() {
-        array.New();
-        //toggles.Bubble();
-        alg = new BubbleSort(array.Size, array.Array);
+        arrays.New();
+        alg = new BubbleSort(arrays.Size, arrays.Array);
         Setup();
     }
 
     public void Insertion() {
-        array.New();
-        //toggles.Insertion();
-        alg = new InsertionSort(array.Size, array.Array);
+        arrays.New();
+        alg = new InsertionSort(arrays.Size, arrays.Array);
         Setup();
     }
 
     public void Quick() {
-        array.New();
-        //toggles.Quick();
-        alg = new QuickSort(array.Size, array.Array);
+        arrays.New();
+        alg = new QuickSort(arrays.Size, arrays.Array);
         Setup();
     }
 
-    
+   public void MergeSort() {
+        arrays.New();
+        alg = new MergeSort(arrays.Size, arrays.Array);
+        Setup();
+    }
 
     // actions
     public void Compare() {
@@ -118,6 +190,17 @@ public class SortingManager : MonoBehaviour
         UpdateActions();
     }
 
+    public void Split() {
+        if (arraySelected != null)
+            action = new SplitAction(arraySelected.index);
+        else
+            action = new SplitAction(paSelected[0].Index);
+        DoAction();
+    }
+
+    public void Merge() {
+
+    }
     
 
     // menu
@@ -132,14 +215,14 @@ public class SortingManager : MonoBehaviour
     }
 
     public void NewArray() {
-        array.New();
-        alg.Update(array.Array);
+        arrays.New();
+        alg.Update(arrays.Array);
         Setup();
     }
 
     public void Restart() {
         alg.Restart();
-        array.Restart();
+        arrays.Restart();
         Setup();
     }
 
@@ -198,6 +281,22 @@ public class SortingManager : MonoBehaviour
             actions.UpdateButtons(ActionManager.State.Busy);
             return;
         }
+        if (arraySelected != null) {
+            actions.UpdateButtons(ActionManager.State.Array);
+            return;
+        }
+        if (paSelected != null) {
+            int c = paSelected.Count;
+            if (c != 0) {
+                if (c == 1)
+                    actions.UpdateButtons(ActionManager.State.Array);
+                else if (c == 2)
+                    actions.UpdateButtons(ActionManager.State.Arrays);
+                else
+                    actions.UpdateButtons(ActionManager.State.ManyA);
+                return;
+            }
+        }
         int count = selected.Count;
         if (count == 0) {
             actions.UpdateButtons(ActionManager.State.None);
@@ -213,25 +312,32 @@ public class SortingManager : MonoBehaviour
     private void DoAction() {
         if (alg.CorrectAction(action)) {
             performingAction = true;
+            if(action.type != GameAction.GameActionType.Compare) {
+                ClearSelections();
+                state.SetCompare("");
+            }
+            //todo: this can be replaced by using GameActions as parameter in the functions...
             switch (action.type) {
                 case GameAction.GameActionType.Compare:
-                    state.SetCompare(array.Compare((CompareAction)action));
+                    state.SetCompare(arrays.Compare((CompareAction)action));
                     break;
                 case GameAction.GameActionType.Swap:
-                    ClearSelections();
-                    array.Swap((SwapAction)action);
+                    arrays.Swap((SwapAction)action);
                     break;
                 case GameAction.GameActionType.Store:
-                    ClearSelections();
-                    array.Store((StoreAction)action);
+                    arrays.Store((StoreAction)action);
                     break;
                 case GameAction.GameActionType.Pivot:
-                    ClearSelections();
-                    array.Pivot((PivotAction)action);
+                    arrays.Pivot((PivotAction)action);
                     break;
                 case GameAction.GameActionType.Move:
-                    ClearSelections();
-                    array.CopyTo((MoveAction)action);
+                    arrays.CopyTo((MoveAction)action);
+                    break;
+                case GameAction.GameActionType.Split:
+                    arrays.Split((SplitAction)action);
+                    break;
+                case GameAction.GameActionType.Merge:
+                    arrays.Merge((MergeAction)action);
                     break;
             }
         } else {
@@ -266,26 +372,26 @@ public class SortingManager : MonoBehaviour
         switch (a.type) {
             case GameAction.GameActionType.Compare:
                 CompareAction c = (CompareAction)a;
-                array.Hint(c.index1);
-                array.Hint(c.index2);
+                arrays.Hint(c.index1);
+                arrays.Hint(c.index2);
                 break;
             case GameAction.GameActionType.Move:
                 MoveAction m = (MoveAction)a;
-                array.Hint(m.source);
-                array.Hint(m.target);
+                arrays.Hint(m.source);
+                arrays.Hint(m.target);
                 break;
             case GameAction.GameActionType.Pivot:
                 PivotAction p = (PivotAction)a;
-                array.Hint(p.pivotIndex);
+                arrays.Hint(p.pivotIndex);
                 break;
             case GameAction.GameActionType.Store:
                 StoreAction t = (StoreAction)a;
-                array.Hint(t.index);
+                arrays.Hint(t.index);
                 break;
             case GameAction.GameActionType.Swap:
                 SwapAction s = (SwapAction)a;
-                array.Hint(s.index1);
-                array.Hint(s.index2);
+                arrays.Hint(s.index1);
+                arrays.Hint(s.index2);
                 break;
         }
         actions.Hint(a.type);

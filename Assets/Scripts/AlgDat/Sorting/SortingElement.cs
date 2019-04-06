@@ -38,7 +38,19 @@ public class SortingElement : MonoBehaviour {
         set {
             if(value != inFocus) {
                 inFocus = value;
+                if (!inFocus)
+                    Active = false;
                 UpdateColor();
+            }
+        }
+    }
+
+    public bool Active {
+        get { return Active; }
+        set {
+            if(Active != value) {
+                Active = value;
+                hoverable.Legal = Active;
             }
         }
     }

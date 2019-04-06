@@ -12,7 +12,7 @@ public class AlgDatSceneChanger : SceneChanger
 
     private readonly string[] levels = new string[] {
         "Start",
-        "SortingAlgorithms",
+        "Sorting",
         "Datastructures"
     };
 

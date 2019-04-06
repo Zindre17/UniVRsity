@@ -49,7 +49,7 @@ public class DStack : MonoBehaviour
     public void Push(int value) {
         if (size == limit) {
             Spawn(value, true);
-            ShowMessage(string.Format("Error: {0} Overflow\nPushing to a full {0} causes the {0} to overflow.",queue? "queue": "stack"));
+            ShowMessage(string.Format("Error: {0} Overflow\nPushing to a full {1} causes the {1} to overflow.",queue? "Queue": "Stack", queue? "queue":"stack"));
             return;
         }
         ShowMessage();
@@ -60,7 +60,7 @@ public class DStack : MonoBehaviour
 
     public void Pop() {
         if (size == 0) {
-            ShowMessage(string.Format("Error: {0} Underflow\nCalling pop on an empty {0} causes the the {0} to underflow.", queue ? "queue" : "stack"));
+            ShowMessage(string.Format("Error: {0} Underflow\nCalling pop on an empty {1} causes the the {1} to underflow.",queue?"Queue":"Stack", queue ? "queue" : "stack"));
             return;
         }
         ShowMessage();

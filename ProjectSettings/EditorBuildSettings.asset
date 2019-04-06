@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/_preload.unity
+    guid: c984c28c7dfd59d4fa89e750e5cd758f
+  - enabled: 1
     path: Assets/Scenes/Start.unity
     guid: c78d9cb3762428840a9b942540e72dad
   - enabled: 1
@@ -15,6 +18,6 @@ EditorBuildSettings:
     path: Assets/Scenes/AlgDat/Datastructures.unity
     guid: 9311b0f86ea3c3544bb82a11aed0ec5a
   - enabled: 1
-    path: Assets/Scenes/AlgDat/SortingAlgorithms.unity
-    guid: 85d592dd80884b84a8177a8669635543
+    path: Assets/Scenes/AlgDat/Sorting.unity
+    guid: 55a7456bff8a48842a514781ad6535a5
   m_configObjects: {}

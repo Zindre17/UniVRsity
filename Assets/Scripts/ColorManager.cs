@@ -37,4 +37,5 @@ public class ColorManager : MonoBehaviour {
     public Color element;
     public Color pivot;
     public Color correct;
+    public Color box;
 }
