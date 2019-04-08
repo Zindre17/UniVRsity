@@ -21,4 +21,11 @@
         ImageAction other = (ImageAction)obj;
         return Pixel == other.Pixel && Type == other.Type;
     }
+
+    public override int GetHashCode() {
+        var hashCode = 1190742396;
+        hashCode = hashCode * -1521134295 + Pixel.GetHashCode();
+        hashCode = hashCode * -1521134295 + Type.GetHashCode();
+        return hashCode;
+    }
 }

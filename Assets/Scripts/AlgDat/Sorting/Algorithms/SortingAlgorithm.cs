@@ -49,7 +49,7 @@ public abstract class SortingAlgorithm {
         return states[step];
     }
 
-    public void Next() {
+    public virtual void Next() {
         if (complete) return;
         step++;
         if (step == actions.Count) {

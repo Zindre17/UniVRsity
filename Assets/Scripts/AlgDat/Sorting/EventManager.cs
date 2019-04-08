@@ -58,7 +58,7 @@ public class EventManager : MonoBehaviour {
     public delegate void AlgorithmCompletedEvent();
     public static event AlgorithmCompletedEvent OnAlgorithmCompleted;
 
-    public delegate void ArrayInFocusChanged(int start, int end);
+    public delegate void ArrayInFocusChanged(int array,int start, int end);
     public static event ArrayInFocusChanged OnArrayInFocusChanged;
 
     private void Start() {
@@ -92,18 +92,18 @@ public class EventManager : MonoBehaviour {
                     return;
                 }
                 SortingElement s = hit.collider.GetComponentInParent<SortingElement>();
-                if (s != null) {
+                if (s != null && s.InFocus && s.Active) {
                     if(OnSelect != null) OnSelect(s);
                     return;
                 }
                 ArrayManager a = hit.collider.GetComponentInParent<ArrayManager>();
                 if (a != null) {
-                    if (OnArraySelect != null) OnArraySelect(a);
+                    if (OnArraySelect != null && a.Active) OnArraySelect(a);
                     return;
                 }
                 PartialArray p = hit.collider.GetComponentInParent<PartialArray>();
                 if (p != null) {
-                    if (OnPArraySelect != null) OnPArraySelect(p);
+                    if (OnPArraySelect != null && p.Active) OnPArraySelect(p);
                     return;
                 }
                 /*
@@ -164,9 +164,9 @@ public class EventManager : MonoBehaviour {
         if (OnAlgorithmCompleted != null) OnAlgorithmCompleted();
     }
 
-    public static void FocusChanged(int start, int end) {
+    public static void FocusChanged(int array, int start, int end) {
         if(start < end && OnArrayInFocusChanged != null) {
-            OnArrayInFocusChanged(start, end);
+            OnArrayInFocusChanged(array, start, end);
         }
     }
 }

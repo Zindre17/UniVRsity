@@ -24,8 +24,8 @@ public class ColorManager : MonoBehaviour {
     public Color toggleButtonOff;
 
     [Header("Datastructures")]
-    public Color light;
-    public Color dark;
+    public Color white;
+    public Color black;
     public Color visited;
     public Color seed;
     public Color pattern;

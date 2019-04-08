@@ -11,7 +11,7 @@ public class QuickSort : SortingAlgorithm {
         "x (pivot) = {4}";
 
     private int focusPos = -1;
-    private List<int> focusPoints;
+    private List<int> focusPoints = new List<int>();
     private List<int> pivots = new List<int>();
 
     public QuickSort(int _arrayLength, int[] _array):base(_arrayLength, _array) {
@@ -34,8 +34,12 @@ public class QuickSort : SortingAlgorithm {
             "   swap a[i+1] with a[r]\n" +
             "   return i+1"
         };
-        focusPoints = new List<int>();
-        //CheckForFocusChange();
+        CheckForFocusChange();
+    }
+
+    public override void Next() {
+        base.Next();
+        CheckForFocusChange();
     }
 
     internal override void GenerateActions() {
@@ -45,8 +49,8 @@ public class QuickSort : SortingAlgorithm {
 
     private void PerformQuickSort(int[] a, int p, int r) {
         if (p < r) {
-            //focusPoints.Add(p);
-            //focusPoints.Add(r);
+            focusPoints.Add(p);
+            focusPoints.Add(r);
             int q = Partition(a, p, r);
             PerformQuickSort(a, p, q - 1);
             PerformQuickSort(a, q + 1, r);
@@ -88,9 +92,10 @@ public class QuickSort : SortingAlgorithm {
     }
 
     private void CheckForFocusChange() {
+        if (complete) return;
         if (GetAction().type == GameAction.GameActionType.Pivot) {
             focusPos++;
-            EventManager.FocusChanged(focusPoints[focusPos * 2], focusPoints[focusPos * 2 + 1]);
+            EventManager.FocusChanged(-1,focusPoints[focusPos * 2], focusPoints[focusPos * 2 + 1]);
         }
     }
 

@@ -60,7 +60,7 @@ public class Pixel : MonoBehaviour
     }
 
     private void SetColor(bool b) {
-        color = b ? colorManager.dark: colorManager.light;
+        color = b ? colorManager.black: colorManager.white;
         UpdateColor();
     }
 

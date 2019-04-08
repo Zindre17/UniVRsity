@@ -11,10 +11,10 @@ public class ArrayManager : MonoBehaviour
     private int spawnedElements = 0;
     private int[] sortedArray;
     private int[] unsortedArray;
-    private int arrayLength = 7;
+    private readonly int arrayLength = 7;
 
-    private float movementMagnitude = 0.4f;
-    private float interval = .1f;
+    private readonly float movementMagnitude = 0.4f;
+    private readonly float interval = .1f;
     public readonly int index = -1;
 
     private List<SortingElement> arrayToSort;
@@ -49,6 +49,22 @@ public class ArrayManager : MonoBehaviour
             rend.material.color = cm.selected;
         else
             rend.material.color = cm.box;
+        if (!inFocus) {
+            Color c = rend.material.color;
+            rend.material.color = new Color(c.r, c.g, c.b, .3f);
+        }
+    }
+
+    private bool inFocus = true;
+    public bool InFocus {
+        get { return inFocus; }
+        set {
+            if( value != inFocus) {
+                inFocus = value;
+                UpdateElementStatus();
+                UpdateColor();
+            }
+        }
     }
 
     public SortingElement Get(int index) {
@@ -62,13 +78,18 @@ public class ArrayManager : MonoBehaviour
             if (active != value) {
                 active = value;
                 UpdateElementStatus();
+                if (active)
+                    hoverable.Enable();
+                else
+                    hoverable.Disable();
             }
         }
     }
 
     private void UpdateElementStatus() {
         foreach(SortingElement e in arrayToSort) {
-            e.InFocus = Active;
+            e.Active = active;
+            e.InFocus = inFocus;
         }
     }
     
@@ -87,6 +108,9 @@ public class ArrayManager : MonoBehaviour
     }
 
     public void Restart() {
+        transform.localPosition = Vector3.zero;
+        Active = true;
+        InFocus = true;
         if (compared1 != null) 
             compared1 = compared2 = null;
         if(prevPivot != null) {
@@ -105,12 +129,31 @@ public class ArrayManager : MonoBehaviour
     }
 
     public void Hint(int index) {
-        SortingElement s;
-        if(index == -1) {
-            s = stored;
-        } else {
-            s = arrayToSort[index];
+        Get(index).Hint();
+    }
+
+    private Coroutine hintRoutine;
+
+    public void Hint() {
+        if (hintRoutine != null) {
+            StopCoroutine(hintRoutine);
         }
+        hintRoutine = StartCoroutine(HintAnimation());
+    }
+
+    private IEnumerator HintAnimation() {
+        UpdateColor();
+        Color def = rend.material.color;
+        Color hint = cm.hint;
+        yield return new WaitForSeconds(.1f);
+        rend.material.color = hint;
+        yield return new WaitForSeconds(.3f);
+        rend.material.color = def;
+        yield return new WaitForSeconds(.3f);
+        rend.material.color = hint;
+        yield return new WaitForSeconds(.3f);
+        rend.material.color = def;
+        hintRoutine = null;
     }
 
     private IEnumerator EditArray() {

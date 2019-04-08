@@ -8,6 +8,9 @@
         Right = _right;
     }
 
-
+    public void Show() {
+        Left.Show();
+        Right.Show();
+    }
 
 }

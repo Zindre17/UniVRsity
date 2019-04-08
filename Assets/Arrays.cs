@@ -8,15 +8,31 @@ public class Arrays : MonoBehaviour
     public StorageManager storage;
     public GameObject partialArrayPrefab;
     public ElementAnimator anim;
+    public Renderer backWall;
 
     private List<PartialArray> splits;
     private List<Split> layers;
     private Split current;
+    private Split Current {
+        get { return current; }
+        set {
+            if (current != null) {
+                current.Left.Active = false;
+                current.Left.InFocus = false;
+                current.Right.Active = false;
+                current.Right.InFocus = false;
+            }
+            current = value;
+            current.Left.Active = true;
+            current.Left.InFocus = true;
+            current.Right.Active = true;
+            current.Right.InFocus = true;
+        }
+    }
 
+    private readonly float spacing = .15f;
     private readonly int size = 7;
     public int Size { get { return size; } }
-
-    private int nextSplitIndex = 0;
 
     private Vector3 splitPath = Vector3.forward*.5f;
 
@@ -37,19 +53,103 @@ public class Arrays : MonoBehaviour
         }
     }
 
+    private void Awake() {
+        EventManager.OnArrayInFocusChanged += FocusChanged;
+    }
+
+    private void OnDestroy() {
+        EventManager.OnArrayInFocusChanged -= FocusChanged;
+    }
+
+    public void Complete() {
+        int i;
+        if(current == null) {
+            FocusChanged(-1, 0, array.Size);
+            for(i = 0; i < array.Size; i++) {
+                array.Get(i).Active = false;
+            }
+        } else {
+            FocusChanged(current.Left.Index, 0, current.Left.Size);
+            for (i = 0; i < current.Left.Size; i++) {
+                current.Left.Get(i).Active = false;
+            }
+            FocusChanged(current.Right.Index, 0, current.Right.Size);
+            for (i = 0; i < current.Right.Size; i++) {
+                current.Right.Get(i).Active = false;
+            }
+        }
+    }
+
+    private void FocusChanged(int _array, int start, int end) {
+        SortingElement s;
+        int i;
+        if (_array == -1) {
+            for(i = 0; i < array.Size; i++) {
+                s = array.Get(i);
+                if (i < start || i > end)
+                    s.InFocus = false;
+                else
+                    s.InFocus = true;
+            }
+        } else {
+            PartialArray pa = splits[_array];
+            for (i = 0; i < pa.Size; i++) {
+                s = pa.Get(i);
+                if (i < start || i > end)
+                    s.InFocus = false;
+                else
+                    s.InFocus = true;
+            }
+        }
+    }
+
     public void New() {
         anim.Stop();
         GenerateRandomArray();
         array.New(Array);
+        storage.Stop();
     }
 
     public void Restart() {
         anim.Stop();
         array.Restart();
+        storage.Stop();
+        if (splits != null) {
+            layers.Clear();
+            for (int i = splits.Count - 1; i > -1; i--) {
+                PartialArray p = splits[i];
+                splits.Remove(p);
+                Destroy(p.gameObject);
+            }
+        }
+        if (current != null) {
+            Destroy(current.Left.gameObject);
+            Destroy(current.Right.gameObject);
+            current = null;
+        }
     }
 
     public void Hint(int index) {
+        if (index == -1)
+            storage.Hint();
+        else {
+            if (current != null) {
+                if (index < current.Left.End)
+                    current.Left.Hint(index);
+                else
+                    current.Right.Hint(index);
+            } else {
+                array.Hint(index);
+            }
+        }
+    }
 
+    public void HintArray(int index) {
+        if (index == -1)
+            array.Hint();
+        else {
+            splits[index].HintArray();
+        }
     }
 
     public void Split(SplitAction action) {
@@ -64,37 +164,44 @@ public class Arrays : MonoBehaviour
         PartialArray a, b;
         a = Instantiate(partialArrayPrefab,transform).GetComponent<PartialArray>();
         b = Instantiate(partialArrayPrefab,transform).GetComponent<PartialArray>();
+        Vector3 midPos, leftOffset, rightOffset;
         // main array
         if (action.array == -1) {
-            int mid = Mathf.FloorToInt(array.Size / 2f);
-            a.Init(array, 0, mid - 1, nextSplitIndex);
-            nextSplitIndex++;
-            b.Init(array, mid, array.Size - 1, nextSplitIndex);
-            nextSplitIndex++;
-            Vector3 inheritSpot = array.transform.position;
-            a.transform.position = inheritSpot;
-            b.transform.position = inheritSpot;
+            Color c = backWall.material.color;
+            backWall.material.color = new Color(c.r, c.g, c.b, .6f);
+            int mid = Mathf.CeilToInt(array.Size / 2f);
+            a.Init(array, 0, mid, splits.Count);
+            array.Active = false;
+            array.InFocus = false;
+            b.Init(array, mid, array.Size , splits.Count+1);
+            midPos = array.transform.position;
+            leftOffset = new Vector3(-array.Size/4f + a.Size/4f - spacing, 0f, 0f);
+            rightOffset = new Vector3(array.Size/4f - b.Size/4f + spacing, 0f, 0f);
+            a.transform.position = midPos + leftOffset;
+            b.transform.position = midPos + rightOffset;
         } 
         //partial array
         else {
             PartialArray toSplit = splits[action.array];
-            int mid = Mathf.FloorToInt(toSplit.Size / 2f);
-            a.Init(array, toSplit.Start, toSplit.Start + mid - 1, nextSplitIndex);
-            nextSplitIndex++;
-            b.Init(array, toSplit.Start + mid, toSplit.End, nextSplitIndex);
-            nextSplitIndex++;
-            a.transform.position = toSplit.transform.position;
-            b.transform.position = toSplit.transform.position;
+            int mid = Mathf.CeilToInt(toSplit.Size / 2f);
+            a.Init(array, toSplit.Start, toSplit.Start + mid, splits.Count);
+            b.Init(array, toSplit.Start + mid, toSplit.End, splits.Count +1);
+            midPos = toSplit.transform.position;
+            leftOffset = new Vector3(-toSplit.transform.localScale.x/(float)toSplit.Size*a.Size, 0f, 0f);
+            rightOffset = new Vector3(toSplit.transform.localScale.x/(float)toSplit.Size * b.Size, 0f, 0f);
+            a.transform.position = midPos + leftOffset;
+            b.transform.position = midPos + rightOffset;
         }
         splits.Add(a);
         splits.Add(b);
         Split split = new Split(a, b);
-        current = split;
+        Current = split;
         anim.Split(array, split, layers);
     }
 
     public void Merge(MergeAction action) {
         //add inf to end of both active arrays
+
     }
 
     public string Compare(CompareAction action) {

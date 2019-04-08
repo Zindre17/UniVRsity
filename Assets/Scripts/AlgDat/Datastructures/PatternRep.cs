@@ -27,11 +27,11 @@ public class PatternRep : MonoBehaviour
             GameObject o;
             if (i < existingPixels) {
                 o = image[i].gameObject;
-                image[i].material.color = colorManager.light;
+                image[i].material.color = colorManager.white;
             } else {
                 o = Instantiate(pixelPrefab, bottomLeft);
                 Renderer r = o.GetComponent<Renderer>();
-                r.material.color = colorManager.light;
+                r.material.color = colorManager.white;
                 image.Add(r);
             }
             float xp, yp, zp;
@@ -47,7 +47,7 @@ public class PatternRep : MonoBehaviour
 
     public void Pattern(int index) {
         if(index > 0 && index < image.Count)
-            image[index].material.color = colorManager.dark;
+            image[index].material.color = colorManager.black;
     }
 
     private void Awake() {
@@ -62,7 +62,7 @@ public class PatternRep : MonoBehaviour
 
     private void ClearPattern() {
         foreach (Renderer r in image) {
-            r.material.color = colorManager.light;
+            r.material.color = colorManager.white;
         }
     }
 

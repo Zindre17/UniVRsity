@@ -32,6 +32,12 @@ public class ActionManager : MonoBehaviour
             case GameAction.GameActionType.Swap:
                 swap.Hint();
                 break;
+            case GameAction.GameActionType.Split:
+                split.Hint();
+                break;
+            case GameAction.GameActionType.Merge:
+                merge.Hint();
+                break;
         }
     }
 

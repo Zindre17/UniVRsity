@@ -17,6 +17,7 @@ public class ElementAnimator : MonoBehaviour
             routine = null;
         }
         compared1 = compared2 = prevPivot = null;
+        backWall.transform.localPosition = new Vector3(0,5,10);
     }
 
     public void Split(ArrayManager array, Split split, List<Split> splits) {
@@ -30,7 +31,6 @@ public class ElementAnimator : MonoBehaviour
         float percent;
         Vector3 aStart = array.transform.position;
         Vector3 wStart = backWall.transform.position;
-        Vector3 sStart = split.Left.transform.position;
         Vector3 path = Vector3.forward * 1.5f;
         List<Vector3> starts = null;
         if(splits != null) {
@@ -69,6 +69,7 @@ public class ElementAnimator : MonoBehaviour
             }
         }
         splits.Add(split);
+        split.Show();
         routine = null;
         EventManager.ActionCompleted();
     }

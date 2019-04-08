@@ -222,13 +222,13 @@ public class SortingManager : MonoBehaviour
 
     public void Restart() {
         alg.Restart();
-        arrays.Restart();
         Setup();
     }
 
     // Helper functions
 
     private void Setup() {
+        arrays.Restart();
         ResetState();
         ClearSelections();
         UpdateActions();
@@ -244,10 +244,22 @@ public class SortingManager : MonoBehaviour
     }
 
     private void ClearSelections() {
-        foreach (SortingElement i in selected) {
-            i.Selected = false;
+        if (selected != null) {
+            foreach (SortingElement i in selected) {
+                i.Selected = false;
+            }
+            selected.Clear();
         }
-        selected.Clear();
+        if(arraySelected != null) {
+            arraySelected.Selected = false;
+            arraySelected = null;
+        }
+        if(paSelected != null) {
+            foreach(PartialArray p in paSelected) {
+                p.Selected = false;
+            }
+            paSelected.Clear();
+        }
     }
 
     private void ResetUI() {
@@ -357,6 +369,8 @@ public class SortingManager : MonoBehaviour
         } else {
             UpdateActions();
         }
+        if (alg.complete)
+            arrays.Complete();
     }
 
     private void DoStep() {
@@ -369,6 +383,7 @@ public class SortingManager : MonoBehaviour
 
     private void Hint() {
         GameAction a = alg.GetAction();
+        if (a == null) return;
         switch (a.type) {
             case GameAction.GameActionType.Compare:
                 CompareAction c = (CompareAction)a;
@@ -392,6 +407,15 @@ public class SortingManager : MonoBehaviour
                 SwapAction s = (SwapAction)a;
                 arrays.Hint(s.index1);
                 arrays.Hint(s.index2);
+                break;
+            case GameAction.GameActionType.Split:
+                SplitAction sa = (SplitAction)a;
+                arrays.HintArray(sa.array);
+                break;
+            case GameAction.GameActionType.Merge:
+                MergeAction ma = (MergeAction)a;
+                arrays.HintArray(ma.a1);
+                arrays.HintArray(ma.a2);
                 break;
         }
         actions.Hint(a.type);

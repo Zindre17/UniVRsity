@@ -36,6 +36,10 @@ public class StorageManager : MonoBehaviour
         return center.position;
     }
 
+    public void Hint() {
+        stored.Hint();
+    }
+
     #region Store
     public void Store(SortingElement s) {
         if (stored == null) {
