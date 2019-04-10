@@ -150,7 +150,7 @@ public class Arrays : MonoBehaviour
         if (index == -1)
             array.Hint();
         else {
-            splits[index].HintArray();
+            splits[index].Hint();
         }
     }
 

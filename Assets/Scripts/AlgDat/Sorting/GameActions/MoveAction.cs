@@ -12,12 +12,14 @@ public class MoveAction : PartialGameAction {
     public MoveAction(int _source, int _target) {
         target = _target;
         source = _source;
+        array = -2;
         type = GameActionType.Move;
     }
 
     public MoveAction(int _source) {
         source = _source;
         target = -1;
+        array = -2;
         type = GameActionType.Move;
     }
 

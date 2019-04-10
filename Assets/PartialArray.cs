@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class PartialArray : MonoBehaviour
+public class PartialArray : Selectable
 {
     public Transform center;
     public TextMeshPro text;
     public GameObject elementPrefab;
     public GameObject box;
-    public Renderer rend;
-    public Hoverable hoverable;
 
     [HideInInspector]
     public ArrayManager original;
@@ -20,28 +18,13 @@ public class PartialArray : MonoBehaviour
 
     private Vector3 origSize;
 
-    private ColorManager cm;
-
     public int Start { get; private set; }
     public int End { get; private set; }
     public int Size { get; private set; }
-    public int Index { get; private set; }
 
     private Coroutine routine;
-    private Coroutine hintRoutine;
     private readonly float interval = .1f;
     private readonly float movementMagnitude = .4f;
-
-    private bool selected = false;
-    public bool Selected {
-        get { return selected; }
-        set {
-            if(selected != value) {
-                selected = value;
-                UpdateColor();
-            }
-        }
-    }
 
     private bool inFocus = true;
     public bool InFocus {
@@ -51,21 +34,6 @@ public class PartialArray : MonoBehaviour
                 inFocus = value;
                 UpdateElementStatus();
                 UpdateColor();
-            }
-        }
-    }
-
-    private bool active = true;
-    public bool Active {
-        get { return active; }
-        set {
-            if(active != value) {
-                active = value;
-                UpdateElementStatus();
-                if (active)
-                    hoverable.Enable();
-                else
-                    hoverable.Disable();
             }
         }
     }
@@ -81,7 +49,7 @@ public class PartialArray : MonoBehaviour
         }
     }
 
-    private void UpdateColor() {
+    internal override void UpdateColor() {
         if (cm == null)
             cm = ColorManager.instance;
         if (selected)
@@ -208,27 +176,16 @@ public class PartialArray : MonoBehaviour
     public void Hint(int index) {
         array[index].Hint();
     }
-
-    public void HintArray() {
-        if(hintRoutine != null) {
-            StopCoroutine(hintRoutine);
-        }
-        hintRoutine = StartCoroutine(HintAnimation());
+    
+    internal override void SetActive(bool a) {
+        UpdateElementStatus();
+        if (active)
+            hoverable.Enable();
+        else
+            hoverable.Disable();
     }
 
-    private IEnumerator HintAnimation() {
+    internal override void SetSelected(bool s) {
         UpdateColor();
-        Color def = rend.material.color;
-        Color hint = cm.hint;
-        yield return new WaitForSeconds(.1f);
-        rend.material.color = hint;
-        yield return new WaitForSeconds(.3f);
-        rend.material.color = def;
-        yield return new WaitForSeconds(.3f);
-        rend.material.color = hint;
-        yield return new WaitForSeconds(.3f);
-        rend.material.color = def;
-        hintRoutine = null;
     }
-
 }

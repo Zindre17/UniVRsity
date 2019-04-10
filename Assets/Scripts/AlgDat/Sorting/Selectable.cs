@@ -31,6 +31,8 @@ public abstract class Selectable : MonoBehaviour
         }
     }
 
+    public int Index { get; set; }
+
     internal abstract void SetActive(bool a);
     internal abstract void SetSelected(bool s);
     internal abstract void UpdateColor();

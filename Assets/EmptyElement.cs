@@ -12,7 +12,6 @@ public class EmptyElement : Selectable
 
 
     internal override void SetActive(bool a) {
-        throw new System.NotImplementedException();
     }
 
     internal override void SetSelected(bool s) {

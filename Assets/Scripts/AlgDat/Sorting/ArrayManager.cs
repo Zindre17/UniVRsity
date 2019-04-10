@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ArrayManager : MonoBehaviour
+public class ArrayManager : Selectable
 {
     public Transform arrayCenter;
 
@@ -15,7 +15,10 @@ public class ArrayManager : MonoBehaviour
 
     private readonly float movementMagnitude = 0.4f;
     private readonly float interval = .1f;
-    public readonly int index = -1;
+
+    private void Awake() {
+        Index = -1;
+    }
 
     private List<SortingElement> arrayToSort;
     private SortingElement stored;
@@ -26,23 +29,7 @@ public class ArrayManager : MonoBehaviour
     private Coroutine spawnRoutine = null;
     private Coroutine actionRoutine = null;
 
-    private ColorManager cm;
-    public Renderer rend;
-
-    public Hoverable hoverable;
-
-    private bool selected = false;
-    public bool Selected {
-        get { return selected; }
-        set {
-            if(selected != value) {
-                selected = value;
-                UpdateColor();
-            }
-        }
-    }
-
-    private void UpdateColor() {
+    internal override void UpdateColor() {
         if (cm == null)
             cm = ColorManager.instance;
         if (selected)
@@ -69,21 +56,6 @@ public class ArrayManager : MonoBehaviour
 
     public SortingElement Get(int index) {
         return arrayToSort[index];
-    }
-
-    private bool active = true;
-    public bool Active {
-        get { return active; }
-        set {
-            if (active != value) {
-                active = value;
-                UpdateElementStatus();
-                if (active)
-                    hoverable.Enable();
-                else
-                    hoverable.Disable();
-            }
-        }
     }
 
     private void UpdateElementStatus() {
@@ -132,30 +104,6 @@ public class ArrayManager : MonoBehaviour
         Get(index).Hint();
     }
 
-    private Coroutine hintRoutine;
-
-    public void Hint() {
-        if (hintRoutine != null) {
-            StopCoroutine(hintRoutine);
-        }
-        hintRoutine = StartCoroutine(HintAnimation());
-    }
-
-    private IEnumerator HintAnimation() {
-        UpdateColor();
-        Color def = rend.material.color;
-        Color hint = cm.hint;
-        yield return new WaitForSeconds(.1f);
-        rend.material.color = hint;
-        yield return new WaitForSeconds(.3f);
-        rend.material.color = def;
-        yield return new WaitForSeconds(.3f);
-        rend.material.color = hint;
-        yield return new WaitForSeconds(.3f);
-        rend.material.color = def;
-        hintRoutine = null;
-    }
-
     private IEnumerator EditArray() {
         int i;
         for(i = 0; i < spawnedElements; i++) {
@@ -198,5 +146,16 @@ public class ArrayManager : MonoBehaviour
         return Instantiate(elementPrefab,transform).GetComponent<SortingElement>();
     }
 
-    
+    internal override void SetActive(bool a) {
+        UpdateElementStatus();
+        if (active)
+            hoverable.Enable();
+        else
+            hoverable.Disable();
+    }
+
+    internal override void SetSelected(bool s) {
+        UpdateColor();
+    }
+
 }

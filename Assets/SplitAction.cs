@@ -3,7 +3,7 @@
 
     public SplitAction(int index) {
         array = index;
-        type = GameAction.GameActionType.Split;
+        type = GameActionType.Split;
     }
     public override bool EqualTo(GameAction other) {
         if (other == null) return false;

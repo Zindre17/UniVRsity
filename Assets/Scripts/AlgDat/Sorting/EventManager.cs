@@ -67,6 +67,9 @@ public class EventManager : MonoBehaviour {
     public delegate void MergeCompleteEvent();
     public static event MergeCompleteEvent OnMergeComplete;
 
+    public delegate void SelectionEvent(Selectable s);
+    public static event SelectionEvent OnSelection;
+
     private void Start() {
         if (laserOrigin == null)
             laserOrigin = transform;
@@ -92,6 +95,11 @@ public class EventManager : MonoBehaviour {
 
             if (IsSelecting() && Time.time - buttonPressBuffer > lastButtonPress) {
                 lastButtonPress = Time.time;
+                Selectable sl = hit.collider.GetComponentInParent<Selectable>();
+                if(sl != null) {
+                    if (OnSelection != null) OnSelection(sl);
+                    return;
+                }
                 UIButton b = hit.collider.GetComponentInParent<UIButton>();
                 if (b != null) {
                     b.Press();
