@@ -22,6 +22,7 @@ public class SortingManager : MonoBehaviour
     private List<SortingElement> selected;
     private List<PartialArray> paSelected;
     private ArrayManager arraySelected;
+    private List<EmptyElement> eSelected;
 
     private void Awake() {
         selected = new List<SortingElement>();
@@ -199,7 +200,8 @@ public class SortingManager : MonoBehaviour
     }
 
     public void Merge() {
-
+        action = new MergeAction(paSelected[0].Index, paSelected[1].Index);
+        DoAction();
     }
     
 

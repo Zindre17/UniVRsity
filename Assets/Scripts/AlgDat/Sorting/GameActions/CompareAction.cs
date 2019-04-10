@@ -2,6 +2,14 @@
 public class CompareAction : GameAction {
 
     public int index1, index2;
+    public int array1 = -2, array2 = -2;
+
+    public CompareAction(int _array1, int _index1, int _array2, int _index2) {
+        array1 = _array1;
+        index1 = _index1;
+        array2 = _array2;
+        index2 = _index2;
+    }
 
     public CompareAction(int _index1, int _index2) {
         type = GameActionType.Compare;

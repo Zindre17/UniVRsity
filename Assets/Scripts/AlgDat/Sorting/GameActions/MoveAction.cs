@@ -1,6 +1,13 @@
 ﻿
 public class MoveAction : PartialGameAction {
-    public int source, target;
+    public int source, target, array;
+
+    public MoveAction(int _array, int _source, int _target) {
+        source = _source;
+        array = _array;
+        target = _target;
+        type = GameActionType.Move;
+    }
 
     public MoveAction(int _source, int _target) {
         target = _target;

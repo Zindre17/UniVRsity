@@ -3336,6 +3336,8 @@ MonoBehaviour:
   storage: {fileID: 1065465612}
   partialArrayPrefab: {fileID: 5352886050463258089, guid: 5e971801db0a0a94eaa9e5850fcdc744,
     type: 3}
+  CombinedArrayPrefab: {fileID: 7203685675114778540, guid: e53fdbf8d5e46d044ab8acb55c505976,
+    type: 3}
   anim: {fileID: 800089897}
   backWall: {fileID: 1294369759}
 --- !u!114 &800089897
@@ -3351,7 +3353,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   backWall: {fileID: 1294369756}
-  origin: {fileID: 1294369757}
 --- !u!1 &860627782
 GameObject:
   m_ObjectHideFlags: 0

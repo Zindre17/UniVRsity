@@ -16,6 +16,7 @@ public class PartialArray : MonoBehaviour
     public ArrayManager original;
 
     private List<SortingElement> array;
+    private SortingElement expansion;
 
     private Vector3 origSize;
 
@@ -114,6 +115,49 @@ public class PartialArray : MonoBehaviour
         Adjust();
     }
 
+    public SortingElement GetExpansion() {
+        return expansion;
+    }
+    public void Expand() {
+        expansion.gameObject.SetActive(true);
+        StartCoroutine(ExpansionAnimation());
+    }
+
+    private IEnumerator ExpansionAnimation() {
+        float prevTime = Time.time;
+        float elapsed = 0f;
+        float percent;
+        float duration = .5f;
+        List<Vector3> starts = new List<Vector3>(Size);
+        List<Vector3> paths = new List<Vector3>(Size);
+        Vector3 start = expansion.transform.localScale;
+        Vector3 boxStart = box.transform.localScale;
+        Vector3 addition = new Vector3(.5f, 0, 0);
+        int i;
+        for (i = 0; i < Size; i++) {
+            starts.Add(array[i].transform.localPosition);
+            paths.Add(GetPosition(i, true) - starts[i]);
+        }
+        while(elapsed < duration) {
+            percent = elapsed / duration;
+            for(i = 0; i < Size; i++) {
+                array[i].transform.localPosition = starts[i] + paths[i] * percent;
+            }
+            expansion.transform.localScale = start * percent;
+            box.transform.localScale = boxStart + addition * percent;
+            float time = Time.time;
+            elapsed += time - prevTime;
+            prevTime = time;
+            yield return null;
+        }
+        box.transform.localScale = boxStart + addition;
+        expansion.transform.localScale = start;
+        for(i = 0; i< Size; i++) {
+            array[i].transform.localPosition = starts[i] + paths[i];
+        }
+
+    }
+
     private void Adjust() {
         AdjustArray();
         AdjustBox();
@@ -128,13 +172,16 @@ public class PartialArray : MonoBehaviour
         for(int i = 0; i < Size; i++) {
             array[i].Size = original.Get(i + Start).Size;
             array[i].Index = Start + i;
-            array[i].transform.position = GetPosition(i);
+            array[i].transform.localPosition = GetPosition(i, false);
         }
+        expansion.Size = 20;
+        expansion.transform.localPosition = GetPosition(array.Count, true);
     }
 
-    private Vector3 GetPosition(int index) {
-        float i = Size % 2 == 0 ? 0.5f - Size/ 2 : -Size/ 2;
-        return center.position + new Vector3((index + i) * movementMagnitude, 0, 0);
+    private Vector3 GetPosition(int index, bool expanded) {
+        int s = Size + (expanded ? 1 : 0);
+        float i = s % 2 == 0 ? 0.5f - s/ 2 : -s/ 2;
+        return center.localPosition + new Vector3((index + i) * movementMagnitude, 0, 0);
     }
 
 
@@ -145,6 +192,11 @@ public class PartialArray : MonoBehaviour
             SortingElement s = Instantiate(elementPrefab, transform).GetComponent<SortingElement>();
             s.gameObject.SetActive(false);
             array.Add(s);
+        }
+        if (expansion == null) {
+            SortingElement e = Instantiate(elementPrefab, transform).GetComponent<SortingElement>();
+            e.gameObject.SetActive(false);
+            expansion = e;
         }
     }
 

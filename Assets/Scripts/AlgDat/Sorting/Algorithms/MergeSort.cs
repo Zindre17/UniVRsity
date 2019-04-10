@@ -53,11 +53,11 @@ public class MergeSort : SortingAlgorithm {
             _MergeSort(a, p, q, nextLeft, true);
             _MergeSort(a, q+1, r, nextRight, false);
             actions.Add(new MergeAction(nextLeft, nextRight));
-            Merge(a, p, q, r);
+            Merge(a, p, q, r, nextLeft, nextRight);
         }
     }
 
-    private void Merge(int[] a, int p, int q, int r) {
+    private void Merge(int[] a, int p, int q, int r, int leftArray, int rightArray) {
         int n1 = q - p + 1;
         int n2 = r - q;
         int[] L = new int[n1 + 1];
@@ -72,10 +72,13 @@ public class MergeSort : SortingAlgorithm {
         i = 0;
         j = 0;
         for (int k = p; k < r; k++) {
+            actions.Add(new CompareAction(leftArray, i, rightArray, j));
             if (L[i] <= R[j]) {
+                actions.Add(new MoveAction(leftArray, i, -2));
                 a[k] = L[i];
                 i++;
             } else {
+                actions.Add(new MoveAction(rightArray, j, -2));
                 a[k] = R[j];
                 j++;
             }

@@ -7,11 +7,13 @@ public class Arrays : MonoBehaviour
     public ArrayManager array;
     public StorageManager storage;
     public GameObject partialArrayPrefab;
+    public GameObject CombinedArrayPrefab;
     public ElementAnimator anim;
     public Renderer backWall;
 
     private List<PartialArray> splits;
     private List<Split> layers;
+    private CombinedArray mergeArray;
     private Split current;
     private Split Current {
         get { return current; }
@@ -187,8 +189,8 @@ public class Arrays : MonoBehaviour
             a.Init(array, toSplit.Start, toSplit.Start + mid, splits.Count);
             b.Init(array, toSplit.Start + mid, toSplit.End, splits.Count +1);
             midPos = toSplit.transform.position;
-            leftOffset = new Vector3(-toSplit.transform.localScale.x/(float)toSplit.Size*a.Size, 0f, 0f);
-            rightOffset = new Vector3(toSplit.transform.localScale.x/(float)toSplit.Size * b.Size, 0f, 0f);
+            leftOffset = new Vector3(-toSplit.Size/4f + a.Size/4f - spacing, 0f, 0f);
+            rightOffset = new Vector3(toSplit.Size/4f - b.Size/4f + spacing, 0f, 0f);
             a.transform.position = midPos + leftOffset;
             b.transform.position = midPos + rightOffset;
         }
@@ -196,25 +198,43 @@ public class Arrays : MonoBehaviour
         splits.Add(b);
         Split split = new Split(a, b);
         Current = split;
-        anim.Split(array, split, layers);
+        layers.Add(current);
+        anim.Split(array, layers);
     }
 
     public void Merge(MergeAction action) {
-        //add inf to end of both active arrays
-
+        // move the current split apart from eachother
+        // spawn a new blank array between combined size
+        // set the first element in both the splits as infocus
+        // 
+        mergeArray = Instantiate(CombinedArrayPrefab, transform).GetComponent<CombinedArray>();
+        int s = current.Left.Size + current.Right.Size;
+        mergeArray.Init(s);
+        Vector3 pos = (current.Right.transform.position - current.Left.transform.position) / 2f + current.Left.transform.position;
+        mergeArray.transform.position = pos;
+        mergeArray.gameObject.SetActive(false);
+        anim.Merge(current, mergeArray);
     }
 
     public string Compare(CompareAction action) {
         SortingElement s1, s2;
-        if (action.index1 == -1)
-            s1 = storage.Get();
-        else
-            s1 = array.Get(action.index1);
-        if (action.index2 == -1)
-            s2 = storage.Get();
-        else
-            s2 = array.Get(action.index2);
+        if(action.array1 == -2) {
+            if (action.index1 == -1)
+                s1 = storage.Get();
+            else
+                s1 = array.Get(action.index1);
+        } else {
+            s1 = splits[action.array1].Get(action.index1);
+        }
 
+        if(action.array2 == -2) {
+            if (action.index2 == -1)
+                s2 = storage.Get();
+            else
+                s2 = array.Get(action.index2);
+        } else {
+            s2 = splits[action.array2].Get(action.index2);
+        }
         anim.Compare(s1, s2);
 
         if (s1.Index == -1) {
@@ -261,11 +281,16 @@ public class Arrays : MonoBehaviour
 
     public void CopyTo(MoveAction action) {
         SortingElement s1, s2;
-        if (action.source == -1)
-            s1 = storage.Get();
-        else
-            s1 = array.Get(action.source);
-        s2 = array.Get(action.target);
+        if (action.array == -2) {
+            if (action.source == -1)
+                s1 = storage.Get();
+            else
+                s1 = array.Get(action.source);
+            s2 = array.Get(action.target);
+        } else {
+            s1 = splits[action.array].Get(action.source);
+            s2 = mergeArray.Replace();
+        }
         anim.CopyTo(s1, s2);
     }
 }

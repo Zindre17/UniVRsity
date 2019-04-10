@@ -20,11 +20,47 @@ public class ElementAnimator : MonoBehaviour
         backWall.transform.localPosition = new Vector3(0,5,10);
     }
 
-    public void Split(ArrayManager array, Split split, List<Split> splits) {
-        routine = StartCoroutine(SplitAnimation(array, split, splits));
+    public void Merge(Split split, CombinedArray combined) {
+        routine = StartCoroutine(MergeAnimation(split, combined));
     }
 
-    private IEnumerator SplitAnimation(ArrayManager array, Split split ,List<Split> splits) {
+    private IEnumerator MergeAnimation(Split split, CombinedArray array) {
+        float prevTime = Time.time;
+        float duration = .6f;
+        float elapsed = 0f;
+        float percent;
+        Vector3 path = new Vector3((split.Left.Size + split.Right.Size) / 2f, 0, 0);
+        Vector3 leftStart = split.Left.transform.position;
+        Vector3 rightStart = split.Right.transform.position;
+        Vector3 size = array.transform.localScale;
+        array.transform.localScale = Vector3.zero;
+        array.gameObject.SetActive(true);
+        split.Left.Expand();
+        split.Right.Expand();
+
+        while (elapsed < duration) {
+            percent = elapsed / duration;
+            array.transform.localScale = size * percent;
+            split.Left.transform.position = leftStart - path * percent;
+            split.Right.transform.position = rightStart + path * percent;
+            float time = Time.time;
+            elapsed += time - prevTime;
+            prevTime = time;
+            yield return null;
+        }
+        array.transform.localScale = size;
+        split.Left.transform.position = leftStart - path;
+        split.Right.transform.position = rightStart + path;
+
+        routine = null;
+        EventManager.ActionCompleted();
+    }
+
+    public void Split(ArrayManager array, List<Split> splits) {
+        routine = StartCoroutine(SplitAnimation(array, splits));
+    }
+
+    private IEnumerator SplitAnimation(ArrayManager array, List<Split> splits) {
         float prevTime = Time.time;
         float duration = .6f;
         float elapsed = 0f;
@@ -33,10 +69,13 @@ public class ElementAnimator : MonoBehaviour
         Vector3 wStart = backWall.transform.position;
         Vector3 path = Vector3.forward * 1.5f;
         List<Vector3> starts = null;
+        Split s;
+        int i;
         if(splits != null) {
             if (splits.Count != 0) {
                 starts = new List<Vector3>(splits.Count * 2 - 1);
-                foreach (Split s in splits) {
+                for (i = 0; i < splits.Count - 1; i++) {
+                    s = splits[i];
                     starts.Add(s.Left.transform.position);
                     starts.Add(s.Right.transform.position);
                 }
@@ -48,10 +87,12 @@ public class ElementAnimator : MonoBehaviour
             array.transform.position = aStart + path * percent;
             backWall.transform.position = wStart + path * percent;
             if (splits != null) {
-                int i = 0;
-                foreach(Split s in splits) {
-                    s.Left.transform.position = starts[i * 2] + path * percent;
-                    s.Right.transform.position = starts[i * 2 + 1] + path * percent;
+                if (splits.Count != 0) {
+                    for (i = 0; i < splits.Count -1; i++) {
+                        s = splits[i];
+                        s.Left.transform.position = starts[i * 2] + path * percent;
+                        s.Right.transform.position = starts[i * 2 + 1] + path * percent;
+                    }
                 }
             }
             float time = Time.time;
@@ -62,14 +103,15 @@ public class ElementAnimator : MonoBehaviour
         array.transform.position = aStart + path;
         backWall.transform.position = wStart + path;
         if (splits != null) {
-            int i = 0;
-            foreach (Split s in splits) {
-                s.Left.transform.position = starts[i * 2] + path;
-                s.Right.transform.position = starts[i * 2 + 1] + path;
+            if (splits.Count != 0) {
+                for (i = 0; i < splits.Count - 1; i++) {
+                    s = splits[i];
+                    s.Left.transform.position = starts[i * 2] + path;
+                    s.Right.transform.position = starts[i * 2 + 1] + path;
+                }
             }
         }
-        splits.Add(split);
-        split.Show();
+        splits[splits.Count - 1].Show();
         routine = null;
         EventManager.ActionCompleted();
     }

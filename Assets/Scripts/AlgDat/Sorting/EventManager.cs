@@ -61,6 +61,12 @@ public class EventManager : MonoBehaviour {
     public delegate void ArrayInFocusChanged(int array,int start, int end);
     public static event ArrayInFocusChanged OnArrayInFocusChanged;
 
+    public delegate void EmptySelectEvent(EmptyElement e);
+    public static event EmptySelectEvent OnEmptySelect;
+
+    public delegate void MergeCompleteEvent();
+    public static event MergeCompleteEvent OnMergeComplete;
+
     private void Start() {
         if (laserOrigin == null)
             laserOrigin = transform;
@@ -96,6 +102,11 @@ public class EventManager : MonoBehaviour {
                     if(OnSelect != null) OnSelect(s);
                     return;
                 }
+                EmptyElement e = hit.collider.GetComponentInParent<EmptyElement>();
+                if (e != null) {
+                    if (OnEmptySelect != null) OnEmptySelect(e);
+                    return;
+                }
                 ArrayManager a = hit.collider.GetComponentInParent<ArrayManager>();
                 if (a != null) {
                     if (OnArraySelect != null && a.Active) OnArraySelect(a);
@@ -123,6 +134,10 @@ public class EventManager : MonoBehaviour {
             }
 
         } 
+    }
+
+    public void MergeComplete() {
+        if (OnMergeComplete != null) OnMergeComplete();
     }
 
     private bool IsSelecting() {
