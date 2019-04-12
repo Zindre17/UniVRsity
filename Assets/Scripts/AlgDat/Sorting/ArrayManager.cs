@@ -40,7 +40,9 @@ public class ArrayManager : Selectable
     }
 
     private void Start() {
-        hoverable.Disable();
+        if (arrayToSort == null)
+            arrayToSort = new List<SortingElement>(arrayLength);
+        Active = false;
     }
 
     private bool inFocus = true;

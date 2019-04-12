@@ -104,21 +104,9 @@ public class Arrays : MonoBehaviour
 
     public void Complete() {
         int i;
-        if(current == null) {
-            FocusChanged(-1, 0, array.Size);
-            for(i = 0; i < array.Size; i++) {
-                array.Get(i).Active = false;
-            }
-        } else {
-            FocusChanged(current.Left.Index, 0, current.Left.Size);
-            for (i = 0; i < current.Left.Size; i++) {
-                current.Left.Get(i).Active = false;
-            }
-            FocusChanged(current.Right.Index, 0, current.Right.Size);
-            for (i = 0; i < current.Right.Size; i++) {
-                current.Right.Get(i).Active = false;
-            }
-        }
+        array.Active = false;
+        array.InFocus = true;
+        anim.Stop();
         storage.Stop();
     }
 
@@ -299,54 +287,6 @@ public class Arrays : MonoBehaviour
         mergeArray.transform.position = pos;
         mergeArray.gameObject.SetActive(false);
         anim.Merge(current, mergeArray);
-    }
-
-    public string Compare(CompareAction action) {
-        SortingElement s1, s2;
-        if(action.array1 < 0) {
-            if (action.index1 == -1)
-                s1 = storage.Get();
-            else
-                s1 = array.Get(action.index1);
-        } else {
-            s1 = splits[action.array1].Get(action.index1);
-        }
-
-        if(action.array2 < 0) {
-            if (action.index2 == -1)
-                s2 = storage.Get();
-            else
-                s2 = array.Get(action.index2);
-        } else {
-            s2 = splits[action.array2].Get(action.index2);
-        }
-        anim.Compare(s1, s2);
-
-        if (s1.Index == -1) {
-            if (s1.Size > s2.Size) {
-                return string.Format("stored > A[{0}]", s2.Index);
-            } else if (s1.Size == s2.Size) {
-                return string.Format("stored == A[{0}]", s2.Index);
-            } else {
-                return string.Format("stored < A[{0}]", s2.Index);
-            }
-        } else if (s2.Index == -1) {
-            if (s2.Size > s1.Size) {
-                return string.Format("stored > A[{0}]", s1.Index);
-            } else if (s1.Size == s2.Size) {
-                return string.Format("stored == A[{0}]", s1.Index);
-            } else {
-                return string.Format("stored < A[{0}]", s1.Index);
-            }
-        } else {
-            if (s1.Size > s2.Size) {
-                return string.Format("A[{0}] > A[{1}]", s1.Index, s2.Index);
-            } else if (s1.Size == s2.Size) {
-                return string.Format("A[{0}] == A[{1}]", s1.Index, s2.Index);
-            } else {
-                return string.Format("A[{0}] < A[{1}]", s1.Index, s2.Index);
-            }
-        }
     }
 
     public void Swap(SwapAction action) {

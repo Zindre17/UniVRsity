@@ -8,7 +8,6 @@ public class ElementAnimator : MonoBehaviour
     private Coroutine routine;
     private readonly float movementMagnitude = 0.4f;
 
-    private SortingElement compared1, compared2;
     private SortingElement prevPivot;
 
     public void Stop() {
@@ -16,10 +15,12 @@ public class ElementAnimator : MonoBehaviour
             StopCoroutine(routine);
             routine = null;
         }
-        compared1 = compared2 = prevPivot = null;
         backWall.transform.localPosition = new Vector3(0,5,10);
+        if (prevPivot != null)
+            prevPivot.Pivot = false;
     }
 
+    #region Merge
     public void MergeComplete(ArrayManager array, List<PartialArray> splits, Split split, CombinedArray combined) {
         routine = StartCoroutine(MergeCompleteAnimation(array, splits, split, combined));
     }
@@ -114,7 +115,9 @@ public class ElementAnimator : MonoBehaviour
         routine = null;
         EventManager.ActionCompleted();
     }
+    #endregion
 
+    #region Split
     public void Split(ArrayManager array, List<Split> splits) {
         routine = StartCoroutine(SplitAnimation(array, splits));
     }
@@ -174,6 +177,8 @@ public class ElementAnimator : MonoBehaviour
         routine = null;
         EventManager.ActionCompleted();
     }
+
+    #endregion
 
     #region Swap
 
@@ -281,122 +286,6 @@ public class ElementAnimator : MonoBehaviour
             prevPivot = s1;
         }
 
-        routine = null;
-        EventManager.ActionCompleted();
-    }
-
-    #endregion
-
-    #region Compare
-    public void Compare(SortingElement s1, SortingElement s2) {
-        
-        routine = StartCoroutine(CompareAnimation(s1, s2));
-
-        
-    }
-
-    private IEnumerator DecompareAnimation(SortingElement s1, SortingElement s2) {
-        float prevTime = Time.time;
-        float duration = .3f;
-        float elapsed = 0f;
-        Vector3 path = Vector3.forward * movementMagnitude;
-        Vector3 s1Start, s2Start;
-        if (s1 != null)
-            s1Start = s1.transform.position;
-        else
-            s1Start = Vector3.zero;
-        if (s2 != null)
-            s2Start = s2.transform.position;
-        else
-            s2Start = Vector3.zero;
-        float percent;
-        while(elapsed < duration) {
-            percent = elapsed / duration;
-            if (s1 != null)
-                s1.transform.position = s1Start + path * percent;
-            if (s2 != null)
-                s2.transform.position = s2Start + path * percent;
-
-            float time = Time.time;
-            elapsed += time - prevTime;
-            prevTime = time;
-            yield return null;
-        }
-        if (s1 != null)
-            s1.transform.position = s1Start + path;
-        if (s2 != null)
-            s2.transform.position = s2Start + path;
-        routine = null;
-        EventManager.ActionCompleted();
-    }
-
-    private IEnumerator CompareAnimation(SortingElement s1, SortingElement s2) {
-        bool decompare1, decompare2, compare1, compare2;
-        compare1 = compare2 = true;
-        decompare1 = decompare2 = false;
-        if (compared1 != null) {
-            decompare1 = decompare2 = true;
-            if (s1.Index == compared1.Index) {
-                decompare1 = false;
-                compare1 = false;
-            }
-            if (s1.Index == compared2.Index) {
-                decompare2 = false;
-                compare1 = false;
-            }
-            if (s2.Index == compared1.Index) {
-                decompare1 = false;
-                compare2 = false;
-            }
-            if (s2.Index == compared2.Index) {
-                decompare2 = false;
-                compare2 = false;
-            }
-        }
-        float prevTime = Time.time;
-        float duration = .3f;
-        float elapsed = 0f;
-
-        Vector3 path = -Vector3.forward * movementMagnitude;
-        Vector3 s1Start, s2Start, d1Start, d2Start;
-        s1Start = s1.transform.position;
-        s2Start = s2.transform.position;
-        d1Start = compared1 == null ? Vector3.zero : compared1.transform.position;
-        d2Start = compared2 == null ? Vector3.zero : compared2.transform.position;
-
-        while (elapsed < duration) {
-            float percent = elapsed / duration;
-            if (compare1) {
-                s1.transform.position = s1Start + path * percent;
-            }
-            if (compare2) {
-                s2.transform.position = s2Start + path * percent;
-            }
-            if (decompare1) {
-                compared1.transform.position = d1Start - path * percent;
-            }
-            if (decompare2) {
-                compared2.transform.position = d2Start - path * percent;
-            }
-            float time = Time.time;
-            elapsed += time - prevTime;
-            prevTime = time;
-            yield return null;
-        }
-        if (compare1) {
-            s1.transform.position = s1Start + path;
-        }
-        if (compare2) {
-            s2.transform.position = s2Start + path;
-        }
-        if (decompare1) {
-            compared1.transform.position = d1Start - path;
-        }
-        if (decompare2) {
-            compared2.transform.position = d2Start - path;
-        }
-        compared1 = s1;
-        compared2 = s2;
         routine = null;
         EventManager.ActionCompleted();
     }

@@ -10,6 +10,7 @@ public class SortingManager : MonoBehaviour
     public MessagesManager message;
     public ActionManager actions;
     public MenuManager menu;
+    public Comparison comparison;
 
     private SortingAlgorithm alg;
 
@@ -186,7 +187,7 @@ public class SortingManager : MonoBehaviour
     private void ResetUI() {
         title.SetTitle(alg.GetName());
         message.SetMessage("");
-        state.SetCompare("");
+        comparison.Clear();
         state.SetState(alg.GetState());
         string[] pseudo = alg.GetPseudo();
         if (pseudo.Length > 1)
@@ -203,7 +204,7 @@ public class SortingManager : MonoBehaviour
     private void ClearUI() {
         title.SetTitle("Sorting room");
         message.SetMessage("");
-        state.SetCompare("");
+        comparison.Clear();
         state.SetState("");
         state.SetCode1("");
         state.SetCode2("");
@@ -238,14 +239,11 @@ public class SortingManager : MonoBehaviour
     private void DoAction() {
         if (alg.CorrectAction(action)) {
             performingAction = true;
-            if(action.type != GameAction.GameActionType.Compare) {
-                ClearSelections();
-                state.SetCompare("");
-            }
+            comparison.Clear();
             //todo: this can be replaced by using GameActions as parameter in the functions...
             switch (action.type) {
                 case GameAction.GameActionType.Compare:
-                    state.SetCompare(arrays.Compare((CompareAction)action));
+                    comparison.Compare((SortingElement)selected[0], (SortingElement)selected[1]);
                     break;
                 case GameAction.GameActionType.Swap:
                     arrays.Swap((SwapAction)action);
@@ -266,6 +264,7 @@ public class SortingManager : MonoBehaviour
                     arrays.Merge((MergeAction)action);
                     break;
             }
+            ClearSelections();
         } else {
             partialAction = false;
             performingAction = false;

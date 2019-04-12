@@ -6,7 +6,6 @@ public class StateManager : MonoBehaviour
     public TextMeshPro state;
     public TextMeshPro pseudo1;
     public TextMeshPro pseudo2;
-    public TextMeshPro compare;
 
     public GameObject extension;
 
@@ -26,7 +25,4 @@ public class StateManager : MonoBehaviour
         pseudo2.text = c;
     }
 
-    public void SetCompare(string c) {
-        compare.text = c;
-    }
 }
