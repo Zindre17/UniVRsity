@@ -21,10 +21,7 @@ public class ArrayManager : Selectable
     }
 
     private List<SortingElement> arrayToSort;
-    private SortingElement stored;
     private SortingElement prevPivot;
-    private SortingElement compared1;
-    private SortingElement compared2;
 
     private Coroutine spawnRoutine = null;
     private Coroutine actionRoutine = null;
@@ -87,14 +84,10 @@ public class ArrayManager : Selectable
         transform.localPosition = Vector3.zero;
         Active = true;
         InFocus = true;
-        if (compared1 != null) 
-            compared1 = compared2 = null;
         if(prevPivot != null) {
             prevPivot.Pivot = false;
             prevPivot = null;
         }
-        if(stored != null)
-            stored.gameObject.SetActive(false);
         if (spawnedElements < arrayLength)
             SpawnArray();
         if (spawnRoutine != null) 

@@ -38,6 +38,11 @@ public class PartialArray : Selectable
         }
     }
 
+    private void OnDestroy() {
+        if (routine != null)
+            StopCoroutine(routine);
+    }
+
     public SortingElement Get(int index) {
         if (index >= Size)
             return expansion;
@@ -73,6 +78,7 @@ public class PartialArray : Selectable
             array[i].gameObject.SetActive(true);
             yield return new WaitForSeconds(interval);
         }
+        routine = null;
     }
 
     public void Init(ArrayManager _array, int _start, int _end, int _index) {
@@ -92,7 +98,7 @@ public class PartialArray : Selectable
     public void Expand() {
         text.text = Index % 2 == 0 ? "L" : "R";
         expansion.gameObject.SetActive(true);
-        StartCoroutine(ExpansionAnimation());
+        routine = StartCoroutine(ExpansionAnimation());
     }
 
     private IEnumerator ExpansionAnimation() {
@@ -129,6 +135,7 @@ public class PartialArray : Selectable
             array[i].transform.localPosition = starts[i] + paths[i];
         }
         expansion.Size = 20;
+        routine = null;
     }
 
     private void Adjust() {

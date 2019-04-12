@@ -5,7 +5,6 @@ using UnityEngine;
 public class Play : MonoBehaviour
 {
     public DStack Stack;
-    public GameObject Queue;
     public GameObject LinkedList;
     public GameObject scene;
 
@@ -35,7 +34,6 @@ public class Play : MonoBehaviour
             Stack.Queue = false;
         if (queue)
             Stack.Queue = true;
-        Queue.SetActive(false);
         LinkedList.SetActive(linked);
     }
 

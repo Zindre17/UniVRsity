@@ -36,8 +36,6 @@ public class Arrays : MonoBehaviour
     private readonly int size = 7;
     public int Size { get { return size; } }
 
-    private Vector3 splitPath = Vector3.forward*.5f;
-
     public SortingElement Get(int index) {
         return array.Get(index);
     }

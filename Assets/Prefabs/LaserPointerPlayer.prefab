@@ -272,6 +272,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2638322939695799268}
   - component: {fileID: 4192321196823251321}
+  - component: {fileID: 7714732685124564120}
   m_Layer: 0
   m_Name: LaserPointerPlayer
   m_TagString: Untagged
@@ -327,6 +328,19 @@ MonoBehaviour:
     actionPath: /actions//in/HeadsetOnHead
     needsReinit: 1
   allowToggleTo2D: 1
+--- !u!114 &7714732685124564120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1892328308688941572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f3e40c755bed3247b62b02df6dd3744, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  beam: {fileID: 3404443915135835529}
 --- !u!1 &2420194550052304887
 GameObject:
   m_ObjectHideFlags: 0
@@ -1661,11 +1675,18 @@ PrefabInstance:
       propertyPath: pointer
       value: 
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2143041160589368462, guid: 8b983365740804748ae0cb523323a04a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 8b983365740804748ae0cb523323a04a, type: 3}
 --- !u!4 &6179722079486114576 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6179722078706387535, guid: 8b983365740804748ae0cb523323a04a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1904652639}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3404443915135835529 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3404443917006925014, guid: 8b983365740804748ae0cb523323a04a,
     type: 3}
   m_PrefabInstance: {fileID: 1904652639}
   m_PrefabAsset: {fileID: 0}

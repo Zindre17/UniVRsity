@@ -42,7 +42,6 @@ public class MergeSort : SortingAlgorithm {
     }
 
     private int currentArray = -1;
-    private List<int> splits = new List<int>();
 
     private void _MergeSort(int[] a, int p, int r, int current, bool left) {
         if (p < r) {

@@ -37,11 +37,11 @@ public class UseCase : MonoBehaviour
 
     private void Awake() {
         algorithm = new RegionGrowAlgorithm(resolution, data);
-        EventHandler.OnSeedChanged += ReSeed;
+        EventManager.OnSeedChanged += ReSeed;
     }
 
     private void OnDestroy() {
-        EventHandler.OnSeedChanged -= ReSeed;
+        EventManager.OnSeedChanged -= ReSeed;
     }
 
     private void ReSeed(int index) {

@@ -5,7 +5,6 @@ public class StaticLaser : MonoBehaviour
 {
     public GameObject laser;
     private readonly float thickness = 0.01f;
-    private readonly float maxLength = 1f;
 
     public void Hide() {
         transform.localScale = Vector3.zero;

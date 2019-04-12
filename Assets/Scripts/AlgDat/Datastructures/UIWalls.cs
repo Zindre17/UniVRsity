@@ -8,11 +8,11 @@ public class UIWalls : MonoBehaviour
     public GameObject actions;
 
     private void OnEnable() {
-        EventHandler.OnModeChanged += ChangeMode;
+        EventManager.OnModeChanged += ChangeMode;
     }
 
     private void OnDisable() {
-        EventHandler.OnModeChanged -= ChangeMode;
+        EventManager.OnModeChanged -= ChangeMode;
     }
 
     public void ChangeMode(Stage.Mode mode) {

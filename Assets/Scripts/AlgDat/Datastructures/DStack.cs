@@ -13,7 +13,6 @@ public class DStack : MonoBehaviour
     private List<StructureItem> structure = new List<StructureItem>();
     private int size = 0;
     private readonly int limit = 10;
-    private bool isAnimating = false;
     private bool queue = false;
     public bool Queue {
         get { return queue; }
@@ -38,7 +37,6 @@ public class DStack : MonoBehaviour
 
     private void Restart() {
         size = 0;
-        isAnimating = false;
         for(int i = structure.Count-1; i> -1; i--) {
             StructureItem a = structure[i];
             structure.Remove(a);
@@ -84,7 +82,6 @@ public class DStack : MonoBehaviour
             origSize = o.transform.localScale;
             width = i.Width;
         }
-        isAnimating = true;
         if(i != null) {
             i.Value = value;
         }
@@ -127,7 +124,6 @@ public class DStack : MonoBehaviour
                 yield return null;
             }
         }
-        isAnimating = false;
         Destroy(o);
     }
 
@@ -162,6 +158,5 @@ public class DStack : MonoBehaviour
             }
             Destroy(i.gameObject);
         } 
-        isAnimating = false;
     }
 }

@@ -27,11 +27,11 @@ public class ImageHandler : MonoBehaviour
     }
 
     private void OnEnable() {
-        EventHandler.OnPixelSelected += SelectPixel;
+        EventManager.OnPixelSelected += SelectPixel;
     }
 
     private void OnDisable() {
-        EventHandler.OnPixelSelected -= SelectPixel;
+        EventManager.OnPixelSelected -= SelectPixel;
     }
 
     private void UpdateMeasurement() {
@@ -90,7 +90,7 @@ public class ImageHandler : MonoBehaviour
             lastDark.Seed = true;
             Seed = lastDark;
         }
-        EventHandler.ChangeSeed(Seed.index);
+        EventManager.ChangeSeed(Seed.index);
     }
 
     public void Hint(int index, Action function = null) {
