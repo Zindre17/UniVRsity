@@ -141,8 +141,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fab466bc723b4024890890c6859c9a43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionSet: {fileID: 11400000, guid: 67cd9fd64b7eb73429ebd01aa9760b26, type: 2}
-  a_select: {fileID: 11400000, guid: 3113de51a1d06c64090f40bb8f170821, type: 2}
+  actionSet:
+    actionSetPath: /actions/selection
+  a_select:
+    actionPath: /actions/selection/in/select
+    needsReinit: 0
   pointer: {fileID: 1177895179}
   maxDistance: 15
 --- !u!4 &29167437
@@ -611,19 +614,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2abf948f184be34b87fa685dcf9d0be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inactive: {r: 0, g: 0, b: 0, a: 0}
+  selected: {r: 0.15686275, g: 0.69411767, b: 0.74509805, a: 1}
+  hint: {r: 0.5529412, g: 0.8862745, b: 0.12156863, a: 1}
+  button: {r: 0.5882353, g: 0.83137256, b: 0.85882354, a: 1}
+  inProgress: {r: 0, g: 0, b: 0, a: 0}
+  toggleButtonOn: {r: 0.19607843, g: 0.69803923, b: 0.5764706, a: 1}
+  toggleButtonOff: {r: 1, g: 1, b: 1, a: 1}
   light: {r: 0.8980392, g: 0.8980392, b: 0.8980392, a: 1}
   dark: {r: 0.25882354, g: 0.25882354, b: 0.25882354, a: 1}
-  selected: {r: 0.15686275, g: 0.69411767, b: 0.74509805, a: 1}
   visited: {r: 0.9529412, g: 0.9529412, b: 0.9529412, a: 1}
   seed: {r: 0.21568628, g: 0.8666667, b: 0.11764706, a: 1}
   pattern: {r: 0.9137255, g: 0.52156866, b: 0.11764706, a: 1}
   unvisited: {r: 0.7294118, g: 0.7294118, b: 0.7294118, a: 0.5176471}
   added: {r: 0.21960784, g: 0.25882354, b: 0.44313726, a: 1}
   next: {r: 0.90588236, g: 0.78431374, b: 0.1254902, a: 1}
-  hint: {r: 0.5529412, g: 0.8862745, b: 0.12156863, a: 1}
-  button: {r: 0.5882353, g: 0.83137256, b: 0.85882354, a: 1}
-  toggleButtonOn: {r: 0.19607843, g: 0.69803923, b: 0.5764706, a: 1}
-  toggleButtonOff: {r: 1, g: 1, b: 1, a: 1}
+  element: {r: 0, g: 0, b: 0, a: 0}
+  pivot: {r: 0, g: 0, b: 0, a: 0}
+  correct: {r: 0, g: 0, b: 0, a: 0}
 --- !u!4 &1137334042
 Transform:
   m_ObjectHideFlags: 0
@@ -662,6 +670,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9e13f8d83f4af64aa988df7bb128f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hoverable: {fileID: 0}
   onButtonPressed:
     m_PersistentCalls:
       m_Calls:
@@ -679,6 +688,7 @@ MonoBehaviour:
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 116215586}
+  multistep: 0
 --- !u!1001 &1861084146
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -690,6 +700,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: LaserPointerPlayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 1892328308688941572, guid: 8c57d32ab8e7f8f4a926be4660abaa19,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2638322939695799268, guid: 8c57d32ab8e7f8f4a926be4660abaa19,
         type: 3}

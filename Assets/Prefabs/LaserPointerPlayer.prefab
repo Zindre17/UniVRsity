@@ -213,10 +213,18 @@ MonoBehaviour:
   otherHand: {fileID: 0}
   handType: 0
   trackedObject: {fileID: 0}
-  grabPinchAction: {fileID: 11400000, guid: 95d19155cea686f44ba92e6459d2b41d, type: 2}
-  grabGripAction: {fileID: 11400000, guid: 1ac4cf4525e4c994dbe21a5a4bc8cad4, type: 2}
-  hapticAction: {fileID: 11400000, guid: cc97948fbadf4914b8a2f8106ae5ace1, type: 2}
-  uiInteractAction: {fileID: 11400000, guid: 632658e2d034167439a0298b5d392b5d, type: 2}
+  grabPinchAction:
+    actionPath: /actions/default/in/GrabPinch
+    needsReinit: 0
+  grabGripAction:
+    actionPath: /actions/default/in/GrabGrip
+    needsReinit: 0
+  hapticAction:
+    actionPath: /actions/default/out/Haptic
+    needsReinit: 0
+  uiInteractAction:
+    actionPath: /actions/default/in/InteractUI
+    needsReinit: 0
   useHoverSphere: 1
   hoverSphereTransform: {fileID: 0}
   hoverSphereRadius: 0.05
@@ -315,6 +323,9 @@ MonoBehaviour:
   rigSteamVR: {fileID: 7280192007272516976}
   rig2DFallback: {fileID: 8766722306363265599}
   audioListener: {fileID: 4267512707132819151}
+  headsetOnHead:
+    actionPath: /actions//in/HeadsetOnHead
+    needsReinit: 1
   allowToggleTo2D: 1
 --- !u!1 &2420194550052304887
 GameObject:
@@ -533,10 +544,18 @@ MonoBehaviour:
   otherHand: {fileID: 6107175141348032661}
   handType: 2
   trackedObject: {fileID: 0}
-  grabPinchAction: {fileID: 11400000, guid: 95d19155cea686f44ba92e6459d2b41d, type: 2}
-  grabGripAction: {fileID: 11400000, guid: 1ac4cf4525e4c994dbe21a5a4bc8cad4, type: 2}
-  hapticAction: {fileID: 11400000, guid: cc97948fbadf4914b8a2f8106ae5ace1, type: 2}
-  uiInteractAction: {fileID: 11400000, guid: 632658e2d034167439a0298b5d392b5d, type: 2}
+  grabPinchAction:
+    actionPath: /actions/default/in/GrabPinch
+    needsReinit: 0
+  grabGripAction:
+    actionPath: /actions/default/in/GrabGrip
+    needsReinit: 0
+  hapticAction:
+    actionPath: /actions/default/out/Haptic
+    needsReinit: 0
+  uiInteractAction:
+    actionPath: /actions/default/in/InteractUI
+    needsReinit: 0
   useHoverSphere: 1
   hoverSphereTransform: {fileID: 1770636480448917216}
   hoverSphereRadius: 0.075
@@ -554,7 +573,7 @@ MonoBehaviour:
   noSteamVRFallbackCamera: {fileID: 0}
   noSteamVRFallbackMaxDistanceNoItem: 10
   noSteamVRFallbackMaxDistanceWithItem: 0.5
-  renderModelPrefab: {fileID: 1000012617731570, guid: 837f93beb9a614743ae3a2c0ada7c388,
+  renderModelPrefab: {fileID: 8885707149061319625, guid: 9e09412be96a8f4408c2ed21feb27657,
     type: 3}
   showDebugText: 0
   spewDebugText: 0
@@ -571,29 +590,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a5fb0ca93b55ef4b8d54b512b103341, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poseAction: {fileID: 11400000, guid: b0bb1c4d5576a4b4ba745e004fc3c1f6, type: 2}
+  poseAction:
+    actionPath: /actions/default/in/Pose
+    needsReinit: 0
   inputSource: 2
   origin: {fileID: 0}
   onTransformUpdated:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: Valve.VR.SteamVR_Behaviour_PoseEvent, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: Valve.VR.SteamVR_Behaviour_PoseEvent, SteamVR, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onTransformChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: Valve.VR.SteamVR_Behaviour_PoseEvent, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: Valve.VR.SteamVR_Behaviour_PoseEvent, SteamVR, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onConnectedChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: Valve.VR.SteamVR_Behaviour_PoseEvent, Assembly-CSharp, Version=0.0.0.0,
+    m_TypeName: Valve.VR.SteamVR_Behaviour_Pose_ConnectedChangedEvent, SteamVR, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   onTrackingChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: Valve.VR.SteamVR_Behaviour_PoseEvent, Assembly-CSharp, Version=0.0.0.0,
+    m_TypeName: Valve.VR.SteamVR_Behaviour_Pose_TrackingChangedEvent, SteamVR, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  onDeviceIndexChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Valve.VR.SteamVR_Behaviour_Pose_DeviceIndexChangedEvent, SteamVR,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  broadcastDeviceChanges: 1
 --- !u!1 &3279971690034975612
 GameObject:
   m_ObjectHideFlags: 0
@@ -735,7 +762,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27991c206a5e66147bb8ee3ef31c8bac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionSet: {fileID: 11400000, guid: a9288df097b7d4740aacec0465023deb, type: 2}
+  actionSet:
+    actionSetPath: /actions/default
+  forSources: 0
   disableAllOtherActionSets: 0
   activateOnStart: 1
   deactivateOnDestroy: 1
@@ -994,7 +1023,9 @@ MonoBehaviour:
   controllerMaterial: {fileID: 2100000, guid: 11b050e661ec0cf48a289a7266451e91, type: 2}
   flashColor: {r: 1, g: 0.9170069, b: 0.453, a: 0.709}
   textHintPrefab: {fileID: 140952, guid: 5fa42bb9e52706a42b8a1eaf0b54326a, type: 3}
-  hapticFlash: {fileID: 11400000, guid: cc97948fbadf4914b8a2f8106ae5ace1, type: 2}
+  hapticFlash:
+    actionPath: /actions/default/out/Haptic
+    needsReinit: 0
   debugHints: 0
 --- !u!1 &5965625997413320792
 GameObject:
@@ -1369,10 +1400,18 @@ MonoBehaviour:
   otherHand: {fileID: 6347265340160570842}
   handType: 1
   trackedObject: {fileID: 0}
-  grabPinchAction: {fileID: 11400000, guid: 95d19155cea686f44ba92e6459d2b41d, type: 2}
-  grabGripAction: {fileID: 11400000, guid: 1ac4cf4525e4c994dbe21a5a4bc8cad4, type: 2}
-  hapticAction: {fileID: 11400000, guid: cc97948fbadf4914b8a2f8106ae5ace1, type: 2}
-  uiInteractAction: {fileID: 11400000, guid: 632658e2d034167439a0298b5d392b5d, type: 2}
+  grabPinchAction:
+    actionPath: /actions/default/in/GrabPinch
+    needsReinit: 0
+  grabGripAction:
+    actionPath: /actions/default/in/GrabGrip
+    needsReinit: 0
+  hapticAction:
+    actionPath: /actions/default/out/Haptic
+    needsReinit: 0
+  uiInteractAction:
+    actionPath: /actions/default/in/InteractUI
+    needsReinit: 0
   useHoverSphere: 1
   hoverSphereTransform: {fileID: 2393831437897887290}
   hoverSphereRadius: 0.075
@@ -1390,7 +1429,7 @@ MonoBehaviour:
   noSteamVRFallbackCamera: {fileID: 0}
   noSteamVRFallbackMaxDistanceNoItem: 10
   noSteamVRFallbackMaxDistanceWithItem: 0.5
-  renderModelPrefab: {fileID: 1000011547835092, guid: d5082f7d9f947374197e0a97786f4e40,
+  renderModelPrefab: {fileID: 8885707149061319625, guid: 9e09412be96a8f4408c2ed21feb27657,
     type: 3}
   showDebugText: 0
   spewDebugText: 0
@@ -1407,29 +1446,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a5fb0ca93b55ef4b8d54b512b103341, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poseAction: {fileID: 11400000, guid: b0bb1c4d5576a4b4ba745e004fc3c1f6, type: 2}
+  poseAction:
+    actionPath: /actions/default/in/Pose
+    needsReinit: 0
   inputSource: 1
   origin: {fileID: 0}
   onTransformUpdated:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: Valve.VR.SteamVR_Behaviour_PoseEvent, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: Valve.VR.SteamVR_Behaviour_PoseEvent, SteamVR, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onTransformChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: Valve.VR.SteamVR_Behaviour_PoseEvent, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: Valve.VR.SteamVR_Behaviour_PoseEvent, SteamVR, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   onConnectedChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: Valve.VR.SteamVR_Behaviour_PoseEvent, Assembly-CSharp, Version=0.0.0.0,
+    m_TypeName: Valve.VR.SteamVR_Behaviour_Pose_ConnectedChangedEvent, SteamVR, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   onTrackingChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: Valve.VR.SteamVR_Behaviour_PoseEvent, Assembly-CSharp, Version=0.0.0.0,
+    m_TypeName: Valve.VR.SteamVR_Behaviour_Pose_TrackingChangedEvent, SteamVR, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  onDeviceIndexChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Valve.VR.SteamVR_Behaviour_Pose_DeviceIndexChangedEvent, SteamVR,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  broadcastDeviceChanges: 1
 --- !u!1 &7592114264063822404
 GameObject:
   m_ObjectHideFlags: 0
@@ -1476,7 +1523,9 @@ MonoBehaviour:
   controllerMaterial: {fileID: 2100000, guid: 11b050e661ec0cf48a289a7266451e91, type: 2}
   flashColor: {r: 1, g: 0.9170069, b: 0.453, a: 0.709}
   textHintPrefab: {fileID: 140952, guid: 5fa42bb9e52706a42b8a1eaf0b54326a, type: 3}
-  hapticFlash: {fileID: 11400000, guid: cc97948fbadf4914b8a2f8106ae5ace1, type: 2}
+  hapticFlash:
+    actionPath: /actions/default/out/Haptic
+    needsReinit: 0
   debugHints: 0
 --- !u!1 &8766722306363265599
 GameObject:
@@ -1611,15 +1660,9 @@ PrefabInstance:
         type: 3}
       propertyPath: pointer
       value: 
-      objectReference: {fileID: 4488461560156373402}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b983365740804748ae0cb523323a04a, type: 3}
---- !u!1 &4488461560156373402 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4488461561490010309, guid: 8b983365740804748ae0cb523323a04a,
-    type: 3}
-  m_PrefabInstance: {fileID: 1904652639}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6179722079486114576 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6179722078706387535, guid: 8b983365740804748ae0cb523323a04a,

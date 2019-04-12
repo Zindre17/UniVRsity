@@ -5,6 +5,7 @@
       "app_key": "application.generated.unity.univr.exe",
       "launch_type": "url",
       "url": "steam://launch/",
+      "action_manifest_path": "C:\\Users\\Zindre\\Documents\\UniVRsity\\actions.json",
       "strings": {
         "en_us": {
           "name": "UniVR [Testing]"
