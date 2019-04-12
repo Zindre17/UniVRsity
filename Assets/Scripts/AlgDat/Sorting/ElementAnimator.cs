@@ -89,7 +89,7 @@ public class ElementAnimator : MonoBehaviour
         float duration = .6f;
         float elapsed = 0f;
         float percent;
-        Vector3 path = new Vector3((split.Left.Size + split.Right.Size) / 4f, 0, 0);
+        Vector3 path = new Vector3((split.Left.Size + split.Right.Size+1) / 4f , 0, 0);
         Vector3 leftStart = split.Left.transform.position;
         Vector3 rightStart = split.Right.transform.position;
         Vector3 size = array.transform.localScale;

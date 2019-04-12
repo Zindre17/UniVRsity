@@ -283,7 +283,8 @@ public class Arrays : MonoBehaviour
         mergeArray = Instantiate(CombinedArrayPrefab, transform).GetComponent<CombinedArray>();
         int s = current.Left.Size + current.Right.Size;
         mergeArray.Init(s, current.Left.Start);
-        Vector3 pos = (current.Right.transform.position - current.Left.transform.position) / 2f + current.Left.transform.position;
+        //Vector3 pos = (current.Right.transform.position - current.Left.transform.position) / 2f + current.Left.transform.position;
+        Vector3 pos = new Vector3(current.Left.transform.position.x + current.Left.Size / 4f + spacing, current.Left.transform.position.y, current.Left.transform.position.z);
         mergeArray.transform.position = pos;
         mergeArray.gameObject.SetActive(false);
         anim.Merge(current, mergeArray);
