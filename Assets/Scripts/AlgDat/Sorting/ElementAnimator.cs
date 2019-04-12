@@ -20,6 +20,65 @@ public class ElementAnimator : MonoBehaviour
         backWall.transform.localPosition = new Vector3(0,5,10);
     }
 
+    public void MergeComplete(ArrayManager array, List<PartialArray> splits, Split split, CombinedArray combined) {
+        routine = StartCoroutine(MergeCompleteAnimation(array, splits, split, combined));
+    }
+
+    private IEnumerator MergeCompleteAnimation(ArrayManager array, List<PartialArray> splits, Split split, CombinedArray combined) {
+        float prevTime = Time.time;
+        float duration = .6f;
+        float elapsed = 0f;
+        int i;
+        Vector3 leftSize = split.Left.transform.localScale;
+        Vector3 rightSize = split.Right.transform.localScale;
+        List<Vector3> starts = new List<Vector3>(splits.Count);
+        for(i = 0; i< splits.Count; i++) {
+            starts.Add(splits[i].transform.position);
+        }
+        Vector3 arrayStart = array.transform.position;
+        Vector3 wallStart = backWall.transform.position;
+        Vector3 path = Vector3.forward * 1.5f;
+        float percent;
+        while (elapsed < duration) {
+            percent = elapsed / duration;
+            for(i = 0; i <splits.Count; i++) {
+                splits[i].transform.position = starts[i] - path * percent;
+            }
+            array.transform.position = arrayStart - path * percent;
+            backWall.transform.position = wallStart - path * percent;
+            split.Left.transform.localScale = leftSize * (1 - percent);
+            split.Right.transform.localScale = rightSize * (1 - percent);
+            float time = Time.time;
+            elapsed += time - prevTime;
+            prevTime = time;
+            yield return null;
+        }
+        for(i = 0; i < splits.Count; i++) {
+            splits[i].transform.position = starts[i] - path;
+        }
+        array.transform.position = arrayStart - path;
+        backWall.transform.position = wallStart - path;
+        for (i = 0; i < combined.Size; i++) {
+            SortingElement correct = combined.Get(i);
+            for(int j = 0; j < splits.Count; j++) {
+                if (splits[j].End >= correct.Index && splits[j].Start <= correct.Index) {
+                    splits[j].Get(correct.Index - splits[j].Start).Size = correct.Size;
+                }
+            }
+            array.Get(correct.Index).Size = correct.Size;
+        }
+        Destroy(split.Left.gameObject);
+        Destroy(split.Right.gameObject);
+        Destroy(combined.gameObject);
+        if (splits.Count > 1) {
+            splits[splits.Count - 1].Active = true;
+            splits[splits.Count - 1].InFocus = true;
+            splits[splits.Count - 2].Active = true;
+            splits[splits.Count - 2].InFocus = true;
+        }
+        routine = null;
+    }
+
     public void Merge(Split split, CombinedArray combined) {
         routine = StartCoroutine(MergeAnimation(split, combined));
     }
@@ -29,7 +88,7 @@ public class ElementAnimator : MonoBehaviour
         float duration = .6f;
         float elapsed = 0f;
         float percent;
-        Vector3 path = new Vector3((split.Left.Size + split.Right.Size) / 2f, 0, 0);
+        Vector3 path = new Vector3((split.Left.Size + split.Right.Size) / 4f, 0, 0);
         Vector3 leftStart = split.Left.transform.position;
         Vector3 rightStart = split.Right.transform.position;
         Vector3 size = array.transform.localScale;

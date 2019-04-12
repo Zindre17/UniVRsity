@@ -42,6 +42,30 @@ public class Arrays : MonoBehaviour
         return array.Get(index);
     }
 
+    public Selectable GetElement(int index, int _array = -2) {
+        Selectable s;
+        if (index == -1)
+            s = storage.Get();
+        else if (index == -2)
+            s = mergeArray.GetEmpty();
+        else {
+            if (_array < 0)
+                s = array.Get(index);
+            else
+                s = splits[_array].Get(index);
+        }
+        return s;
+    }
+
+    public Selectable GetArray(int index) {
+        Selectable s;
+        if (index == -1)
+            s = array;
+        else
+            s = splits[index];
+        return s;
+    }
+
     public int[] Array {
         get;
         private set;
@@ -57,10 +81,27 @@ public class Arrays : MonoBehaviour
 
     private void Awake() {
         EventManager.OnArrayInFocusChanged += FocusChanged;
+        EventManager.OnMergeComplete += MergeComplete;
     }
 
     private void OnDestroy() {
         EventManager.OnArrayInFocusChanged -= FocusChanged;
+        EventManager.OnMergeComplete -= MergeComplete;
+    }
+
+    private void MergeComplete() {
+        splits.Remove(current.Left);
+        splits.Remove(current.Right);
+        layers.Remove(current);
+        Split c = current;
+        CombinedArray co = mergeArray;
+        mergeArray = null;
+        if (layers.Count > 0)
+            current = layers[layers.Count - 1];
+        else
+            current = null;
+        anim.MergeComplete(array, splits, c, co);
+        
     }
 
     public void Complete() {
@@ -80,6 +121,7 @@ public class Arrays : MonoBehaviour
                 current.Right.Get(i).Active = false;
             }
         }
+        storage.Stop();
     }
 
     private void FocusChanged(int _array, int start, int end) {
@@ -109,6 +151,8 @@ public class Arrays : MonoBehaviour
         anim.Stop();
         GenerateRandomArray();
         array.New(Array);
+        array.Active = true;
+        array.InFocus = true;
         storage.Stop();
     }
 
@@ -116,6 +160,8 @@ public class Arrays : MonoBehaviour
         anim.Stop();
         array.Restart();
         storage.Stop();
+        array.Active = true;
+        array.InFocus = true;
         if (splits != null) {
             layers.Clear();
             for (int i = splits.Count - 1; i > -1; i--) {
@@ -129,20 +175,61 @@ public class Arrays : MonoBehaviour
             Destroy(current.Right.gameObject);
             current = null;
         }
+        if (mergeArray != null) {
+            Destroy(mergeArray.gameObject);
+            mergeArray = null;
+        }
     }
 
-    public void Hint(int index) {
-        if (index == -1)
-            storage.Hint();
-        else {
-            if (current != null) {
-                if (index < current.Left.End)
-                    current.Left.Hint(index);
+    public void Hint(GameAction a) {
+        switch (a.type) {
+            case GameAction.GameActionType.Compare:
+                CompareAction c = (CompareAction)a;
+                Hint(c.index1, c.array1);
+                Hint(c.index2, c.array2);
+                break;
+            case GameAction.GameActionType.Move:
+                MoveAction m = (MoveAction)a;
+                Hint(m.source, m.array);
+                if (m.target == -2)
+                    mergeArray.Hint();
                 else
-                    current.Right.Hint(index);
-            } else {
+                    Hint(m.target);
+                break;
+            case GameAction.GameActionType.Pivot:
+                PivotAction p = (PivotAction)a;
+                Hint(p.pivotIndex);
+                break;
+            case GameAction.GameActionType.Store:
+                StoreAction t = (StoreAction)a;
+                Hint(t.index);
+                break;
+            case GameAction.GameActionType.Swap:
+                SwapAction s = (SwapAction)a;
+                Hint(s.index1);
+                Hint(s.index2);
+                break;
+            case GameAction.GameActionType.Split:
+                SplitAction sa = (SplitAction)a;
+                HintArray(sa.array);
+                break;
+            case GameAction.GameActionType.Merge:
+                MergeAction ma = (MergeAction)a;
+                HintArray(ma.a1);
+                HintArray(ma.a2);
+                break;
+        }
+    }
+
+    public void Hint(int index, int _array = -2) {
+        if(_array == -2) {
+            if (index == -1)
+                storage.Hint();
+            else {
                 array.Hint(index);
             }
+        } else {
+            splits[_array].Hint(index);
         }
     }
 
@@ -209,7 +296,7 @@ public class Arrays : MonoBehaviour
         // 
         mergeArray = Instantiate(CombinedArrayPrefab, transform).GetComponent<CombinedArray>();
         int s = current.Left.Size + current.Right.Size;
-        mergeArray.Init(s);
+        mergeArray.Init(s, current.Left.Start);
         Vector3 pos = (current.Right.transform.position - current.Left.transform.position) / 2f + current.Left.transform.position;
         mergeArray.transform.position = pos;
         mergeArray.gameObject.SetActive(false);
@@ -218,7 +305,7 @@ public class Arrays : MonoBehaviour
 
     public string Compare(CompareAction action) {
         SortingElement s1, s2;
-        if(action.array1 == -2) {
+        if(action.array1 < 0) {
             if (action.index1 == -1)
                 s1 = storage.Get();
             else
@@ -227,7 +314,7 @@ public class Arrays : MonoBehaviour
             s1 = splits[action.array1].Get(action.index1);
         }
 
-        if(action.array2 == -2) {
+        if(action.array2 < 0) {
             if (action.index2 == -1)
                 s2 = storage.Get();
             else
@@ -281,7 +368,7 @@ public class Arrays : MonoBehaviour
 
     public void CopyTo(MoveAction action) {
         SortingElement s1, s2;
-        if (action.array == -2) {
+        if (action.array < 0) {
             if (action.source == -1)
                 s1 = storage.Get();
             else

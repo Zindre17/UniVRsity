@@ -2,7 +2,7 @@
 public class CompareAction : GameAction {
 
     public int index1, index2;
-    public int array1 = -2, array2 = -2;
+    public int array1 , array2 ;
 
     public CompareAction(int _array1, int _index1, int _array2, int _index2) {
         type = GameActionType.Compare;
@@ -16,6 +16,8 @@ public class CompareAction : GameAction {
         type = GameActionType.Compare;
         index1 = _index1;
         index2 = _index2;
+        array1 = -2;
+        array2 = -2;
     }
 
     public override bool EqualTo(GameAction other) {

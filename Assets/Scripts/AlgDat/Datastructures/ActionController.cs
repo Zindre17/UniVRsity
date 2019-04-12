@@ -24,13 +24,13 @@ public class ActionController : MonoBehaviour
     public void Press(ImageAction.ActionType type, Action function) {
         switch (type) {
             case ImageAction.ActionType.Check:
-                check.Press(true,function);
+                check.Press(pause:true, function:function);
                 break;
             case ImageAction.ActionType.Push:
-                push.Press(true,function);
+                push.Press(pause:true,function:function);
                 break;
             case ImageAction.ActionType.Pop:
-                pop.Press(true,function);
+                pop.Press(pause:true,function:function);
                 break;
         }
     }

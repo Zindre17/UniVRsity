@@ -138,13 +138,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e472c68dbfa24e4c957b5ce77f9d385, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rend: {fileID: 2045849202256897144}
+  hoverable: {fileID: 6691863977531146896}
   center: {fileID: 3552565616000376839}
   text: {fileID: 841807443117562871}
   elementPrefab: {fileID: 1386513676272926, guid: 8bbc1e2613d7dc54ea832d313fd3284e,
     type: 3}
   box: {fileID: 5005418538372649971}
-  rend: {fileID: 2045849202256897144}
-  hoverable: {fileID: 6691863977531146896}
   original: {fileID: 0}
 --- !u!114 &6691863977531146896
 MonoBehaviour:
@@ -227,7 +227,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0.11}
-  m_SizeDelta: {x: 30, y: 5}
+  m_SizeDelta: {x: 8, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!33 &6654859059441602201
 MeshFilter:
@@ -330,7 +330,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 44.75
+  m_fontSize: 33.45
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

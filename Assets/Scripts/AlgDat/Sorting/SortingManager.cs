@@ -28,8 +28,8 @@ public class SortingManager : MonoBehaviour
     }
 
     private void Selection(Selectable s) {
-        if (demo || performingAction) return;
-        
+        if (demo||performingAction) return;
+        Debug.Log(string.Format("Element: index = {0}, parent = {1}",s.Index,s.Parent));
         if (partialAction) {
             if (selected.Contains(s)) return;
             s.Selected = true;
@@ -104,7 +104,7 @@ public class SortingManager : MonoBehaviour
 
     // actions
     public void Compare() {
-        action = new CompareAction(selected[0].Index, selected[1].Index);
+        action = new CompareAction(selected[0].Parent, selected[0].Index, selected[1].Parent, selected[1].Index);
         DoAction();
     }
 
@@ -127,7 +127,7 @@ public class SortingManager : MonoBehaviour
     }
 
     public void CopyTo() {
-        action = new MoveAction(selected[0].Index);
+        action = new MoveAction(selected[0].Parent, selected[0].Index, -1);
         partialAction = true;
         UpdateActions();
     }
@@ -296,9 +296,95 @@ public class SortingManager : MonoBehaviour
     }
 
     private IEnumerator DoStepRoutine() {
-        yield return new WaitForSeconds(.6f);
+        yield return new WaitForSeconds(.4f);
+        if(selected.Count != 0) {
+            ClearSelections();
+            yield return new WaitForSeconds(.3f);
+        }
         message.SetMessage(GetStepString());
-        DoAction();
+        float interval = .3f;
+        Selectable s1, s2;
+        switch (action.type) {
+            case GameAction.GameActionType.Compare:
+                CompareAction c = (CompareAction)action;
+                s1 = arrays.GetElement(c.index1, c.array1);
+                s1.Selected = true;
+                selected.Add(s1);
+                yield return new WaitForSeconds(interval);
+                s2 = arrays.GetElement(c.index2, c.array2);
+                s2.Selected = true;
+                selected.Add(s2);
+                yield return new WaitForSeconds(interval);
+                actions.Press(c.type);
+                break;
+            case GameAction.GameActionType.Pivot:
+                PivotAction p = (PivotAction)action;
+                s1 = arrays.GetElement(p.pivotIndex);
+                s1.Selected = true;
+                selected.Add(s1);
+                yield return new WaitForSeconds(interval);
+                actions.Press(p.type);
+                yield return new WaitForSeconds(interval);
+                break;
+            case GameAction.GameActionType.Store:
+                StoreAction st = (StoreAction)action;
+                s1 = arrays.GetElement(st.index);
+                s1.Selected = true;
+                selected.Add(s1);
+                yield return new WaitForSeconds(interval);
+                actions.Press(st.type);
+                break;
+            case GameAction.GameActionType.Swap:
+                SwapAction sw = (SwapAction)action;
+                s1 = arrays.GetElement(sw.index1);
+                s1.Selected = true;
+                selected.Add(s1);
+                yield return new WaitForSeconds(interval);
+                s2 = arrays.GetElement(sw.index2);
+                s2.Selected = true;
+                selected.Add(s2);
+                yield return new WaitForSeconds(interval);
+                actions.Press(sw.type);
+                break;
+            case GameAction.GameActionType.Move:
+                MoveAction m = (MoveAction)action;
+                Debug.Log(string.Format("move: array = {0}, source = {1}, target = {2}", m.array, m.source, m.target));
+                s1 = arrays.GetElement(m.source, m.array);
+                Debug.Log(string.Format("element: array = {0}, index = {1}", s1.Parent, s1.Index));
+                s1.Selected = true;
+                selected.Add(s1);
+                yield return new WaitForSeconds(interval);
+                actions.Press(m.type);
+                yield return new WaitForSeconds(interval);
+                s2 = arrays.GetElement(m.target);
+                Debug.Log(string.Format("element: array = {0}, index = {1}", s2.Parent, s2.Index));
+                s2.Selected = true;
+                selected.Add(s2);
+                ((PartialGameAction)action).SecondPart(s2.Index);
+                actions.PartialActionComplete();
+                DoAction();
+                break;
+            case GameAction.GameActionType.Split:
+                SplitAction sp = (SplitAction)action;
+                s1 = arrays.GetArray(sp.array);
+                s1.Selected = true;
+                selected.Add(s1);
+                yield return new WaitForSeconds(interval);
+                actions.Press(sp.type);
+                break;
+            case GameAction.GameActionType.Merge:
+                MergeAction me = (MergeAction)action;
+                s1 = arrays.GetArray(me.a1);
+                s1.Selected = true;
+                selected.Add(s1);
+                yield return new WaitForSeconds(interval);
+                s2 = arrays.GetArray(me.a2);
+                s2.Selected = true;
+                selected.Add(s2);
+                yield return new WaitForSeconds(interval);
+                actions.Press(me.type);
+                break;
+        }
     }
 
     private string GetStepString() {
@@ -362,40 +448,7 @@ public class SortingManager : MonoBehaviour
     private void Hint() {
         GameAction a = alg.GetAction();
         if (a == null) return;
-        switch (a.type) {
-            case GameAction.GameActionType.Compare:
-                CompareAction c = (CompareAction)a;
-                arrays.Hint(c.index1);
-                arrays.Hint(c.index2);
-                break;
-            case GameAction.GameActionType.Move:
-                MoveAction m = (MoveAction)a;
-                arrays.Hint(m.source);
-                arrays.Hint(m.target);
-                break;
-            case GameAction.GameActionType.Pivot:
-                PivotAction p = (PivotAction)a;
-                arrays.Hint(p.pivotIndex);
-                break;
-            case GameAction.GameActionType.Store:
-                StoreAction t = (StoreAction)a;
-                arrays.Hint(t.index);
-                break;
-            case GameAction.GameActionType.Swap:
-                SwapAction s = (SwapAction)a;
-                arrays.Hint(s.index1);
-                arrays.Hint(s.index2);
-                break;
-            case GameAction.GameActionType.Split:
-                SplitAction sa = (SplitAction)a;
-                arrays.HintArray(sa.array);
-                break;
-            case GameAction.GameActionType.Merge:
-                MergeAction ma = (MergeAction)a;
-                arrays.HintArray(ma.a1);
-                arrays.HintArray(ma.a2);
-                break;
-        }
+        arrays.Hint(a);
         actions.Hint(a.type);
     }
 

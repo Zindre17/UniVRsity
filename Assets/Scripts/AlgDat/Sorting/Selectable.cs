@@ -22,7 +22,7 @@ public abstract class Selectable : MonoBehaviour
 
     internal bool active = true;
     public bool Active {
-        get { return selected; }
+        get { return active; }
         set {
             if(active != value) {
                 active = value;
@@ -31,7 +31,8 @@ public abstract class Selectable : MonoBehaviour
         }
     }
 
-    public int Index { get; set; }
+    public int Index { get; internal set; }
+    public int Parent { get; internal set; }
 
     internal abstract void SetActive(bool a);
     internal abstract void SetSelected(bool s);

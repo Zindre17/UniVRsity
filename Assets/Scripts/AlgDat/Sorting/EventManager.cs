@@ -97,7 +97,7 @@ public class EventManager : MonoBehaviour {
                 lastButtonPress = Time.time;
                 Selectable sl = hit.collider.GetComponentInParent<Selectable>();
                 if(sl != null) {
-                    if (OnSelection != null) OnSelection(sl);
+                    if (OnSelection != null && sl.Active) OnSelection(sl);
                     return;
                 }
                 UIButton b = hit.collider.GetComponentInParent<UIButton>();
@@ -144,7 +144,7 @@ public class EventManager : MonoBehaviour {
         } 
     }
 
-    public void MergeComplete() {
+    public static void MergeComplete() {
         if (OnMergeComplete != null) OnMergeComplete();
     }
 

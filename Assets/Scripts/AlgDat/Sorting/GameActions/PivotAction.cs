@@ -1,7 +1,7 @@
 ﻿
 public class PivotAction : GameAction {
 
-    public int pivotIndex;
+    public int pivotIndex, array = -2;
 
     public PivotAction(int _index) {
         type = GameActionType.Pivot;

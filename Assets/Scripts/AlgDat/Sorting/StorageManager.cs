@@ -30,6 +30,7 @@ public class StorageManager : MonoBehaviour
         stored = Instantiate(elementPrefab, transform).GetComponent<SortingElement>();
         stored.gameObject.SetActive(false);
         stored.Index = -1;
+        stored.Parent = -1;
     }
 
     public Vector3 GetCenter() {

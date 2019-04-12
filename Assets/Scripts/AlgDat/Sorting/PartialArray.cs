@@ -39,6 +39,8 @@ public class PartialArray : Selectable
     }
 
     public SortingElement Get(int index) {
+        if (index >= Size)
+            return expansion;
         return array[index];
     }
 
@@ -79,6 +81,7 @@ public class PartialArray : Selectable
         Start = _start;
         End = _end;
         Size = End - Start;
+        text.text = "A[" + Start + ":" + (End-1) + "]";
         origSize = box.transform.localScale;
         Adjust();
     }
@@ -87,6 +90,7 @@ public class PartialArray : Selectable
         return expansion;
     }
     public void Expand() {
+        text.text = Index % 2 == 0 ? "L" : "R";
         expansion.gameObject.SetActive(true);
         StartCoroutine(ExpansionAnimation());
     }
@@ -101,6 +105,7 @@ public class PartialArray : Selectable
         Vector3 start = expansion.transform.localScale;
         Vector3 boxStart = box.transform.localScale;
         Vector3 addition = new Vector3(.5f, 0, 0);
+        expansion.Size = 20;
         int i;
         for (i = 0; i < Size; i++) {
             starts.Add(array[i].transform.localPosition);
@@ -123,7 +128,7 @@ public class PartialArray : Selectable
         for(i = 0; i< Size; i++) {
             array[i].transform.localPosition = starts[i] + paths[i];
         }
-
+        expansion.Size = 20;
     }
 
     private void Adjust() {
@@ -139,11 +144,11 @@ public class PartialArray : Selectable
     private void SetValues() {
         for(int i = 0; i < Size; i++) {
             array[i].Size = original.Get(i + Start).Size;
-            array[i].Index = Start + i;
+            array[i].Index = i;
+            array[i].Parent = Index;
             array[i].transform.localPosition = GetPosition(i, false);
         }
-        expansion.Size = 20;
-        expansion.transform.localPosition = GetPosition(array.Count, true);
+        
     }
 
     private Vector3 GetPosition(int index, bool expanded) {
@@ -155,7 +160,7 @@ public class PartialArray : Selectable
 
     private void SpawnMissing() {
         if (array == null)
-            array = new List<SortingElement>();
+            array = new List<SortingElement>(Size);
         while(array.Count < Size) {
             SortingElement s = Instantiate(elementPrefab, transform).GetComponent<SortingElement>();
             s.gameObject.SetActive(false);
@@ -165,6 +170,10 @@ public class PartialArray : Selectable
             SortingElement e = Instantiate(elementPrefab, transform).GetComponent<SortingElement>();
             e.gameObject.SetActive(false);
             expansion = e;
+            expansion.Size = 20;
+            expansion.Parent = Index;
+            expansion.Index = Size;
+            expansion.transform.localPosition = GetPosition(array.Count, true);
         }
     }
 
@@ -174,7 +183,10 @@ public class PartialArray : Selectable
     }
 
     public void Hint(int index) {
-        array[index].Hint();
+        if (index >= Size)
+            expansion.Hint();
+        else
+            array[index].Hint();
     }
     
     internal override void SetActive(bool a) {

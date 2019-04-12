@@ -38,7 +38,7 @@ public class MergeSort : SortingAlgorithm {
     internal override void GenerateActions() {
         //actions.Add(new SplitAction(-1));
         //actions.Add(new SplitAction(0));
-        _MergeSort(array, 0, size, currentArray, false);
+        _MergeSort(array, 0, size-1, currentArray, false);
     }
 
     private int currentArray = -1;
@@ -59,20 +59,28 @@ public class MergeSort : SortingAlgorithm {
 
     private void Merge(int[] a, int p, int q, int r, int leftArray, int rightArray) {
         int n1 = q - p + 1;
+        //Debug.Log("n1 = " + n1);
         int n2 = r - q;
+        //Debug.Log("n2 = " + n2);
         int[] L = new int[n1 + 1];
         int[] R = new int[n2 + 1];
-        int i, j;
-        for (i = 0; i < n1; i++)
+        int i;
+        int j;
+        for (i = 0; i < n1; i++) {
             L[i] = a[p + i];
-        for (j = 0; j < n2; j++)
-            R[j] = a[q + j];
+            //Debug.Log(string.Format("L[{0}] = {1}", i, L[i]));
+        }
+        for (j = 0; j < n2; j++) {
+            R[j] = a[q +1+ j];
+            //Debug.Log(string.Format("R[{0}] = {1}", j, R[j]));
+        }
         L[n1] = int.MaxValue;
         R[n2] = int.MaxValue;
         i = 0;
         j = 0;
-        for (int k = p; k < r; k++) {
+        for (int k = p; k <= r; k++) {
             actions.Add(new CompareAction(leftArray, i, rightArray, j));
+            //Debug.Log(string.Format("leftArray:{0} | rightArray:{1} | L[{2}] | R[{3}])", leftArray, rightArray, i, j));
             if (L[i] <= R[j]) {
                 actions.Add(new MoveAction(leftArray, i, -2));
                 a[k] = L[i];

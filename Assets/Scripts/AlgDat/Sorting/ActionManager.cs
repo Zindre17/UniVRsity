@@ -41,6 +41,32 @@ public class ActionManager : MonoBehaviour
         }
     }
 
+    public void Press(GameAction.GameActionType type) {
+        switch (type) {
+            case GameAction.GameActionType.Compare:
+                compare.Press(demo:true);
+                break;
+            case GameAction.GameActionType.Move:
+                copy.Press(demo:true);
+                break;
+            case GameAction.GameActionType.Pivot:
+                pivot.Press(demo:true);
+                break;
+            case GameAction.GameActionType.Store:
+                store.Press(demo:true);
+                break;
+            case GameAction.GameActionType.Swap:
+                swap.Press(demo:true);
+                break;
+            case GameAction.GameActionType.Split:
+                split.Press(demo:true);
+                break;
+            case GameAction.GameActionType.Merge:
+                merge.Press(demo:true);
+                break;
+        }
+    }
+
     public void UpdateButtons(State state) {
         switch (state) {
             case State.None:

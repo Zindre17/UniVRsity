@@ -16,20 +16,33 @@ public class CombinedArray : MonoBehaviour
 
     private int size;
     private int replaced = 0;
+    private int start;
 
-    public void Init(int _size) {
+    public int Size { get { return size; } }
+
+    public void Init(int _size, int _start) {
         size = _size;
+        start = _start;
         elements = new List<SortingElement>(size);
         e = new List<EmptyElement>(size);
         box.transform.localScale = new Vector3(size / 2f, 1, 1);
         for(int i = 0; i < size; i++) {
             SortingElement s = Instantiate(elementPrefab, transform).GetComponent<SortingElement>();
             s.gameObject.SetActive(false);
+            s.Index = start + i;
             elements.Add(s);
             EmptyElement l = Instantiate(emptyPrefab, transform).GetComponent<EmptyElement>();
             e.Add(l);
             s.transform.position = l.transform.position = GetPos(i);
         }
+    }
+
+    public EmptyElement GetEmpty() {
+        return e[replaced];
+    }
+
+    public SortingElement Get(int index) {
+        return elements[index];
     }
 
     public SortingElement Get() {
@@ -43,12 +56,8 @@ public class CombinedArray : MonoBehaviour
         return center.position + new Vector3((index + i) * .4f, 0, 0);
     }
 
-    public void Hint(int index) {
-        if(index < replaced) {
-            elements[index].Hint();
-        } else {
-            e[index].Hint();
-        }
+    public void Hint() {
+        e[replaced].Hint();
     }
 
     public SortingElement Replace() {
@@ -57,6 +66,7 @@ public class CombinedArray : MonoBehaviour
         s.gameObject.SetActive(true);
         e[replaced].gameObject.SetActive(false);
         replaced++;
+        if (replaced == size) EventManager.MergeComplete();
         return s;
     }
 }

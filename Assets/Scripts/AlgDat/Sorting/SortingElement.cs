@@ -33,12 +33,13 @@ public class SortingElement : Selectable {
 
     private int goal;
 
-    public void Set(int i, int v, int g) {
+    public void Set(int i, int v, int g, int p) {
         Index = i;
         goal = g;
         Size = v;
         Selected = false;
         Pivot = false;
+        Parent = p;
     }
 
     public float movementMagnitude = 0.4f;

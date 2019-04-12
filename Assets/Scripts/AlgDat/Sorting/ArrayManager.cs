@@ -42,6 +42,10 @@ public class ArrayManager : Selectable
         }
     }
 
+    private void Start() {
+        hoverable.Disable();
+    }
+
     private bool inFocus = true;
     public bool InFocus {
         get { return inFocus; }
@@ -107,7 +111,7 @@ public class ArrayManager : Selectable
     private IEnumerator EditArray() {
         int i;
         for(i = 0; i < spawnedElements; i++) {
-            arrayToSort[i].Set(i, unsortedArray[i], sortedArray[i]);
+            arrayToSort[i].Set(i, unsortedArray[i], sortedArray[i], Index);
             arrayToSort[i].transform.position = GetPosition(i);
             arrayToSort[i].gameObject.SetActive(false);
         }
@@ -132,7 +136,7 @@ public class ArrayManager : Selectable
     private void SpawnElement() {
         //instatiate new sorting element and set correct size and index
         SortingElement e = CreateElement();
-        e.Set(spawnedElements, unsortedArray[spawnedElements], sortedArray[spawnedElements]);
+        e.Set(spawnedElements, unsortedArray[spawnedElements], sortedArray[spawnedElements],Index);
         e.transform.position = GetPosition(spawnedElements);
 
         // add to array of all sorting elements
@@ -147,8 +151,9 @@ public class ArrayManager : Selectable
     }
 
     internal override void SetActive(bool a) {
+        Debug.Log(string.Format("setActive(" + (a ? "true" : "false") + ")"));
         UpdateElementStatus();
-        if (active)
+        if (a)
             hoverable.Enable();
         else
             hoverable.Disable();

@@ -16,10 +16,10 @@ public class ActionButton : UIButton {
         }
     }
 
-    public override void Press(bool pause = false, Action function = null) {
+    public override void Press(bool demo = false, bool pause = false, Action function = null) {
         if (multistep)
             InProgress = true;
-        base.Press(pause, function);
+        base.Press(demo, pause, function);
     }
 
 
