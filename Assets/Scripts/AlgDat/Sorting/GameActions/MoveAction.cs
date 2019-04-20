@@ -27,7 +27,7 @@ public class MoveAction : PartialGameAction {
         if (other == null) return false;
         if(other.type == type) {
             MoveAction o = (MoveAction)other;
-            return o.target == target && o.source == source;
+            return o.target == target && o.source == source && array == o.array;
         }
         return false;
     }

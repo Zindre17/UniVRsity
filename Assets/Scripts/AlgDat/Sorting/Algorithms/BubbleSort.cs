@@ -1,10 +1,28 @@
 ﻿
+using System.Collections.Generic;
+
 public class BubbleSort : SortingAlgorithm {
 
-    private readonly string stateFormat =
+    
+
+    private List<int> focusChangePoints;
+    private int cursor = 0;
+
+    private class BubbleState : IState {
+        public int i { get; private set; }
+        public int j { get; private set; }
+        public int steps { get; private set; }
+        private readonly string stateFormat =
         "i = {0} \n" +
         "j = {1} \n" +
         "steps completed: {2} \n";
+        public BubbleState(int _i, int _j, int _steps) {
+            i = _i; j = _j; steps = _steps;
+        }
+        public string Readable() {
+            return string.Format(stateFormat, i, j, steps);    
+        }
+    }
 
     public BubbleSort(int arraySize, int[] _array) : base(arraySize, _array) {
         //name
@@ -16,20 +34,23 @@ public class BubbleSort : SortingAlgorithm {
         "       if A[j] < A[j-1]) \n" +
         "           exchange A[j] with A[j-1]"
         };
+        CheckForFocusChange();
     }
 
     internal override void GenerateActions() {
+        focusChangePoints = new List<int>();
         int[] ar = (int[])array.Clone();
         GameAction a;
         int i = 0;
         int j = size - 1;
         for(i = 0; i < size-1; i++) {
+            focusChangePoints.Add(states.Count);
             for(j = size - 1; j > i; j--) {
-                states.Add(string.Format(stateFormat, i, j, states.Count));
+                states.Add(new BubbleState(i, j, states.Count));
                 a = new CompareAction(j, j-1);
                 actions.Add(a);
                 if(array[j] < array[j - 1]) {
-                    states.Add(string.Format(stateFormat, i, j, states.Count));
+                    states.Add(new BubbleState(i, j, states.Count));
                     a = new SwapAction(j, j - 1);
                     actions.Add(a);
                     int tmp = array[j];
@@ -40,8 +61,22 @@ public class BubbleSort : SortingAlgorithm {
         }
         i = size - 2;
         j = size - 1;
-        states.Add(string.Format(stateFormat, i, j, states.Count));
+        //states.Add(string.Format(stateFormat, i, j, states.Count));
         array = ar;
+    }
+
+    public override void Next() {
+        base.Next();
+        CheckForFocusChange();
+    }
+
+    private void CheckForFocusChange() {
+        if (cursor >= focusChangePoints.Count) return;
+        if (focusChangePoints[cursor] == step) {
+            BubbleState s = (BubbleState)states[step];
+            EventManager.FocusChanged(-1, s.i, array.Length);
+            cursor++;
+        }
     }
 
     private void Swap(int i1, int i2) {

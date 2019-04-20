@@ -130,6 +130,11 @@ public class Arrays : MonoBehaviour
                 else
                     s.InFocus = true;
             }
+            s = pa.GetExpansion();
+            if (end < pa.Size)
+                s.InFocus = false;
+            else
+                s.InFocus = true;
         }
     }
 

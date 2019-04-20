@@ -3,12 +3,35 @@ using System.Collections.Generic;
 
 public class QuickSort : SortingAlgorithm {
 
-    private readonly string state =
+    private class QuickState : IState {
+        private readonly string state =
         "p = {0} \n" +
         "r = {1} \n" +
         "i = {2} \n" +
         "j = {3} \n" +
-        "x (pivot) = {4}";
+        "x (pivot) = {4} \n"+
+        "steps completed: {5}";
+        public int p { get; private set; }
+        public int r { get; private set; }
+        public int i { get; private set; }
+        public int j { get; private set; }
+        public int x { get; private set; }
+        public int steps { get; private set; }
+
+        public QuickState(int _steps, int _p , int _r , int _i = -2, int _j = -2, int _x = -2) {
+            steps = _steps;
+            p = _p;
+            r = _r;
+            i = _i;
+            j = _j;
+            x = _x;
+        }
+
+        public string Readable() {
+            return string.Format(state, p, r, i == -2? "":i.ToString(), j==-2?"":j.ToString(), x==-2?"":"A[" + x + "]");
+        }
+    }
+    
 
     private int focusPos = -1;
     private List<int> focusPoints = new List<int>();
@@ -57,32 +80,28 @@ public class QuickSort : SortingAlgorithm {
         }
     }
 
-    private string GetStateString(int p, int r, int i, int j, int x) {
-        return string.Format(state, p, r, i == -2 ? "" : i.ToString(), j == -2 ? "" : j.ToString(), x == -2 ? "" : "A[" + x + "]");
-    }
-
     private int Partition(int[] a, int p, int r) {
         if (states.Count > 0)
-            states.Add(GetStateString(p, r, -2, -2, pivots[pivots.Count-1]));
+            states.Add(new QuickState(states.Count,p, r, _x: pivots[pivots.Count-1]));
         else
-            states.Add(GetStateString(p, r, -2, -2, -2));
+            states.Add(new QuickState(states.Count,p, r));
         actions.Add(new PivotAction(r));
         pivots.Add(r);
         int x = a[r];
         int i = p - 1;
         for (int j = p; j < r; j++) {
-            states.Add(GetStateString(p, r, i, j, r));
+            states.Add(new QuickState(states.Count,p, r, i, j, r));
             actions.Add(new CompareAction(j, r));
             if(a[j] <= x) {
                 i++;
-                states.Add(GetStateString(p,r,i,j,r));
+                states.Add(new QuickState(states.Count,p,r,i,j,r));
                 actions.Add(new SwapAction(i, j));
                 int temp = a[i];
                 a[i] = a[j];
                 a[j] = temp;
             }
         }
-        states.Add(GetStateString(p, r, i, -2, r));
+        states.Add(new QuickState(states.Count, p, r, i, -2, r));
         actions.Add(new SwapAction(i + 1, r));
         int tmp = a[i + 1];
         a[i + 1] = a[r];
@@ -94,8 +113,8 @@ public class QuickSort : SortingAlgorithm {
     private void CheckForFocusChange() {
         if (complete) return;
         if (GetAction().type == GameAction.GameActionType.Pivot) {
-            focusPos++;
-            EventManager.FocusChanged(-1,focusPoints[focusPos * 2], focusPoints[focusPos * 2 + 1]);
+            QuickState s = (QuickState)states[step];
+            EventManager.FocusChanged(-1,s.p, s.r);
         }
     }
 

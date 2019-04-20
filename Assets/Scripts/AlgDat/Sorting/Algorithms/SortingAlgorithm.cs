@@ -5,11 +5,15 @@ public abstract class SortingAlgorithm {
     internal int step;
     internal bool complete;
     internal List<GameAction> actions;
-    internal List<string> states;
+    internal List<IState> states;
     internal int[] array;
     internal int size;
     internal string name;
     internal string[] pseudo;
+
+    internal interface IState {
+        string Readable();
+    }
 
     public SortingAlgorithm(int arraySize, int[] _array) {
         size = arraySize;
@@ -17,7 +21,7 @@ public abstract class SortingAlgorithm {
         step = 0;
         complete = false;
         actions = new List<GameAction>();
-        states = new List<string>();
+        states = new List<IState>();
         GenerateActions();
     }
 
@@ -46,7 +50,7 @@ public abstract class SortingAlgorithm {
 
     public string GetState() {
         if (step >= states.Count) return "Complete!";
-        return states[step];
+        return states[step].Readable();
     }
 
     public virtual void Next() {

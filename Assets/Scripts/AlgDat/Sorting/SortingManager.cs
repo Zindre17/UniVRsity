@@ -282,8 +282,10 @@ public class SortingManager : MonoBehaviour
         } else {
             UpdateActions();
         }
-        if (alg.complete)
+        if (alg.complete) {
             arrays.Complete();
+            comparison.Clear();
+        }
     }
 
     private void DoStep() {

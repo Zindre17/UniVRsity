@@ -129,7 +129,7 @@ public class EventManager : MonoBehaviour {
     }
 
     public static void FocusChanged(int array, int start, int end) {
-        if(start < end && OnArrayInFocusChanged != null) {
+        if(start <= end && OnArrayInFocusChanged != null) {
             OnArrayInFocusChanged(array, start, end);
         }
     }
