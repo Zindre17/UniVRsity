@@ -16,6 +16,9 @@ public class CombinedArray : MonoBehaviour
 
     private int size;
     private int replaced = 0;
+    public int Replaced {
+        get { return replaced; }
+    }
     private int start;
 
     public int Size { get { return size; } }
@@ -58,6 +61,12 @@ public class CombinedArray : MonoBehaviour
 
     public void Hint() {
         e[replaced].Hint();
+    }
+    public void Undo() {
+        replaced--;
+        SortingElement s = elements[replaced];
+        s.gameObject.SetActive(false);
+        e[replaced].gameObject.SetActive(true);
     }
 
     public SortingElement Replace() {

@@ -9,7 +9,6 @@ public class Arrays : MonoBehaviour
     public GameObject partialArrayPrefab;
     public GameObject CombinedArrayPrefab;
     public ElementAnimator anim;
-    public Renderer backWall;
 
     private List<PartialArray> splits;
     private List<Split> layers;
@@ -25,12 +24,21 @@ public class Arrays : MonoBehaviour
                 current.Right.InFocus = false;
             }
             current = value;
-            current.Left.Active = true;
-            current.Left.InFocus = true;
-            current.Right.Active = true;
-            current.Right.InFocus = true;
+            if (current == null) {
+                array.Active = true;
+                array.InFocus = true;
+            } else {
+                current.Left.Active = true;
+                current.Left.InFocus = true;
+                current.Right.Active = true;
+                current.Right.InFocus = true;
+            }
         }
     }
+    private Stack<int> copies;
+    private Stack<int> stored;
+    private Stack<Split> mergedSplits;
+    private Stack<CombinedArray> mergedCombined;
 
     private readonly float spacing = .15f;
     private readonly int size = 7;
@@ -87,12 +95,29 @@ public class Arrays : MonoBehaviour
         EventManager.OnMergeComplete -= MergeComplete;
     }
 
+    public void UndoMerge() {
+        Split s = mergedSplits.Pop();
+        CombinedArray c = mergedCombined.Pop();
+        current = s;
+        splits.Add(s.Left);
+        splits.Add(s.Right);
+        layers.Add(s);
+        mergeArray = c;
+        anim.UndoMergeCompletion(array, splits, c, s);
+    }
+
     private void MergeComplete() {
         splits.Remove(current.Left);
         splits.Remove(current.Right);
         layers.Remove(current);
+        if (mergedCombined == null)
+            mergedCombined = new Stack<CombinedArray>();
+        if (mergedSplits == null)
+            mergedSplits = new Stack<Split>();
         Split c = current;
         CombinedArray co = mergeArray;
+        mergedSplits.Push(c);
+        mergedCombined.Push(co);
         mergeArray = null;
         if (layers.Count > 0)
             current = layers[layers.Count - 1];
@@ -103,11 +128,10 @@ public class Arrays : MonoBehaviour
     }
 
     public void Complete() {
-        int i;
         array.Active = false;
         array.InFocus = true;
-        anim.Stop();
-        storage.Stop();
+        //anim.Stop();
+        //storage.Stop();
     }
 
     private void FocusChanged(int _array, int start, int end) {
@@ -232,6 +256,16 @@ public class Arrays : MonoBehaviour
         }
     }
 
+    public void Unsplit() {
+        splits.Remove(current.Right);
+        splits.Remove(current.Left);
+        if (layers.Count > 1)
+            Current = layers[layers.Count - 2];
+        else
+            Current = null;
+        anim.Unsplit(array,layers);
+    }
+
     public void Split(SplitAction action) {
 
         //move every layer back and current arrays to layers
@@ -247,8 +281,6 @@ public class Arrays : MonoBehaviour
         Vector3 midPos, leftOffset, rightOffset;
         // main array
         if (action.array == -1) {
-            Color c = backWall.material.color;
-            backWall.material.color = new Color(c.r, c.g, c.b, .6f);
             int mid = Mathf.CeilToInt(array.Size / 2f);
             a.Init(array, 0, mid, splits.Count);
             array.Active = false;
@@ -280,6 +312,9 @@ public class Arrays : MonoBehaviour
         anim.Split(array, layers);
     }
 
+    public void Unmerge() {
+        anim.Unmerge(current, mergeArray);
+    }
     public void Merge(MergeAction action) {
         // move the current split apart from eachother
         // spawn a new blank array between combined size
@@ -295,23 +330,35 @@ public class Arrays : MonoBehaviour
         anim.Merge(current, mergeArray);
     }
 
-    public void Swap(SwapAction action) {
+    public void Swap(SwapAction action, bool reverse = false) {
         SortingElement s1, s2;
         s1 = array.Get(action.index1);
         s2 = array.Get(action.index2);
-        anim.Swap(s1, s2);
+        anim.Swap(s1, s2, reverse);
     }
 
-    public void Pivot(PivotAction action) {
-        anim.Pivot(array.Get(action.pivotIndex));
+    public void Pivot(PivotAction action, bool reverse = false) {
+        anim.Pivot(array.Get(action.pivotIndex),reverse);
     }
 
-    public void Store(StoreAction action) {
-        anim.Store(storage.GetCenter(), storage.Get(), array.Get(action.index));
+    public void Store(StoreAction action, bool reverse = false) {
+        SortingElement s = array.Get(action.index);
+        if (stored == null)
+            stored = new Stack<int>();
+        if (reverse) {
+            stored.Pop();
+            int prev = stored.Count == 0 ? -1 : stored.Peek();
+            anim.Unstore(s, prev, storage.Get(), storage.GetCenter());
+        } else {
+            stored.Push(s.Size);
+            anim.Store(storage.GetCenter(), storage.Get(), s);
+        }
     }
 
-    public void CopyTo(MoveAction action) {
+    public void CopyTo(MoveAction action, bool reverse = false) {
         SortingElement s1, s2;
+        if (copies == null)
+            copies = new Stack<int>();
         if (action.array < 0) {
             if (action.source == -1)
                 s1 = storage.Get();
@@ -320,8 +367,16 @@ public class Arrays : MonoBehaviour
             s2 = array.Get(action.target);
         } else {
             s1 = splits[action.array].Get(action.source);
-            s2 = mergeArray.Replace();
+            if (reverse)
+                s2 = mergeArray.Get(mergeArray.Replaced - 1);
+            else
+                s2 = mergeArray.Replace();
         }
-        anim.CopyTo(s1, s2);
+        if (reverse) {
+            anim.UndoCopyTo(s1, s2, copies.Pop(),mergeArray);
+        } else {
+            copies.Push(s2.Size);
+            anim.CopyTo(s1, s2);
+        }
     }
 }

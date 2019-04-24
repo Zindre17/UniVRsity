@@ -92,13 +92,78 @@ public class PartialArray : Selectable
         Adjust();
     }
 
+    private Stack<int> prevValues;
+    public void EditValues(int[] values) {
+        int i = 0;
+        if (prevValues == null)
+            prevValues = new Stack<int>();
+        foreach (int num in values) {
+            if (num == -1) {
+                prevValues.Push(array[i].Size);
+            } else {
+                array[i].Size = num;
+                prevValues.Push(num);
+            }
+            i++;
+            if (i >= Size)
+                break;
+        }
+    }
+
+    public void RevertValues() {
+        for (int i = Size-1; i > -1; i--) {
+            int num = prevValues.Pop();
+            array[i].Size = num;
+        }
+    }
+
     public SortingElement GetExpansion() {
         return expansion;
     }
+
+    public void Unexpand() {
+        expansion.gameObject.SetActive(false);
+        text.text = "A[" + Start + ":" + (End - 1) + "]";
+        routine = StartCoroutine(UnexpansionAnimation());
+    }
+
     public void Expand() {
         text.text = Index % 2 == 0 ? "L" : "R";
         expansion.gameObject.SetActive(true);
         routine = StartCoroutine(ExpansionAnimation());
+    }
+
+    private IEnumerator UnexpansionAnimation() {
+        float prevTime = Time.time;
+        float elapsed = 0f;
+        float percent;
+        float duration = .5f;
+        List<Vector3> starts = new List<Vector3>(Size);
+        List<Vector3> paths = new List<Vector3>(Size);
+        Vector3 boxStart = box.transform.localScale;
+        Vector3 addition = new Vector3(.5f, 0, 0);
+        int i;
+        for (i = 0; i < Size; i++) {
+            starts.Add(array[i].transform.localPosition);
+            paths.Add(GetPosition(i,false) - starts[i]);
+        }
+        while (elapsed < duration) {
+            percent = elapsed / duration;
+            for (i = 0; i < Size; i++) {
+                array[i].transform.localPosition = starts[i] + paths[i] * percent;
+            }
+            box.transform.localScale = boxStart - addition * percent;
+            float time = Time.time;
+            elapsed += time - prevTime;
+            prevTime = time;
+            yield return null;
+        }
+        box.transform.localScale = boxStart - addition;
+        for (i = 0; i < Size; i++) {
+            array[i].transform.localPosition = starts[i] + paths[i];
+            array[i].InFocus = true;
+        }
+        routine = null;
     }
 
     private IEnumerator ExpansionAnimation() {

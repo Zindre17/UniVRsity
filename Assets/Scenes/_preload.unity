@@ -194,8 +194,8 @@ MonoBehaviour:
   inProgress: {r: 0.8962264, g: 0.83865315, b: 0.28324133, a: 1}
   toggleButtonOn: {r: 0.08566215, g: 0.7264151, b: 0.2106288, a: 1}
   toggleButtonOff: {r: 1, g: 1, b: 1, a: 1}
-  white: {r: 0, g: 0, b: 0, a: 0}
-  black: {r: 0, g: 0, b: 0, a: 0}
+  white: {r: 0.9245283, g: 0.9245283, b: 0.9245283, a: 1}
+  black: {r: 0.1981132, g: 0.1981132, b: 0.1981132, a: 1}
   visited: {r: 0.9529412, g: 0.9529412, b: 0.9529412, a: 1}
   seed: {r: 0.21568628, g: 0.8666667, b: 0.11764706, a: 1}
   pattern: {r: 0.9137255, g: 0.52156866, b: 0.11764706, a: 1}
@@ -205,7 +205,7 @@ MonoBehaviour:
   element: {r: 1, g: 1, b: 0, a: 1}
   pivot: {r: 0, g: 0, b: 0, a: 1}
   correct: {r: 0.21735056, g: 0.8207547, b: 0.096787095, a: 1}
-  box: {r: 0, g: 0, b: 0, a: 0}
+  box: {r: 0.9450981, g: 0.9490197, b: 0.94117653, a: 1}
 --- !u!114 &2126486283
 MonoBehaviour:
   m_ObjectHideFlags: 0

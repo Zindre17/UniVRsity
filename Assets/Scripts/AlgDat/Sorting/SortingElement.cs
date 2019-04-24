@@ -1,8 +1,11 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Hoverable))]
 public class SortingElement : Selectable {
+
+    private Stack<int> prevValues;
 
     private bool correct = false;
 
@@ -15,6 +18,17 @@ public class SortingElement : Selectable {
             correct = size == goal;
             UpdateColor();
         }
+    }
+
+    public void SetSize(int value) {
+        if (prevValues == null)
+            prevValues = new Stack<int>();
+        prevValues.Push(size);
+        Size = value;
+    }
+
+    public void Revert() {
+        Size = prevValues.Pop();
     }
 
     private bool inFocus = true;

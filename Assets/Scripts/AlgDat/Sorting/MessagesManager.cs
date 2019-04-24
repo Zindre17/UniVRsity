@@ -16,6 +16,14 @@ public class MessagesManager : MonoBehaviour
         StartCoroutine(current);
     }
 
+    public void Intro() {
+        if( current != null) {
+            StopCoroutine(current);
+        }
+        message.text =
+            "Select an algorithm to get started!";
+    }
+
     private IEnumerator ShowMessage(string s) {
         message.text = s;
         yield return new WaitForSeconds(duration);

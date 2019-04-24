@@ -16,10 +16,13 @@ public class ActionButton : UIButton {
         }
     }
 
-    public override void Press(bool demo = false, bool pause = false, Action function = null) {
-        if (multistep)
-            InProgress = true;
-        base.Press(demo, pause, function);
+    public override bool Press(bool demo = false, bool pause = false, Action function = null) {
+        if (base.Press(demo, pause, function)) {
+            if (multistep)
+                InProgress = true;
+            return true;
+        }   
+        return false;
     }
 
 
@@ -35,14 +38,16 @@ public class ActionButton : UIButton {
     }
 
     private IEnumerator HintAnimation() {
+        UpdateColor();
+        Color def = rend.material.color;
         Color hint = colorManager.hint;
         yield return new WaitForSeconds(.1f);
         rend.material.color = hint;
         yield return new WaitForSeconds(.3f);
-        rend.material.color = defaultColor;
+        rend.material.color = def;
         yield return new WaitForSeconds(.3f);
         rend.material.color = hint;
         yield return new WaitForSeconds(.3f);
-        rend.material.color = defaultColor;
+        rend.material.color = def;
     }
 }

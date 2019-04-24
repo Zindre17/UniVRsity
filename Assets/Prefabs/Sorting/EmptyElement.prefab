@@ -137,6 +137,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rend: {fileID: 4514056171932468144}
+  hoverable: {fileID: 3240877604900075817}
 --- !u!114 &3240877604900075817
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -11,6 +11,7 @@ public class SortingManager : MonoBehaviour
     public ActionManager actions;
     public MenuManager menu;
     public Comparison comparison;
+    public AlgoControlManager algoManager;
 
     private SortingAlgorithm alg;
 
@@ -71,6 +72,8 @@ public class SortingManager : MonoBehaviour
         ClearUI();
         UpdateActions();
         UpdateMenu();
+        UpdateAlgo();
+        message.Intro();
     }
 
     private void OnDestroy() {
@@ -148,11 +151,22 @@ public class SortingManager : MonoBehaviour
 
     public void Demo() {
         demo = !demo;
-        menu.Demo(demo);
+        UpdateAlgo();
+        algoManager.Demo(demo);
         if (demo) {
             if (performingAction || partialAction) return;
             DoStep();
         }
+    }
+
+    public void Next() {
+        performingAction = true;
+        UpdateAlgo();
+        DoStep();
+    }
+
+    public void Prev() {
+        UndoStep();
     }
 
     public void NewArray() {
@@ -173,13 +187,14 @@ public class SortingManager : MonoBehaviour
         ResetState();
         ClearSelections();
         UpdateActions();
+        UpdateAlgo();
         UpdateMenu();
         ResetUI();
     }
 
     private void ResetState() {
         demo = false;
-        menu.Demo(demo);
+        algoManager.Demo(demo);
         performingAction = false;
         partialAction = false;
     }
@@ -240,10 +255,9 @@ public class SortingManager : MonoBehaviour
         if (alg.CorrectAction(action)) {
             performingAction = true;
             comparison.Clear();
-            //todo: this can be replaced by using GameActions as parameter in the functions...
             switch (action.type) {
                 case GameAction.GameActionType.Compare:
-                    comparison.Compare((SortingElement)selected[0], (SortingElement)selected[1]);
+                    comparison.Compare((SortingElement)selected[0], (SortingElement)selected[1],alg.step);
                     break;
                 case GameAction.GameActionType.Swap:
                     arrays.Swap((SwapAction)action);
@@ -268,12 +282,19 @@ public class SortingManager : MonoBehaviour
         } else {
             partialAction = false;
             performingAction = false;
+            ClearSelections();
+            UpdateActions();
             Hint();
         }
     }
 
-    private void ActionComplete() {
-        alg.Next();
+    private void ActionComplete(bool reverse) {
+        if (undoMergeInProgress) {
+            UndoStep();
+            return;
+        }
+        if(!reverse)
+            alg.Next();
         partialAction = false;
         performingAction = false;
         UpdateUI();
@@ -281,6 +302,7 @@ public class SortingManager : MonoBehaviour
             DoStep();
         } else {
             UpdateActions();
+            UpdateAlgo();
         }
         if (alg.complete) {
             arrays.Complete();
@@ -293,7 +315,50 @@ public class SortingManager : MonoBehaviour
         if (action != null)
             StartCoroutine(DoStepRoutine());
         else
-            Demo();
+            if(demo)
+                Demo();
+    }
+
+    private bool undoMergeInProgress = false;
+    private void UndoStep() {
+        performingAction = true;
+        UpdateAlgo();
+        GameAction a = alg.GetAction(alg.step - 1);
+        if(alg.GetType() == typeof(MergeSort) && !undoMergeInProgress) {
+            MergeSort s = (MergeSort)alg;
+            if (s.ReverseMerge()) {
+                undoMergeInProgress = true;
+                arrays.UndoMerge();
+                return;
+            }
+        }
+        undoMergeInProgress = false;
+        //reverse this action
+        switch (a.type) {
+            case GameAction.GameActionType.Compare:
+                break;
+            case GameAction.GameActionType.Swap:
+                arrays.Swap((SwapAction)a, true);
+                break;
+            case GameAction.GameActionType.Pivot:
+                arrays.Pivot((PivotAction)a, true);
+                break;
+            case GameAction.GameActionType.Store:
+                arrays.Store((StoreAction)a,true);
+                break;
+            case GameAction.GameActionType.Move:
+                arrays.CopyTo((MoveAction)a,true);
+                break;
+            case GameAction.GameActionType.Split:
+                arrays.Unsplit();
+                break;
+            case GameAction.GameActionType.Merge:
+                arrays.Unmerge();
+                break;
+        }
+        comparison.Reverse(alg.step - 1);
+
+        alg.Prev();
     }
 
     private IEnumerator DoStepRoutine() {
@@ -349,16 +414,13 @@ public class SortingManager : MonoBehaviour
                 break;
             case GameAction.GameActionType.Move:
                 MoveAction m = (MoveAction)action;
-                Debug.Log(string.Format("move: array = {0}, source = {1}, target = {2}", m.array, m.source, m.target));
                 s1 = arrays.GetElement(m.source, m.array);
-                Debug.Log(string.Format("element: array = {0}, index = {1}", s1.Parent, s1.Index));
                 s1.Selected = true;
                 selected.Add(s1);
                 yield return new WaitForSeconds(interval);
                 actions.Press(m.type);
                 yield return new WaitForSeconds(interval);
                 s2 = arrays.GetElement(m.target);
-                Debug.Log(string.Format("element: array = {0}, index = {1}", s2.Parent, s2.Index));
                 s2.Selected = true;
                 selected.Add(s2);
                 ((PartialGameAction)action).SecondPart(s2.Index);
@@ -417,7 +479,7 @@ public class SortingManager : MonoBehaviour
                 } else {
                     to = "A[" + m.target + "]";
                 }
-                if (m.array==-2) {
+                if (m.array==-1) {
                     if (m.source == -1)
                         from = "storage";
                     else
@@ -451,6 +513,19 @@ public class SortingManager : MonoBehaviour
         if (a == null) return;
         arrays.Hint(a);
         actions.Hint(a.type);
+    }
+
+    private void UpdateAlgo() {
+        if(alg == null || performingAction) 
+            algoManager.UpdateAlgoButtons(AlgoControlManager.State.Inactive);
+        else if (demo)
+            algoManager.UpdateAlgoButtons(AlgoControlManager.State.Demo);
+        else if (alg.step == 0)
+            algoManager.UpdateAlgoButtons(AlgoControlManager.State.Active);
+        else if (alg.complete)
+            algoManager.UpdateAlgoButtons(AlgoControlManager.State.Finished);
+        else
+            algoManager.UpdateAlgoButtons(AlgoControlManager.State.InProgress);
     }
 
     private void UpdateMenu() {

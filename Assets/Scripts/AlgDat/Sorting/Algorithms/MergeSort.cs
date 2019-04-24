@@ -47,9 +47,8 @@ public class MergeSort : SortingAlgorithm {
         pseudo = new string[] {
             "Mergesort(Array a, int p, int r)\n" +
             "   if p < r\n" +
-            "       //find middle of array\n"+
+            "       //split\n" +
             "       q = floor((p+r)/2)\n" +
-            "       //perform mergesort on the each half of array\n"+
             "       Mergesort(a,p,q)\n" +
             "       Mergesort(a,q+1,r)\n" +
             "       Merge(A,p,q,r)",
@@ -57,9 +56,10 @@ public class MergeSort : SortingAlgorithm {
             "Merge(Array a, int p, int q, int r)\n" +
             "n1 = q - p\n" +
             "n2 = r - q\n" +
-            "let L and R be new arrays with lengths n1+1, and n2+1\n" +
+            "let L and R be new arrays\n" +
+            "with lengths n1+1, and n2+1\n" +
             "L[0:n1-1] = a[p:q]\n"+
-            "R[0:n2-1] = a[q:r]\n"+
+            "R[0:n2-1] = a[q+1:r]\n"+
             "L[n1] = infinity\n" +
             "R[n2] = infinity\n" +
             "i = j = 1\n" +
@@ -75,11 +75,14 @@ public class MergeSort : SortingAlgorithm {
 
     internal override void GenerateActions() {
         focusChangePoints = new List<int>();
+        mergeCompleteAt = new List<int>();
         _MergeSort(array, 0, size-1, currentArray, false);
     }
 
     private int cursor = 0;
     private List<int> focusChangePoints;
+    private List<int> mergeCompleteAt;
+    private int mergeCursor = 0;
 
     private void CheckForFocusChange() {
         if (cursor >= focusChangePoints.Count) return;
@@ -94,6 +97,29 @@ public class MergeSort : SortingAlgorithm {
     public override void Next() {
         base.Next();
         CheckForFocusChange();
+        if (step == mergeCompleteAt[mergeCursor] && mergeCursor < mergeCompleteAt.Count)
+            mergeCursor++;
+    }
+
+    public override void Prev() {
+        base.Prev();
+        if (cursor == 0) return;
+        if(focusChangePoints[cursor-1] == step+1) {
+            cursor--;
+            MergeState s = (MergeState)states[step];
+            EventManager.FocusChanged(s.array, s.i, s.i);
+            EventManager.FocusChanged(s.array+1, s.j, s.j);
+        }
+    }
+
+    public bool ReverseMerge() {
+        if (mergeCursor == 0) return false;
+        bool a = step == mergeCompleteAt[mergeCursor-1];
+        if (a) {
+            if(mergeCursor > 0)
+                mergeCursor--;
+        }
+        return a;
     }
 
     private int currentArray = -1;
@@ -146,5 +172,6 @@ public class MergeSort : SortingAlgorithm {
                 j++;
             }
         }
+        mergeCompleteAt.Add(states.Count);
     }
 }

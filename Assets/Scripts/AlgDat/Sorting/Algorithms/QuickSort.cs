@@ -28,13 +28,11 @@ public class QuickSort : SortingAlgorithm {
         }
 
         public string Readable() {
-            return string.Format(state, p, r, i == -2? "":i.ToString(), j==-2?"":j.ToString(), x==-2?"":"A[" + x + "]");
+            return string.Format(state, p, r, i == -2? "":i.ToString(), j==-2?"":j.ToString(), x==-2?"":"A[" + x + "]", steps);
         }
     }
     
 
-    private int focusPos = -1;
-    private List<int> focusPoints = new List<int>();
     private List<int> pivots = new List<int>();
 
     public QuickSort(int _arrayLength, int[] _array):base(_arrayLength, _array) {
@@ -72,8 +70,6 @@ public class QuickSort : SortingAlgorithm {
 
     private void PerformQuickSort(int[] a, int p, int r) {
         if (p < r) {
-            focusPoints.Add(p);
-            focusPoints.Add(r);
             int q = Partition(a, p, r);
             PerformQuickSort(a, p, q - 1);
             PerformQuickSort(a, q + 1, r);
@@ -115,6 +111,15 @@ public class QuickSort : SortingAlgorithm {
         if (GetAction().type == GameAction.GameActionType.Pivot) {
             QuickState s = (QuickState)states[step];
             EventManager.FocusChanged(-1,s.p, s.r);
+        }
+    }
+
+    public override void Prev() {
+        base.Prev();
+        if (step < 2 || step > actions.Count -2) return;
+        if(GetAction(step+1).type == GameAction.GameActionType.Pivot) {
+            QuickState s = (QuickState)states[step-2];
+            EventManager.FocusChanged(-1, s.p, s.r);
         }
     }
 

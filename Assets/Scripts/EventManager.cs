@@ -22,7 +22,7 @@ public class EventManager : MonoBehaviour {
     public delegate void SelectEvent(SortingElement s);
     public static event SelectEvent OnSelect;
 
-    public delegate void ActionCompletedEvent();
+    public delegate void ActionCompletedEvent(bool reverse);
     public static event ActionCompletedEvent OnActionCompleted;
 
     public delegate void AlgorithmCompletedEvent();
@@ -120,8 +120,8 @@ public class EventManager : MonoBehaviour {
         return a_select.GetStateDown(SteamVR_Input_Sources.Any);
     }
 
-    public static void ActionCompleted() {
-        if (OnActionCompleted != null) OnActionCompleted();
+    public static void ActionCompleted(bool reverse = false) {
+        if (OnActionCompleted != null) OnActionCompleted(reverse);
     }
 
     public static void AlgorithmCompleted() {

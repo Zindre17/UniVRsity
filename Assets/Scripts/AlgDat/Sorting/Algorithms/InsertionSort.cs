@@ -55,12 +55,12 @@ public class InsertionSort :SortingAlgorithm {
                 if (array[i] <= key)
                     break;
                 states.Add(new InsertionState(states.Count, i, j, key));
-                actions.Add(new MoveAction(i, i + 1));
+                actions.Add(new MoveAction(-1,i, i + 1));
                 array[i + 1] = array[i];
                 i--;
             }
             states.Add(new InsertionState(states.Count, i, j, key));
-            actions.Add(new MoveAction(-1, i + 1));
+            actions.Add(new MoveAction(-1,-1, i + 1));
             array[i + 1] = key;
         }
         //states.Add(string.Format(state, i, j, key, states.Count));

@@ -55,13 +55,17 @@ public abstract class UIButton :MonoBehaviour
     private void Start() {
         colorManager = ColorManager.instance;
         defaultColor = colorManager.button;
+        //MaterialPropertyBlock mpb = new MaterialPropertyBlock();
+        //mpb.SetColor("_Color", defaultColor);
+        //rend.SetPropertyBlock(mpb);
         rend.material.color = defaultColor;
         origin = transform.localPosition;
     }
 
-    public virtual void Press(bool demo = false, bool pause = false,Action function = null) {
-        if ((onButtonPressed == null || !active) && !demo) return;
+    public virtual bool Press(bool demo = false, bool pause = false,Action function = null) {
+        if ((onButtonPressed == null || !active) && !demo) return false;
         StartCoroutine(PressAnimation(pause,function:function));
+        return true;
     }
 
     public void Toggle() {

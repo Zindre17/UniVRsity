@@ -2,7 +2,7 @@
 
 public abstract class SortingAlgorithm {
 
-    internal int step;
+    public int step;
     internal bool complete;
     internal List<GameAction> actions;
     internal List<IState> states;
@@ -62,7 +62,7 @@ public abstract class SortingAlgorithm {
         }
     }
 
-    public void Prev() {
+    public virtual void Prev() {
         if (complete)
             complete = false;
         if(step!= 0)
