@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class ImageHandler : MonoBehaviour
 {
+
+    public ActionController actionController;
     private int resolution;
     
     private float spacing;
@@ -45,6 +47,7 @@ public class ImageHandler : MonoBehaviour
     private void SelectPixel(Pixel p) {
         if (lastSelection != null)
             lastSelection.Selected = false;
+        actionController.UpdateState(ActionController.State.Selected);
         p.Selected = true;
         lastSelection = p;
     }
@@ -57,14 +60,15 @@ public class ImageHandler : MonoBehaviour
     private IEnumerator DemoSelect(Pixel p, Action function = null) {
         yield return new WaitForSeconds(.6f);
         SelectPixel(p);
-        //yield return new WaitForSeconds(.3f);
-        if (function != null) function();
+        function?.Invoke();
+
     }
 
     public void Restart(int resolution) {
         this.resolution = resolution;
         if (lastSelection != null) lastSelection.Selected = false;
         lastSelection = null;
+        actionController.UpdateState(ActionController.State.Empty);
         if (Seed != null) Seed.Seed = false;
         UpdateMeasurement();
     }

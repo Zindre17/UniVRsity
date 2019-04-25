@@ -12,6 +12,6 @@ public abstract class SceneChanger : MonoBehaviour {
     }
 	
     internal void FadeToLevel(string nextLevel) {
-        SteamVR_LoadLevel.Begin(nextLevel, fadeOutTime: 3f);
+        SteamVR_LoadLevel.Begin(nextLevel, fadeOutTime: 1.2f);
     }
 }

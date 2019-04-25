@@ -11,6 +11,7 @@ public class UseCase : MonoBehaviour
     public GameObject scene;
     public ActionController actionController;
     public GameObject tutorial;
+    public AlgoControlManager algoManager;
 
     [Range(4,16)]
     public int resolution = 8;
@@ -98,14 +99,36 @@ public class UseCase : MonoBehaviour
         }
     }
 
+    public void Prev() {
+
+    }
+
+    public void Next() {
+        algoManager.UpdateAlgoButtons(AlgoControlManager.State.Inactive);
+        Select(true);
+    }
+
     public void Demo() {
         if (!started) return;
         demo = !demo;
+        algoManager.Demo(demo);
+        if (demo)
+            algoManager.UpdateAlgoButtons(AlgoControlManager.State.Demo);
+        else if (algorithm.Complete)
+            algoManager.UpdateAlgoButtons(AlgoControlManager.State.Finished);
+        else if (algorithm.step == 0)
+            algoManager.UpdateAlgoButtons(AlgoControlManager.State.Active);
+        else
+            algoManager.UpdateAlgoButtons(AlgoControlManager.State.InProgress);
+        if (demo)
+            actionController.UpdateState(ActionController.State.Empty);
+        else
+            actionController.UpdateState(ActionController.State.Selected);
         Select();
     }
 
-    private void Select() {
-        if (!demo || algorithm.Complete) return;
+    private void Select(bool force=false) {
+        if ((!demo || algorithm.Complete)&&!force) return;
         ImageAction a = algorithm.GetNext();
         if (a.Type != ImageAction.ActionType.Pop)
             imageHandler.DemoSelectPixel(a.Pixel, function: Press);
@@ -136,5 +159,6 @@ public class UseCase : MonoBehaviour
         patternRep.Restart(resolution);
         dataStructure.Restart();
         imageHandler.Restart(resolution);
+        actionController.UpdateState(ActionController.State.Empty);
     }
 }

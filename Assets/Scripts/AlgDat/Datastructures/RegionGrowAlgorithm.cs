@@ -16,7 +16,7 @@ public class RegionGrowAlgorithm {
     private Stage.Data data;
     private List<int> datastructure;
     private List<ImageAction> actions;
-    private int step = 0;
+    internal int step = 0;
     private bool[] image;
 
     public bool Complete { get; private set; }
