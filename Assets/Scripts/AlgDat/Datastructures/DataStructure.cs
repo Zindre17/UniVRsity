@@ -13,15 +13,14 @@ public class DataStructure : MonoBehaviour
     public StaticLaser laser;
 
     private List<GameObject> items;
+    private Stack<GameObject> poppedItems;
     private List<Pixel> data;
+    private Stack<Pixel> poppedData;
 
     private Stage.Data mode;
 
     private float itemThickness = 0;
     private readonly float spacing = 0.05f;
-
-    private Pixel poppedP;
-    private GameObject poppedI;
 
     private void Start() {
         dataItemScale = new Vector3(.6f, .6f, .6f);
@@ -50,12 +49,49 @@ public class DataStructure : MonoBehaviour
         Spawn(p.transform.position);
     }
 
+    public void UnPush() {
+        if (poppedData.Count == 0) return;
+        Pixel p = null;
+        GameObject o = null;
+        switch (mode) {
+            case Stage.Data.Stack:
+                p = data[data.Count-1];
+                o = items[items.Count-1];
+                break;
+            case Stage.Data.Queue:
+                p = data[0];
+                o = items[0];
+                break;
+        }
+        data.Remove(p);
+        items.Remove(o);
+        StartCoroutine(UnPushRoutine(p, o));
+    }
+
+    private IEnumerator UnPushRoutine(Pixel p, GameObject o) {
+        float duration = .6f;
+        float elapsed = 0f;
+        float prevTime = Time.time;
+        Vector3 start = o.transform.localScale;
+        float percent;
+        while(elapsed < duration) {
+            percent = elapsed / duration;
+            o.transform.localScale = start * (1 - percent);
+            float time = Time.time;
+            elapsed += time - prevTime;
+            prevTime = time;
+            yield return null;
+        }
+        Destroy(o);
+    }
+
     public Pixel Pop() {
         if (data.Count == 0) return null;
-        if(poppedP != null) {
+        if(poppedData.Count!=0) {
             laser.Hide();
-            Destroy(poppedI.gameObject);
-        }
+            //Destroy(poppedI.gameObject);
+            poppedItems.Peek().SetActive(false);
+        } 
         switch (mode) {
             case Stage.Data.Stack:
                 return StackPop();
@@ -65,37 +101,134 @@ public class DataStructure : MonoBehaviour
         return null;
     }
 
+    public void UnPop() {
+        if (poppedData.Count == 0) return;
+        StartCoroutine(mode == Stage.Data.Stack ? StackUnPopRoutine() : QueueUnPopRoutine());
+    }
+
+    private IEnumerator QueueUnPopRoutine() {
+        Pixel p = poppedData.Pop();
+        GameObject o = poppedItems.Pop();
+        
+        float duration = .6f;
+        float elapsed = 0f;
+        float prevTime = Time.time;
+        float percent;
+        Vector3 start = o.transform.position;
+        Vector3 end = GetPos(0);
+        Vector3 mid = new Vector3(start.x, end.y, start.z);
+        Vector3 path1 = mid - start;
+        Vector3 path2 = end - mid;
+        List<Vector3> starts;
+        List<Vector3> ends;
+        List<Vector3> paths;
+        starts = new List<Vector3>(data.Count);
+        ends = new List<Vector3>(data.Count);
+        paths = new List<Vector3>(data.Count);
+        for(int i = 0; i < data.Count; i++) {
+            starts.Add(items[i].transform.position);
+            ends.Add(GetPos(i+1));
+            paths.Add(ends[i] - starts[i]);
+        }
+        float part = .3f;
+        while (elapsed < duration) {
+            if (elapsed < part) {
+                percent = elapsed / part;
+                o.transform.position = start + path1 * percent;
+            } else {
+                percent = (elapsed - part) / (duration - part);
+                o.transform.position = mid + path2 * percent;
+            }
+            percent = elapsed / duration;
+            for(int i = 0; i < data.Count; i++) {
+                items[i].transform.position = starts[i] + paths[i] * percent;
+            }
+            float time = Time.time;
+            elapsed += time - prevTime;
+            prevTime = time;
+            yield return null;
+        }
+        o.transform.position = end;
+        data.Insert(0, p);
+        items.Insert(0, o);
+        if(poppedData.Count != 0) {
+            poppedItems.Peek().SetActive(true);
+        }
+    }
+
+    private IEnumerator StackUnPopRoutine() {
+        Pixel p = poppedData.Pop();
+        GameObject o = poppedItems.Pop();
+        data.Add(p);
+        items.Add(o);
+        float duration = .6f;
+        float elapsed = 0f;
+        float prevTime = Time.time;
+        float percent;
+        Vector3 start = o.transform.position;
+        Vector3 end = GetNextPos();
+        Vector3 mid = new Vector3(start.x, end.y, start.z);
+        Vector3 path1 = mid - start;
+        Vector3 path2 = end - mid;
+        float part = .3f;
+        while(elapsed < duration) {
+            if(elapsed < part) {
+                percent = elapsed / part;
+                o.transform.position = start + path1 * percent;
+            } else {
+                percent = (elapsed-part) / (duration-part);
+                o.transform.position = mid + path2 * percent;
+            }
+            float time = Time.time;
+            elapsed += time - prevTime;
+            prevTime = time;
+            yield return null;
+        }
+        o.transform.position = end;
+        if (poppedData.Count != 0) {
+            poppedItems.Peek().SetActive(true);
+        }
+    }
+
     private void Awake() {
         data = new List<Pixel>();
+        poppedData = new Stack<Pixel>();
         items = new List<GameObject>();
+        poppedItems = new Stack<GameObject>();
     }
 
     public void Restart() {
         laser.Hide();
-        if (poppedI != null) Destroy(poppedI.gameObject);
-        if (poppedP != null) poppedP = null;
         data.Clear();
+        poppedData.Clear();
         for (int i = items.Count-1; i > -1; i--) {
             GameObject o = items[i];
             items.Remove(o);
             Destroy(o);
         }
+        for(int i = 0; i < poppedItems.Count; i++) {
+            Destroy(poppedItems.Pop());
+        }
     }
 
     private Pixel StackPop() {
-        poppedP = data[data.Count - 1];
+        Pixel poppedP = data[data.Count - 1];
         data.Remove(poppedP);
-        poppedI = items[items.Count - 1];
+        poppedData.Push(poppedP);
+        GameObject poppedI = items[items.Count - 1];
         items.Remove(poppedI);
+        poppedItems.Push(poppedI);
         StartCoroutine(PopAnimation(poppedI,poppedP,false));
         return poppedP;
     }
 
     private Pixel QueuePop() {
-        poppedP = data[0];
+        Pixel poppedP = data[0];
         data.Remove(poppedP);
-        poppedI = items[0];
+        poppedData.Push(poppedP);
+        GameObject poppedI = items[0];
         items.Remove(poppedI);
+        poppedItems.Push(poppedI);
         StartCoroutine(PopAnimation(poppedI, poppedP,true));
         return poppedP;
     }

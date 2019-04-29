@@ -44,6 +44,10 @@ public class ImageHandler : MonoBehaviour
         SetPattern();
     }
 
+    public void SelectPixel(int index) {
+        SelectPixel(pixels[index]);
+    }
+
     private void SelectPixel(Pixel p) {
         if (lastSelection != null)
             lastSelection.Selected = false;

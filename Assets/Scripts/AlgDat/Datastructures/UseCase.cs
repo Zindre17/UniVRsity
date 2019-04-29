@@ -100,18 +100,29 @@ public class UseCase : MonoBehaviour
     }
 
     public void Prev() {
-
+        
+    }
+    
+    private void StepComplete() {
+        UpdateAlgoButtons();
     }
 
     public void Next() {
         algoManager.UpdateAlgoButtons(AlgoControlManager.State.Inactive);
-        Select(true);
+        StartCoroutine(DoStepRoutine());
     }
 
-    public void Demo() {
-        if (!started) return;
-        demo = !demo;
-        algoManager.Demo(demo);
+    private IEnumerator DoStepRoutine() {
+        ImageAction a = algorithm.GetNext();
+        if(a.Type != ImageAction.ActionType.Pop) {
+            yield return new WaitForSeconds(.2f);
+            imageHandler.SelectPixel(a.Pixel);
+            yield return new WaitForSeconds(.4f);
+        }
+        actionController.Press(a.Type, UpdateAlgoButtons);
+    }
+
+    private void UpdateAlgoButtons() {
         if (demo)
             algoManager.UpdateAlgoButtons(AlgoControlManager.State.Demo);
         else if (algorithm.Complete)
@@ -124,11 +135,18 @@ public class UseCase : MonoBehaviour
             actionController.UpdateState(ActionController.State.Empty);
         else
             actionController.UpdateState(ActionController.State.Selected);
+    }
+
+    public void Demo() {
+        if (!started) return;
+        demo = !demo;
+        algoManager.Demo(demo);
+        UpdateAlgoButtons();
         Select();
     }
 
-    private void Select(bool force=false) {
-        if ((!demo || algorithm.Complete)&&!force) return;
+    private void Select() {
+        if ((!demo || algorithm.Complete)) return;
         ImageAction a = algorithm.GetNext();
         if (a.Type != ImageAction.ActionType.Pop)
             imageHandler.DemoSelectPixel(a.Pixel, function: Press);

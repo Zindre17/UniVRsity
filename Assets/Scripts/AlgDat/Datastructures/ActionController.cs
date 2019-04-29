@@ -43,7 +43,7 @@ public class ActionController : MonoBehaviour
         }
     }
 
-    public void Press(ImageAction.ActionType type, Action function) {
+    public void Press(ImageAction.ActionType type, Action function=null) {
         switch (type) {
             case ImageAction.ActionType.Check:
                 check.Press(pause:true, function:function);
