@@ -11,8 +11,17 @@ public class Stage : MonoBehaviour
     private Mode mode;
 
     private void Start() {
-        GoToPlayMode();
+        mode = Mode.Play;
+        enabled = true;
+    }
+
+    private void Update() {
+        if (mode == Mode.Play)
+            GoToPlayMode();
+        else
+            GoToUseCase();
         ChangeDataModel(Data.None);
+        enabled = false;
     }
 
     public enum Data {

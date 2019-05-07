@@ -18,9 +18,22 @@ public class PartialArray : Selectable
 
     private Vector3 origSize;
 
+    public bool ParentLeft { get; set; }
+    public bool Left { get; set; }
+
     public int Start { get; private set; }
     public int End { get; private set; }
     public int Size { get; private set; }
+
+    public Vector3 MergePos { get; set; }
+    private Vector3 startPos;
+    public Vector3 StartPos {
+        get { return startPos; }
+        set {
+            startPos = value;
+            transform.position = startPos;
+        }
+    }
 
     private Coroutine routine;
     private readonly float interval = .1f;
@@ -164,6 +177,7 @@ public class PartialArray : Selectable
             array[i].InFocus = true;
         }
         routine = null;
+        EventManager.PartialActionComplete();
     }
 
     private IEnumerator ExpansionAnimation() {
@@ -201,6 +215,7 @@ public class PartialArray : Selectable
         }
         expansion.Size = 20;
         routine = null;
+        EventManager.PartialActionComplete();
     }
 
     private void Adjust() {

@@ -25,7 +25,7 @@ public class Play : MonoBehaviour
     }
 
     private void Restart() {
-         
+        UpdateScene();
     }
 
     private void UpdateModel(bool stack, bool queue, bool linked) {

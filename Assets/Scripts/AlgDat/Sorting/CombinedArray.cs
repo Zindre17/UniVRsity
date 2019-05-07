@@ -23,6 +23,20 @@ public class CombinedArray : MonoBehaviour
 
     public int Size { get { return size; } }
 
+    private Vector3 pos;
+    public Vector3 Pos {
+        get { return pos; }
+        set {
+            pos = value;
+            transform.position = pos;
+        }
+    }
+
+    public bool Complete()
+    {
+        return replaced == size;
+    }
+
     public void Init(int _size, int _start) {
         size = _size;
         start = _start;
@@ -75,7 +89,7 @@ public class CombinedArray : MonoBehaviour
         s.gameObject.SetActive(true);
         e[replaced].gameObject.SetActive(false);
         replaced++;
-        if (replaced == size) EventManager.MergeComplete();
+        //if (replaced == size) EventManager.MergeComplete();
         return s;
     }
 }

@@ -9,7 +9,24 @@ public class ElementAnimator : MonoBehaviour
     private readonly float movementMagnitude = 0.4f;
 
     private Stack<SortingElement> prevPivots;
+    private bool partialAction = false;
+    private bool reverse = false;
 
+    private void Awake()
+    {
+        EventManager.OnPartialActionComplete += PartialComplete;
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.OnPartialActionComplete -= PartialComplete;
+    }
+    private void PartialComplete()
+    {
+        partialAction = false;
+        if (routine == null)
+            EventManager.ActionCompleted(reverse);
+    }
     public void Stop() {
         if(routine != null) {
             StopCoroutine(routine);
@@ -102,7 +119,7 @@ public class ElementAnimator : MonoBehaviour
             array.InFocus = false;
         }
         routine = null;
-        EventManager.ActionCompleted(true);
+        EventManager.ActionCompleted(false);
     }
 
     private IEnumerator MergeCompleteAnimation(ArrayManager array, List<PartialArray> splits, Split split, CombinedArray combined) {
@@ -163,13 +180,18 @@ public class ElementAnimator : MonoBehaviour
             array.InFocus = true;
         }
         routine = null;
+        EventManager.ActionCompleted();
     }
 
     public void Unmerge(Split split, CombinedArray combined) {
+        partialAction = true;
+        reverse = true;
         routine = StartCoroutine(UnmergeAnimation(split, combined));
     }
 
     public void Merge(Split split, CombinedArray combined) {
+        partialAction = true;
+        reverse = false;
         routine = StartCoroutine(MergeAnimation(split, combined));
     }
 
@@ -178,30 +200,31 @@ public class ElementAnimator : MonoBehaviour
         float duration = .6f;
         float elapsed = 0f;
         float percent;
-        Vector3 path = new Vector3((split.Left.Size + split.Right.Size + 1) / 4f, 0, 0);
-        Vector3 leftStart = split.Left.transform.position;
-        Vector3 rightStart = split.Right.transform.position;
+        Vector3 lPath = split.Left.StartPos - split.Left.MergePos;
+        Vector3 rPath = split.Right.StartPos - split.Right.MergePos;
+        Vector3 leftStart = split.Left.MergePos;
+        Vector3 rightStart = split.Right.MergePos;
         Vector3 size = array.transform.localScale;
         array.gameObject.SetActive(true);
-        
-
+        split.Left.Unexpand();
+        split.Right.Unexpand();
         while (elapsed < duration) {
             percent = elapsed / duration;
             array.transform.localScale = size * (1-percent);
-            split.Left.transform.position = leftStart + path * percent;
-            split.Right.transform.position = rightStart - path * percent;
+            split.Left.transform.position = leftStart + lPath * percent;
+            split.Right.transform.position = rightStart + rPath * percent;
             float time = Time.time;
             elapsed += time - prevTime;
             prevTime = time;
             yield return null;
         }
         Destroy(array.gameObject);
-        split.Left.transform.position = leftStart + path;
-        split.Right.transform.position = rightStart - path;
-        split.Left.Unexpand();
-        split.Right.Unexpand();
+        
+        split.Left.transform.position = leftStart + lPath;
+        split.Right.transform.position = rightStart + rPath;
         routine = null;
-        EventManager.ActionCompleted(true);
+        if (!partialAction)
+            EventManager.ActionCompleted(true);
     }
 
     private IEnumerator MergeAnimation(Split split, CombinedArray array) {
@@ -209,9 +232,10 @@ public class ElementAnimator : MonoBehaviour
         float duration = .6f;
         float elapsed = 0f;
         float percent;
-        Vector3 path = new Vector3((split.Left.Size + split.Right.Size+1) / 4f , 0, 0);
-        Vector3 leftStart = split.Left.transform.position;
-        Vector3 rightStart = split.Right.transform.position;
+        Vector3 lPath = split.Left.MergePos - split.Left.StartPos;
+        Vector3 rPath = split.Right.MergePos - split.Right.StartPos;
+        Vector3 leftStart = split.Left.StartPos;
+        Vector3 rightStart = split.Right.StartPos;
         Vector3 size = array.transform.localScale;
         array.transform.localScale = Vector3.zero;
         array.gameObject.SetActive(true);
@@ -221,19 +245,20 @@ public class ElementAnimator : MonoBehaviour
         while (elapsed < duration) {
             percent = elapsed / duration;
             array.transform.localScale = size * percent;
-            split.Left.transform.position = leftStart - path * percent;
-            split.Right.transform.position = rightStart + path * percent;
+            split.Left.transform.position = leftStart + lPath * percent;
+            split.Right.transform.position = rightStart + rPath * percent;
             float time = Time.time;
             elapsed += time - prevTime;
             prevTime = time;
             yield return null;
         }
         array.transform.localScale = size;
-        split.Left.transform.position = leftStart - path;
-        split.Right.transform.position = rightStart + path;
+        split.Left.transform.position = leftStart + lPath;
+        split.Right.transform.position = rightStart + rPath;
 
         routine = null;
-        EventManager.ActionCompleted();
+        if (!partialAction)
+            EventManager.ActionCompleted();
     }
     #endregion
 
@@ -500,8 +525,8 @@ public class ElementAnimator : MonoBehaviour
         routine = StartCoroutine(UndoCopyToAnimation(source, target, size, combined));
     }
 
-    public void CopyTo(SortingElement s1, SortingElement s2) {
-        routine = StartCoroutine(CopyToAnimation(s1, s2));
+    public void CopyTo(SortingElement s1, SortingElement s2, bool mergeComplete = false) {
+        routine = StartCoroutine(CopyToAnimation(s1, s2, mergeComplete));
     }
 
     private IEnumerator UndoCopyToAnimation(SortingElement source, SortingElement target, int size, CombinedArray combined = null) {
@@ -563,7 +588,7 @@ public class ElementAnimator : MonoBehaviour
         EventManager.ActionCompleted(true);
     }
 
-    private IEnumerator CopyToAnimation(SortingElement source, SortingElement target) {
+    private IEnumerator CopyToAnimation(SortingElement source, SortingElement target, bool mergeComplete = false) {
         target.Size = source.Size;
         float prevTime = Time.time;
         float duration = .6f;
@@ -618,7 +643,13 @@ public class ElementAnimator : MonoBehaviour
         }
         target.transform.position = t;
         routine = null;
-        EventManager.ActionCompleted();
+        if(!mergeComplete)
+            EventManager.ActionCompleted();
+        else
+        {
+            if (!partialAction)
+                EventManager.MergeComplete();
+        }
     }
     #endregion
 

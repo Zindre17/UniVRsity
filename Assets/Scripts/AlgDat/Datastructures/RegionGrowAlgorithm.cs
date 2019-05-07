@@ -89,6 +89,7 @@ public class RegionGrowAlgorithm {
         if (action.Type != ImageAction.ActionType.Pop) return false;
         if (CorrectStep(action)){
             step++;
+            Complete = step == actions.Count;
             return true;
         }
         return false;
@@ -102,13 +103,21 @@ public class RegionGrowAlgorithm {
                 else return false;
             }
             step++;
-            if (step == actions.Count) Complete = true;
+            Complete = step == actions.Count;
             return true;
         }
         return false;
     }
 
+    public void UndoStep() {
+        step--;
+    }
+
     public ImageAction GetNext() {
         return actions[step];
+    }
+    public ImageAction GetPrev() {
+        if (step == 0) return null;
+        return actions[step - 1];
     }
 }

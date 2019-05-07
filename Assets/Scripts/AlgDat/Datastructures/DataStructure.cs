@@ -26,6 +26,7 @@ public class DataStructure : MonoBehaviour
         dataItemScale = new Vector3(.6f, .6f, .6f);
         StructureItem i = dataItemPrefab.GetComponent<StructureItem>();
         itemThickness = i.Width;
+        laser.SetPosition(popSpawn.position + Vector3.up * 0.3f);
         laser.Hide();
     }
 
@@ -50,19 +51,9 @@ public class DataStructure : MonoBehaviour
     }
 
     public void UnPush() {
-        if (poppedData.Count == 0) return;
-        Pixel p = null;
-        GameObject o = null;
-        switch (mode) {
-            case Stage.Data.Stack:
-                p = data[data.Count-1];
-                o = items[items.Count-1];
-                break;
-            case Stage.Data.Queue:
-                p = data[0];
-                o = items[0];
-                break;
-        }
+        if (data.Count == 0) return;
+        Pixel p = data[data.Count - 1];
+        GameObject o = items[items.Count - 1];
         data.Remove(p);
         items.Remove(o);
         StartCoroutine(UnPushRoutine(p, o));
@@ -83,6 +74,7 @@ public class DataStructure : MonoBehaviour
             yield return null;
         }
         Destroy(o);
+        EventManager.ActionCompleted();
     }
 
     public Pixel Pop() {
@@ -109,7 +101,7 @@ public class DataStructure : MonoBehaviour
     private IEnumerator QueueUnPopRoutine() {
         Pixel p = poppedData.Pop();
         GameObject o = poppedItems.Pop();
-        
+        laser.Hide();
         float duration = .6f;
         float elapsed = 0f;
         float prevTime = Time.time;
@@ -125,7 +117,9 @@ public class DataStructure : MonoBehaviour
         starts = new List<Vector3>(data.Count);
         ends = new List<Vector3>(data.Count);
         paths = new List<Vector3>(data.Count);
-        for(int i = 0; i < data.Count; i++) {
+        Vector3 startAngle = o.transform.localRotation.eulerAngles;
+        Vector3 endAngle = Vector3.zero;
+        for (int i = 0; i < data.Count; i++) {
             starts.Add(items[i].transform.position);
             ends.Add(GetPos(i+1));
             paths.Add(ends[i] - starts[i]);
@@ -135,6 +129,7 @@ public class DataStructure : MonoBehaviour
             if (elapsed < part) {
                 percent = elapsed / part;
                 o.transform.position = start + path1 * percent;
+                o.transform.localRotation = Quaternion.Euler(startAngle-(startAngle * percent));
             } else {
                 percent = (elapsed - part) / (duration - part);
                 o.transform.position = mid + path2 * percent;
@@ -149,11 +144,14 @@ public class DataStructure : MonoBehaviour
             yield return null;
         }
         o.transform.position = end;
+        o.transform.localRotation = Quaternion.Euler(endAngle);
         data.Insert(0, p);
         items.Insert(0, o);
         if(poppedData.Count != 0) {
             poppedItems.Peek().SetActive(true);
+            laser.Target(poppedData.Peek().surface.position, true);
         }
+        EventManager.ActionCompleted();
     }
 
     private IEnumerator StackUnPopRoutine() {
@@ -170,11 +168,14 @@ public class DataStructure : MonoBehaviour
         Vector3 mid = new Vector3(start.x, end.y, start.z);
         Vector3 path1 = mid - start;
         Vector3 path2 = end - mid;
+        Vector3 startAngle = o.transform.localRotation.eulerAngles;
+        Vector3 endAngle = Vector3.zero;
         float part = .3f;
         while(elapsed < duration) {
             if(elapsed < part) {
                 percent = elapsed / part;
                 o.transform.position = start + path1 * percent;
+                o.transform.localRotation = Quaternion.Euler(startAngle - (startAngle * percent));
             } else {
                 percent = (elapsed-part) / (duration-part);
                 o.transform.position = mid + path2 * percent;
@@ -185,9 +186,12 @@ public class DataStructure : MonoBehaviour
             yield return null;
         }
         o.transform.position = end;
+        o.transform.localRotation = Quaternion.Euler(endAngle);
         if (poppedData.Count != 0) {
             poppedItems.Peek().SetActive(true);
+            laser.Target(poppedData.Peek().surface.position, true);
         }
+        EventManager.ActionCompleted();
     }
 
     private void Awake() {
@@ -276,7 +280,7 @@ public class DataStructure : MonoBehaviour
         }
         o.transform.position = end;
         o.transform.localRotation = Quaternion.Euler(endAngle);
-        laser.Target(o.transform,p.GetSurface(), true);
+        laser.Target(p.GetSurface(), true);
         if (queue) {
             int i = 0;
             float interval = 0.1f;
@@ -287,6 +291,7 @@ public class DataStructure : MonoBehaviour
                 yield return new WaitForSeconds(interval);
             }
         }
+        EventManager.ActionCompleted();
     }
 
     private IEnumerator PushAnimation(GameObject o) {
@@ -310,5 +315,6 @@ public class DataStructure : MonoBehaviour
         }
         o.transform.localScale = origSize;
         o.transform.position = finalPos;
+        EventManager.ActionCompleted();
     }
 }

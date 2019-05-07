@@ -19,6 +19,8 @@
     public override bool Equals(object obj) {
         if (obj.GetType() != typeof(ImageAction)) return false;
         ImageAction other = (ImageAction)obj;
+        if (Type == ActionType.Pop)
+            return Type == other.Type;
         return Pixel == other.Pixel && Type == other.Type;
     }
 

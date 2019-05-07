@@ -142,7 +142,8 @@ public class SortingManager : MonoBehaviour
     }
 
     public void Merge() {
-        action = new MergeAction(selected[0].Index, selected[1].Index);
+        PartialArray p1 = (PartialArray)selected[0], p2 = (PartialArray)selected[1];
+        action = new MergeAction(p1.Index, p2.Index);
         DoAction();
     }
     
@@ -295,15 +296,17 @@ public class SortingManager : MonoBehaviour
         }
         if(!reverse)
             alg.Next();
+        else
+            alg.Prev();
         partialAction = false;
         performingAction = false;
         UpdateUI();
+        UpdateActions();
+        UpdateAlgo();
         if (demo) {
             DoStep();
-        } else {
-            UpdateActions();
-            UpdateAlgo();
-        }
+            return;
+        } 
         if (alg.complete) {
             arrays.Complete();
             comparison.Clear();
@@ -336,7 +339,8 @@ public class SortingManager : MonoBehaviour
         //reverse this action
         switch (a.type) {
             case GameAction.GameActionType.Compare:
-                break;
+                comparison.Reverse(alg.step);
+                return;
             case GameAction.GameActionType.Swap:
                 arrays.Swap((SwapAction)a, true);
                 break;
@@ -356,9 +360,7 @@ public class SortingManager : MonoBehaviour
                 arrays.Unmerge();
                 break;
         }
-        comparison.Reverse(alg.step - 1);
-
-        alg.Prev();
+        comparison.LoadPrev(alg.step);
     }
 
     private IEnumerator DoStepRoutine() {
@@ -455,8 +457,17 @@ public class SortingManager : MonoBehaviour
         switch (action.type) {
             case GameAction.GameActionType.Compare:
                 CompareAction c = (CompareAction)action;
-                string left = c.index1 == -1 ? "storage" : "A[" + c.index1 + "]";
-                string right = c.index2 == -1 ? "storage" : "A[" + c.index2 + "]";
+                string left, right;
+                if (c.array1 < 0)
+                {
+                    left = c.index1 == -1 ? "storage" : "A[" + c.index1 + "]";
+                    right = c.index2 == -1 ? "storage" : "A[" + c.index2 + "]";
+                }
+                else
+                {
+                    left = c.array1 % 2 == 0 ? "L[" + c.index1 + "]" : "R[" + c.index1 + "]";
+                    right = c.array2 % 2 == 0 ? "L[" + c.index2 + "]" : "R[" + c.index2 + "]";
+                }
                 s = string.Format("Comparing {0} and {1}", left, right);
                 break;
             case GameAction.GameActionType.Pivot:
@@ -516,7 +527,7 @@ public class SortingManager : MonoBehaviour
     }
 
     private void UpdateAlgo() {
-        if(alg == null || performingAction) 
+        if(alg == null || performingAction || partialAction) 
             algoManager.UpdateAlgoButtons(AlgoControlManager.State.Inactive);
         else if (demo)
             algoManager.UpdateAlgoButtons(AlgoControlManager.State.Demo);

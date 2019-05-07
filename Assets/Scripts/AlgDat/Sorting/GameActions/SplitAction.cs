@@ -1,6 +1,5 @@
 ﻿public class SplitAction : GameAction {
     public int array;
-
     public SplitAction(int index) {
         array = index;
         type = GameActionType.Split;

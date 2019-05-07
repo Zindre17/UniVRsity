@@ -3,13 +3,27 @@ using UnityEngine;
 
 public class ActionController : MonoBehaviour
 {
-    public ActionButton push;
-    public ActionButton pop;
+    public ActionButton add;
+    public ActionButton remove;
     public ActionButton check;
 
     public enum State {
         Selected,
         Empty
+    }
+
+    public void UpdateLabels(bool queue)
+    {
+        if (queue)
+        {
+            add.SetLabel("Enqueue");
+            remove.SetLabel("Dequeue");
+        }
+        else
+        {
+            add.SetLabel("Push");
+            remove.SetLabel("Pop");
+        }
     }
 
     public void UpdateState(State state) {
@@ -24,8 +38,8 @@ public class ActionController : MonoBehaviour
     }
 
     private void UpdateButtons(bool pu = false, bool po = false, bool ch = false) {
-        push.Active = pu;
-        pop.Active = po;
+        add.Active = pu;
+        remove.Active = po;
         check.Active = ch;
     }
 
@@ -35,10 +49,10 @@ public class ActionController : MonoBehaviour
                 check.Hint();
                 break;
             case ImageAction.ActionType.Push:
-                push.Hint();
+                add.Hint();
                 break;
             case ImageAction.ActionType.Pop:
-                pop.Hint();
+                remove.Hint();
                 break;
         }
     }
@@ -46,13 +60,13 @@ public class ActionController : MonoBehaviour
     public void Press(ImageAction.ActionType type, Action function=null) {
         switch (type) {
             case ImageAction.ActionType.Check:
-                check.Press(pause:true, function:function);
+                check.Press(pause:true, demo:true, function:function);
                 break;
             case ImageAction.ActionType.Push:
-                push.Press(pause:true,function:function);
+                add.Press(pause:true, demo:true, function:function);
                 break;
             case ImageAction.ActionType.Pop:
-                pop.Press(pause:true,function:function);
+                remove.Press(pause:true, demo: true, function:function);
                 break;
         }
     }
@@ -62,9 +76,9 @@ public class ActionController : MonoBehaviour
             case ImageAction.ActionType.Check:
                 return check;
             case ImageAction.ActionType.Push:
-                return push;
+                return add;
             case ImageAction.ActionType.Pop:
-                return pop;
+                return remove;
         }
         return null;
     }

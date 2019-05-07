@@ -10,8 +10,8 @@ public class PatternRep : MonoBehaviour
     private float spacing, size, elevation;
     private List<Renderer> image;
     public GameObject pixelPrefab;
-
     private ColorManager colorManager;
+    private Stack<int> changes;
 
     private void UpdateMeasurements() {
         if (colorManager == null) colorManager = ColorManager.instance;
@@ -45,13 +45,22 @@ public class PatternRep : MonoBehaviour
         }
     }
 
+    public void Undo() {
+        int prev = changes.Pop();
+        image[prev].material.color = colorManager.white;
+    }
+
     public void Pattern(int index) {
-        if(index > 0 && index < image.Count)
+        if (index > 0 && index < image.Count)
+        {
             image[index].material.color = colorManager.black;
+            changes.Push(index);
+        }
     }
 
     private void Awake() {
         image = new List<Renderer>();
+        changes = new Stack<int>();
         colorManager = ColorManager.instance;
     }
 

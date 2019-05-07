@@ -28,20 +28,16 @@ public class ImageHandler : MonoBehaviour
         pixels = new List<Pixel>();
     }
 
-    private void OnEnable() {
-        EventManager.OnPixelSelected += SelectPixel;
-    }
-
-    private void OnDisable() {
-        EventManager.OnPixelSelected -= SelectPixel;
-    }
-
     private void UpdateMeasurement() {
         int pieces = resolution * 4 + resolution - 1;
         spacing = (float)width/pieces;
         scale = spacing * 4;
         PlacePixels();
         SetPattern();
+    }
+
+    public Pixel Get(int index) {
+        return pixels[index];
     }
 
     public void SelectPixel(int index) {
@@ -51,21 +47,8 @@ public class ImageHandler : MonoBehaviour
     private void SelectPixel(Pixel p) {
         if (lastSelection != null)
             lastSelection.Selected = false;
-        actionController.UpdateState(ActionController.State.Selected);
         p.Selected = true;
         lastSelection = p;
-    }
-
-    public void DemoSelectPixel(int index, Action function = null) {
-        Pixel p = pixels[index];
-        StartCoroutine(DemoSelect(p, function: function));
-    }
-
-    private IEnumerator DemoSelect(Pixel p, Action function = null) {
-        yield return new WaitForSeconds(.6f);
-        SelectPixel(p);
-        function?.Invoke();
-
     }
 
     public void Restart(int resolution) {

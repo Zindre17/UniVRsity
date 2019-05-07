@@ -9,6 +9,8 @@ public class DStack : MonoBehaviour
     public GameObject itemPrefab;
     public TMPro.TextMeshPro text;
     public TMPro.TextMeshPro message;
+    public TMPro.TextMeshPro instructions;
+    public TMPro.TextMeshPro add, remove, usecase;
 
     private List<StructureItem> structure = new List<StructureItem>();
     private int size = 0;
@@ -19,12 +21,8 @@ public class DStack : MonoBehaviour
         set {
             if(value != queue) {
                 queue = value;
-                if (queue)
-                    text.text = "Queue";
-                else
-                    text.text = "Stack";
-                Restart();
             }
+            Restart();
         }
     }
     private float width;
@@ -37,6 +35,7 @@ public class DStack : MonoBehaviour
 
     private void Restart() {
         size = 0;
+        UpdateTexts();
         for(int i = structure.Count-1; i> -1; i--) {
             StructureItem a = structure[i];
             structure.Remove(a);
@@ -44,10 +43,39 @@ public class DStack : MonoBehaviour
         }
     }
 
+    private void UpdateTexts()
+    {
+        string t = "{1}: add element to the {0}\n" +
+                "{2}: remove element from the {0}\n" +
+                "{3}: shows a demonstration of how a {0} can be used in a real scenario";
+        string _text, _instructons, _add, _remove, _usecase;
+        if (queue)
+        {
+            _text = "Queue";
+            _add = "Enqueue";
+            _remove = "Dequeue";
+            _usecase = "Use case";
+            _instructons = string.Format(t, "queue", _add, _remove, _usecase);
+        }
+        else
+        {
+            _text = "Stack";
+            _add = "Push";
+            _remove = "Pop";
+            _usecase = "Use case";
+            _instructons = string.Format(t, "stack", _add, _remove, _usecase);
+        }
+            text.text = _text;
+            instructions.text = _instructons;
+            add.text = _add;
+            remove.text = _remove;
+            usecase.text = _usecase;
+    }
+
     public void Push(int value) {
         if (size == limit) {
             Spawn(value, true);
-            ShowMessage(string.Format("Error: {0} Overflow\nPushing to a full {1} causes the {1} to overflow.",queue? "Queue": "Stack", queue? "queue":"stack"));
+            ShowMessage(string.Format("Error: Overflow\n{1} a full {0} causes the {0} to overflow.", queue? "queue":"stack", queue?"Enqueueing on":"Pushing to"));
             return;
         }
         ShowMessage();
@@ -58,7 +86,7 @@ public class DStack : MonoBehaviour
 
     public void Pop() {
         if (size == 0) {
-            ShowMessage(string.Format("Error: {0} Underflow\nCalling pop on an empty {1} causes the the {1} to underflow.",queue?"Queue":"Stack", queue ? "queue" : "stack"));
+            ShowMessage(string.Format("Error: Underflow\nCalling {1} on an empty {0} causes the the {0} to underflow.", queue ? "queue" : "stack", queue? "Dequeue":"Pop"));
             return;
         }
         ShowMessage();

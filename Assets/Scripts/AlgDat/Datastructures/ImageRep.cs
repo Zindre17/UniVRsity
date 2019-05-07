@@ -13,6 +13,23 @@ public class ImageRep : MonoBehaviour
     private float spacing, size, elevation;
     public Transform bottomLeft;
 
+    private Stack<Change> changes;
+
+    private class Change {
+        public int pixel;
+        public Color start;
+        public Color end;
+        public Change(int p, Color s, Color e) {
+            pixel = p;
+            start = s;
+            end = e;
+        }
+    }
+
+    private void Do(Change c) {
+        image[c.pixel].material.color = c.end;
+    }
+
     private void UpdateMeasurements() {
         if (colorManager == null) colorManager = ColorManager.instance;
         if (image == null) image = new List<Renderer>();
@@ -49,6 +66,7 @@ public class ImageRep : MonoBehaviour
 
     private void Awake() {
         image = new List<Renderer>();
+        changes = new Stack<Change>();
         colorManager = ColorManager.instance;
     }
 
@@ -56,29 +74,47 @@ public class ImageRep : MonoBehaviour
         foreach(Renderer r in image) {
             r.material.color = colorManager.unvisited;
         }
+        changes.Clear();
+    }
+
+    public void Undo() {
+        Change prev = changes.Pop();
+        Undo(prev);
+    }
+
+    private void Undo(Change c) {
+        image[c.pixel].material.color = c.start;
     }
 
     public void Visit(int index, bool pattern) {
-        
-        image[index].material.color = pattern?colorManager.pattern:colorManager.visited;
+        Change c = new Change(index, image[index].material.color, pattern ? colorManager.pattern : colorManager.visited);
+        Do(c);
+        changes.Push(c);
     }
 
     public void Next(int index) {
-        image[index].material.color = colorManager.next;
+        Change c = new Change(index, image[index].material.color, colorManager.next);
+        Do(c);
+        changes.Push(c);
     }
 
     public void Added(int index) {
-        image[index].material.color = colorManager.added;
+        Change c = new Change(index, image[index].material.color, colorManager.added);
+        Do(c);
+        changes.Push(c);
     }
 
     public void Seed(int index) {
         if (index < 0 || index > image.Count) return;
         ClearRep();
-        image[index].material.color = colorManager.seed;
+        Change c = new Change(index, image[index].material.color, colorManager.seed);
+        Do(c);
+        changes.Push(c);
     }
 
     public void Restart(int _resolution) {
         resolution = _resolution;
         UpdateMeasurements();
+        ClearRep();
     }
 }

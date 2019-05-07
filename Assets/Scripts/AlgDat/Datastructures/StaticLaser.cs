@@ -10,8 +10,12 @@ public class StaticLaser : MonoBehaviour
         transform.localScale = Vector3.zero;
     }
 
-    public void Target(Transform parent,Vector3 target, bool animate) {
-        transform.position = parent.transform.position;
+    public void SetPosition(Vector3 pos)
+    {
+        transform.position = pos;
+    }
+
+    public void Target(Vector3 target, bool animate) {
         transform.LookAt(target);
         float length = Vector3.Distance(transform.position, target);
         if (animate) {

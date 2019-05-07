@@ -267,9 +267,6 @@ public class Arrays : MonoBehaviour
     }
 
     public void Split(SplitAction action) {
-
-        //move every layer back and current arrays to layers
-
         if (splits == null)
             splits = new List<PartialArray>();
         if (layers == null)
@@ -278,6 +275,8 @@ public class Arrays : MonoBehaviour
         PartialArray a, b;
         a = Instantiate(partialArrayPrefab,transform).GetComponent<PartialArray>();
         b = Instantiate(partialArrayPrefab,transform).GetComponent<PartialArray>();
+        a.Parent = action.array;
+        b.Parent = action.array;
         Vector3 midPos, leftOffset, rightOffset;
         // main array
         if (action.array == -1) {
@@ -287,10 +286,6 @@ public class Arrays : MonoBehaviour
             array.InFocus = false;
             b.Init(array, mid, array.Size , splits.Count+1);
             midPos = array.transform.position;
-            leftOffset = new Vector3(-array.Size/4f + a.Size/4f - spacing, 0f, 0f);
-            rightOffset = new Vector3(array.Size/4f - b.Size/4f + spacing, 0f, 0f);
-            a.transform.position = midPos + leftOffset;
-            b.transform.position = midPos + rightOffset;
         } 
         //partial array
         else {
@@ -299,11 +294,15 @@ public class Arrays : MonoBehaviour
             a.Init(array, toSplit.Start, toSplit.Start + mid, splits.Count);
             b.Init(array, toSplit.Start + mid, toSplit.End, splits.Count +1);
             midPos = toSplit.transform.position;
-            leftOffset = new Vector3(-toSplit.Size/4f + a.Size/4f - spacing, 0f, 0f);
-            rightOffset = new Vector3(toSplit.Size/4f - b.Size/4f + spacing, 0f, 0f);
-            a.transform.position = midPos + leftOffset;
-            b.transform.position = midPos + rightOffset;
+            
         }
+        int size = a.Size + b.Size;
+        leftOffset = new Vector3(-(b.Size) / 4f - spacing*.5f, 0f, 0f);
+        rightOffset = new Vector3((a.Size) / 4f + spacing*.5f, 0f, 0f);
+        a.StartPos = midPos + leftOffset;
+        b.StartPos = midPos + rightOffset;
+        a.MergePos = midPos + new Vector3(-(size+a.Size+1) / 4f - spacing*.5f, 0f, 0f);
+        b.MergePos = midPos + new Vector3((size+b.Size+1) / 4f + spacing * .5f, 0f, 0f);
         splits.Add(a);
         splits.Add(b);
         Split split = new Split(a, b);
@@ -324,8 +323,9 @@ public class Arrays : MonoBehaviour
         int s = current.Left.Size + current.Right.Size;
         mergeArray.Init(s, current.Left.Start);
         //Vector3 pos = (current.Right.transform.position - current.Left.transform.position) / 2f + current.Left.transform.position;
-        Vector3 pos = new Vector3(current.Left.transform.position.x + current.Left.Size / 4f + spacing, current.Left.transform.position.y, current.Left.transform.position.z);
-        mergeArray.transform.position = pos;
+        //Vector3 pos = new Vector3(current.Left.transform.position.x + current.Left.Size / 4f + spacing, current.Left.transform.position.y, current.Left.transform.position.z);
+        Vector3 pos = current.Left.Parent == -1 ? transform.position: current.Left.Parent%2==0 ? splits[action.a1-2].StartPos : splits[action.a1-1].StartPos; 
+        mergeArray.Pos = pos;
         mergeArray.gameObject.SetActive(false);
         anim.Merge(current, mergeArray);
     }
@@ -376,7 +376,7 @@ public class Arrays : MonoBehaviour
             anim.UndoCopyTo(s1, s2, copies.Pop(),mergeArray);
         } else {
             copies.Push(s2.Size);
-            anim.CopyTo(s1, s2);
+            anim.CopyTo(s1, s2, mergeArray == null ? false: mergeArray.Complete());
         }
     }
 }

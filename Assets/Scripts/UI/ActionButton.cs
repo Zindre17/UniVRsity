@@ -5,7 +5,9 @@ using UnityEngine;
 public class ActionButton : UIButton {
 
     public bool multistep;
+    private TMPro.TextMeshPro label = null;
     private bool inProgress = false;
+
     public bool InProgress {
         get { return inProgress; }
         set {
@@ -14,6 +16,13 @@ public class ActionButton : UIButton {
                 UpdateColor();
             }
         }
+    }
+
+    public void SetLabel(string text)
+    {
+        if (label == null)
+            label = GetComponentInChildren<TMPro.TextMeshPro>();
+        label.text = text;
     }
 
     public override bool Press(bool demo = false, bool pause = false, Action function = null) {

@@ -49,6 +49,9 @@ public class EventManager : MonoBehaviour {
     public delegate void ModeChangedEvent(Stage.Mode mode);
     public static event ModeChangedEvent OnModeChanged;
 
+    public delegate void PartialActionEvent();
+    public static event PartialActionEvent OnPartialActionComplete;
+
     private void Start() {
         if (laser == null)
             laser = transform;
@@ -132,5 +135,10 @@ public class EventManager : MonoBehaviour {
         if(start <= end && OnArrayInFocusChanged != null) {
             OnArrayInFocusChanged(array, start, end);
         }
+    }
+
+    public static void PartialActionComplete()
+    {
+        if (OnPartialActionComplete != null) OnPartialActionComplete();
     }
 }
