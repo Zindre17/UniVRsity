@@ -39,7 +39,7 @@ public class ActionButton : UIButton {
         StartCoroutine(HintAnimation());
     }
 
-    internal override void UpdateColor() {
+    protected override void UpdateColor() {
         if (inProgress)
             rend.material.color = colorManager.inProgress;
         else

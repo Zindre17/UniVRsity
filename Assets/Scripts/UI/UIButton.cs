@@ -15,12 +15,12 @@ public abstract class UIButton :MonoBehaviour
     public ButtonEvent onButtonPressed;
     public Renderer rend;
 
-    internal ColorManager colorManager;
-    internal Color defaultColor;
+    protected ColorManager colorManager;
+    protected Color defaultColor;
 
     private Vector3 origin;
 
-    internal bool active = true;
+    protected bool active = true;
     public bool Active {
         get { return active; }
         set {
@@ -31,7 +31,7 @@ public abstract class UIButton :MonoBehaviour
             }
         }
     }
-    internal bool toggled = false;
+    protected bool toggled = false;
     public bool Toggled {
         get { return toggled; }
         set {
@@ -42,7 +42,7 @@ public abstract class UIButton :MonoBehaviour
         }
     }
 
-    internal virtual void UpdateColor() {
+    protected virtual void UpdateColor() {
         if (active)
             if (toggled)
                 rend.material.color = colorManager.toggleButtonOn;

@@ -316,10 +316,12 @@ public class SortingManager : MonoBehaviour
     private void DoStep() {
         action = alg.GetAction();
         if (action != null)
+        {
+            performingAction = true;
             StartCoroutine(DoStepRoutine());
-        else
-            if(demo)
-                Demo();
+        }
+        else if (demo)
+            Demo();
     }
 
     private bool undoMergeInProgress = false;
@@ -527,8 +529,11 @@ public class SortingManager : MonoBehaviour
     }
 
     private void UpdateAlgo() {
-        if(alg == null || performingAction || partialAction) 
+        if (alg == null || performingAction || partialAction)
+        {
             algoManager.UpdateAlgoButtons(AlgoControlManager.State.Inactive);
+            return;
+        }
         else if (demo)
             algoManager.UpdateAlgoButtons(AlgoControlManager.State.Demo);
         else if (alg.step == 0)
