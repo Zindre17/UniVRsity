@@ -3,14 +3,15 @@ using UnityEngine;
 
 public class EmptyElement : Selectable
 {
+    private Color color;
     private void Awake() {
         Index = -2;
+        color = rend.material.color; 
     }
     internal override void UpdateColor() {
         if (cm == null)
             cm = ColorManager.instance;
-        Color c = selected ? cm.selected : cm.box;
-        c = new Color(c.r, c.g, c.b, selected? .5f:.3f);
+        Color c = selected ? cm.selected : color;
         rend.material.color = c;
     }
 

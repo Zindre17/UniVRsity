@@ -127,9 +127,13 @@ public class Arrays : MonoBehaviour
         
     }
 
+    public void UnComplete()
+    {
+        array.Active = true;
+    }
     public void Complete() {
         array.Active = false;
-        array.InFocus = true;
+        //array.InFocus = true;
         //anim.Stop();
         //storage.Stop();
     }
@@ -141,24 +145,42 @@ public class Arrays : MonoBehaviour
             for(i = 0; i < array.Size; i++) {
                 s = array.Get(i);
                 if (i < start || i > end)
+                {
+                    s.Active = false;
                     s.InFocus = false;
+                }
                 else
+                {
                     s.InFocus = true;
+                    s.Active = true;
+                }
             }
         } else {
             PartialArray pa = splits[_array];
             for (i = 0; i < pa.Size; i++) {
                 s = pa.Get(i);
                 if (i < start || i > end)
+                {
                     s.InFocus = false;
+                    s.Active = false;
+                }
                 else
+                {
                     s.InFocus = true;
+                    s.Active = true;
+                }
             }
             s = pa.GetExpansion();
             if (end < pa.Size)
+            {
                 s.InFocus = false;
+                s.Active = false;
+            }
             else
+            {
                 s.InFocus = true;
+                s.Active = true;
+            }
         }
     }
 

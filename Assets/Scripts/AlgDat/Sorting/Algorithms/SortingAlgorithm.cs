@@ -1,17 +1,20 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 public abstract class SortingAlgorithm {
 
     public int step;
-    internal bool complete;
-    internal List<GameAction> actions;
-    internal List<IState> states;
-    internal int[] array;
-    internal int size;
-    internal string name;
-    internal string[] pseudo;
+    protected List<GameAction> actions;
+    protected List<IState> states;
+    protected int[] array;
+    protected int size;
+    protected string name;
+    protected string[] pseudo;
+    protected int cursor;
+    protected List<int> focusChangePoints;
 
-    internal interface IState {
+    public bool Complete { get; private set; }
+    protected interface IState {
         string Readable();
     }
 
@@ -19,19 +22,27 @@ public abstract class SortingAlgorithm {
         size = arraySize;
         array = (int[])_array.Clone();
         step = 0;
-        complete = false;
+        Complete = false;
         actions = new List<GameAction>();
         states = new List<IState>();
+        focusChangePoints = new List<int>();
         GenerateActions();
+        CheckForFocusChange();
+    }
+
+    protected abstract void CheckForFocusChange(bool reverse = false);
+    public virtual bool NeedsExtraSpace()
+    {
+        return false;
     }
 
     public bool CorrectAction(GameAction action) {
-        if (complete) return false;
+        if (Complete) return false;
         return actions[step].EqualTo(action);
     }
 
     public GameAction GetAction() {
-        if (complete) return null;
+        if (Complete) return null;
         return actions[step];
     }
 
@@ -54,27 +65,31 @@ public abstract class SortingAlgorithm {
     }
 
     public virtual void Next() {
-        if (complete) return;
+        if (Complete) return;
         step++;
+        CheckForFocusChange();
         if (step == actions.Count) {
-            complete = true;
+            Complete = true;
             EventManager.AlgorithmCompleted();
         }
     }
 
     public virtual void Prev() {
-        if (complete)
-            complete = false;
-        if(step!= 0)
-            step--;
+        if (step == 0) return;
+        if (Complete)
+            Complete = false;
+        step--;
+        CheckForFocusChange(true);
     }
 
     public void Restart() {
         step = 0;
-        complete = false;
+        Complete = false;
+        cursor = 0;
+        CheckForFocusChange();
     }
 
-    internal abstract void GenerateActions();
+    protected abstract void GenerateActions();
 
     public virtual void Update(int[] newArray) {
         Restart();

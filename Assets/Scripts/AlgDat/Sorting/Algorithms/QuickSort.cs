@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using UnityEngine;
 
 public class QuickSort : SortingAlgorithm {
 
@@ -55,17 +56,12 @@ public class QuickSort : SortingAlgorithm {
             "   swap a[i+1] with a[r]\n" +
             "   return i+1"
         };
-        CheckForFocusChange();
     }
 
-    public override void Next() {
-        base.Next();
-        CheckForFocusChange();
-    }
-
-    internal override void GenerateActions() {
+    protected override void GenerateActions() {
         int[] ar = (int[])array.Clone();
         PerformQuickSort(ar, 0, ar.Length - 1);
+        focusChangePoints.Add(states.Count);
     }
 
     private void PerformQuickSort(int[] a, int p, int r) {
@@ -77,6 +73,7 @@ public class QuickSort : SortingAlgorithm {
     }
 
     private int Partition(int[] a, int p, int r) {
+        focusChangePoints.Add(states.Count);
         if (states.Count > 0)
             states.Add(new QuickState(states.Count,p, r, _x: pivots[pivots.Count-1]));
         else
@@ -106,21 +103,34 @@ public class QuickSort : SortingAlgorithm {
         return i+1;
     }
 
-    private void CheckForFocusChange() {
-        if (complete) return;
-        if (GetAction().type == GameAction.GameActionType.Pivot) {
-            QuickState s = (QuickState)states[step];
-            EventManager.FocusChanged(-1,s.p, s.r);
+    protected override void CheckForFocusChange(bool reverse = false) {
+        if (reverse)
+        {
+            if (step < 2) return;
+            if (focusChangePoints[cursor - 1] == step + 1)
+            {
+                QuickState s = (QuickState)states[step];
+                EventManager.FocusChanged(-1, s.p, s.r);
+                cursor--;
+            }
+        }
+        else
+        {
+            if (cursor >= focusChangePoints.Count) return;
+            if (focusChangePoints[cursor] == step)
+            {
+                if (step == actions.Count)
+                {
+                    EventManager.FocusChanged(-1, 0, array.Length);
+                }
+                else
+                {
+                    QuickState s = (QuickState)states[step];
+                    EventManager.FocusChanged(-1, s.p, s.r);
+                }
+                cursor++;
+            }
+
         }
     }
-
-    public override void Prev() {
-        base.Prev();
-        if (step < 2 || step > actions.Count -2) return;
-        if(GetAction(step+1).type == GameAction.GameActionType.Pivot) {
-            QuickState s = (QuickState)states[step-2];
-            EventManager.FocusChanged(-1, s.p, s.r);
-        }
-    }
-
 }

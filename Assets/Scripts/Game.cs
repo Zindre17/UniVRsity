@@ -15,7 +15,6 @@ public class Game : MonoBehaviour
             return;
         } else {
             Game[] g = FindObjectsOfType<Game>();
-            Debug.Log(g.Length);
             //there exist another nonbackup game, destroy this backup
             if (g.Length != 1)
                 Destroy(gameObject);

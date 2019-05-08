@@ -20,8 +20,7 @@ public class UseCase : MonoBehaviour
     private Stage.Data data;
     private bool demo = false;
     private bool started = false;
-
-    private ActionController.State state = ActionController.State.Empty;
+    private bool performingAction = false;
 
     public void ChangeDataModel(Stage.Data model) {
         data = model;
@@ -60,10 +59,10 @@ public class UseCase : MonoBehaviour
 
     private void PixelSelected(Pixel p)
     {
-        if (demo) return;
+        if (demo || performingAction) return;
         imageHandler.SelectPixel(p.index);
-        state = imageHandler.GetSelectedPixel() == null ? ActionController.State.Empty : ActionController.State.Selected;
-        actionController.UpdateState(state);
+        if (!algorithm.Complete)
+            actionController.UpdateState(imageHandler.GetSelectedPixel() == null ? ActionController.State.Empty : ActionController.State.Selected);
     }
 
     private void ReSeed(int index) {
@@ -124,8 +123,10 @@ public class UseCase : MonoBehaviour
     }
 
     public void Prev() {
-        algoManager.UpdateAlgoButtons(AlgoControlManager.State.Inactive);
+        performingAction = true;
+        UpdateAlgoButtons();
         ImageAction a = algorithm.GetPrev();
+        algorithm.UndoStep();
         imageRep.Undo();
         if (a.Type == ImageAction.ActionType.Pop) {
             dataStructure.UnPop();
@@ -136,10 +137,10 @@ public class UseCase : MonoBehaviour
                 patternRep.Undo();
             StepComplete();
         }
-        algorithm.UndoStep();
     }
     
     private void StepComplete(bool reverse=false) {
+        performingAction = false;
         if(demo && !algorithm.Complete)
         {
             StartCoroutine(DoStepRoutine());
@@ -149,16 +150,18 @@ public class UseCase : MonoBehaviour
             demo = false;
             algoManager.Demo(demo);
         }
-        UpdateAlgoButtons();
+        if(!demo)
+            UpdateAlgoButtons();
     }
 
     public void Next() {
-        algoManager.UpdateAlgoButtons(AlgoControlManager.State.Inactive);
         StartCoroutine(DoStepRoutine());
     }
 
     private IEnumerator DoStepRoutine() {
-        actionController.UpdateState(ActionController.State.Empty);
+        performingAction = true;
+        if (!demo)
+            UpdateAlgoButtons();
         ImageAction a = algorithm.GetNext();
         if(a.Type != ImageAction.ActionType.Pop) {
             yield return new WaitForSeconds(.2f);
@@ -169,7 +172,9 @@ public class UseCase : MonoBehaviour
     }
 
     private void UpdateAlgoButtons() {
-        if (demo)
+        if (performingAction)
+            algoManager.UpdateAlgoButtons(AlgoControlManager.State.Inactive);
+        else if (demo)
             algoManager.UpdateAlgoButtons(AlgoControlManager.State.Demo);
         else if (algorithm.Complete)
             algoManager.UpdateAlgoButtons(AlgoControlManager.State.Finished);
@@ -177,7 +182,7 @@ public class UseCase : MonoBehaviour
             algoManager.UpdateAlgoButtons(AlgoControlManager.State.Active);
         else
             algoManager.UpdateAlgoButtons(AlgoControlManager.State.InProgress);
-        if (demo)
+        if (demo || performingAction || algorithm.Complete)
             actionController.UpdateState(ActionController.State.Empty);
         else
             actionController.UpdateState(ActionController.State.Selected);
@@ -194,6 +199,7 @@ public class UseCase : MonoBehaviour
 
     public void ShowHint() {
         ImageAction a = algorithm.GetNext();
+        if (a == null) return;
         if(a.Type != ImageAction.ActionType.Pop)
             imageHandler.Hint(a.Pixel);
         actionController.Hint(a.Type);
@@ -202,6 +208,8 @@ public class UseCase : MonoBehaviour
     public void Restart() {
         started = false;
         demo = false;
+        algoManager.Demo(false);
+        performingAction = false;
         tutorial.SetActive(true);
         algorithm.Restart();
         imageRep.Restart(resolution);

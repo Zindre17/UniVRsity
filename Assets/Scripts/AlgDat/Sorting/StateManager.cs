@@ -6,8 +6,12 @@ public class StateManager : MonoBehaviour
     public TextMeshPro state;
     public TextMeshPro pseudo1;
     public TextMeshPro pseudo2;
+    public TextMeshPro pseudo3;
 
     public GameObject extension;
+    public GameObject extensionTop;
+
+
 
     public void SetState(string s) {
         state.text = s;
@@ -17,12 +21,18 @@ public class StateManager : MonoBehaviour
         pseudo1.text = c;
     }
 
-    public void SetCode2(string c) {
-        if (c == "")
+    public void SetCode2(string c, bool a) {
+        if(c == "")
+        {
             extension.SetActive(false);
+            extensionTop.SetActive(false);
+        }
         else
+        {
             extension.SetActive(true);
-        pseudo2.text = c;
+            extensionTop.SetActive(a);
+        }
+        pseudo3.text = a ? c : "";
+        pseudo2.text = a ? "" : c;
     }
-
 }

@@ -146,7 +146,6 @@ public class ArrayManager : Selectable
     }
 
     internal override void SetActive(bool a) {
-        Debug.Log(string.Format("setActive(" + (a ? "true" : "false") + ")"));
         UpdateElementStatus();
         if (a)
             hoverable.Enable();

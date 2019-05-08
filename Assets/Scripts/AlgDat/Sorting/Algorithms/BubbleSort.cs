@@ -1,12 +1,8 @@
 ﻿
 using System.Collections.Generic;
+using UnityEngine;
 
 public class BubbleSort : SortingAlgorithm {
-
-    
-
-    private List<int> focusChangePoints;
-    private int cursor = 0;
 
     private class BubbleState : IState {
         public int i { get; private set; }
@@ -34,11 +30,9 @@ public class BubbleSort : SortingAlgorithm {
         "       if A[j] < A[j-1]) \n" +
         "           exchange A[j] with A[j-1]"
         };
-        CheckForFocusChange();
     }
 
-    internal override void GenerateActions() {
-        focusChangePoints = new List<int>();
+    protected override void GenerateActions() {
         int[] ar = (int[])array.Clone();
         GameAction a;
         int i = 0;
@@ -59,30 +53,39 @@ public class BubbleSort : SortingAlgorithm {
                 }
             }
         }
-        i = size - 2;
-        j = size - 1;
-        //states.Add(string.Format(stateFormat, i, j, states.Count));
         array = ar;
+        focusChangePoints.Add(states.Count);
     }
 
-    public override void Next() {
-        base.Next();
-        CheckForFocusChange();
-    }
-
-    private void CheckForFocusChange() {
-        if (cursor >= focusChangePoints.Count) return;
-        if (focusChangePoints[cursor] == step) {
-            BubbleState s = (BubbleState)states[step];
-            EventManager.FocusChanged(-1, s.i, array.Length);
-            cursor++;
+    protected override void CheckForFocusChange(bool reverse=false) {
+        
+        if (reverse)
+        {
+            if (cursor == 0) return;
+            if (focusChangePoints[cursor-1] == step + 1)
+            {
+                BubbleState s = (BubbleState)states[step];
+                EventManager.FocusChanged(-1, s.i, array.Length);
+                cursor--;
+            }
         }
+        else
+        {
+            if (cursor >= focusChangePoints.Count) return;
+            if (focusChangePoints[cursor] == step)
+            {
+                if(cursor + 1 == focusChangePoints.Count)
+                {
+                    EventManager.FocusChanged(-1, 0, array.Length);
+                }
+                else
+                {
+                    BubbleState s = (BubbleState)states[step];
+                    EventManager.FocusChanged(-1, s.i, array.Length);
+                }
+                cursor++;
+            }
+        }
+        
     }
-
-    private void Swap(int i1, int i2) {
-        int temp = array[i1];
-        array[i1] = array[i2];
-        array[i2] = temp;
-    }
-   
 }

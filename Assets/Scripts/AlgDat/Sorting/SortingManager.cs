@@ -31,7 +31,6 @@ public class SortingManager : MonoBehaviour
 
     private void Selection(Selectable s) {
         if (demo||performingAction) return;
-        Debug.Log(string.Format("Element: index = {0}, parent = {1}",s.Index,s.Parent));
         if (partialAction) {
             if (selected.Contains(s)) return;
             s.Selected = true;
@@ -206,10 +205,13 @@ public class SortingManager : MonoBehaviour
         comparison.Clear();
         state.SetState(alg.GetState());
         string[] pseudo = alg.GetPseudo();
+        bool extra = alg.NeedsExtraSpace();
         if (pseudo.Length > 1)
-            state.SetCode2(pseudo[1]);
+        {
+            state.SetCode2(pseudo[1], extra);
+        }
         else
-            state.SetCode2("");
+            state.SetCode2("", extra);
         state.SetCode1(pseudo[0]);
     }
 
@@ -223,7 +225,7 @@ public class SortingManager : MonoBehaviour
         comparison.Clear();
         state.SetState("");
         state.SetCode1("");
-        state.SetCode2("");
+        state.SetCode2("", false);
     }
 
     private void UpdateActions() {
@@ -294,6 +296,8 @@ public class SortingManager : MonoBehaviour
             UndoStep();
             return;
         }
+        if (alg.Complete)
+            arrays.UnComplete();
         if(!reverse)
             alg.Next();
         else
@@ -301,16 +305,23 @@ public class SortingManager : MonoBehaviour
         partialAction = false;
         performingAction = false;
         UpdateUI();
-        UpdateActions();
-        UpdateAlgo();
-        if (demo) {
-            DoStep();
-            return;
-        } 
-        if (alg.complete) {
+        if (alg.Complete)
+        {
             arrays.Complete();
             comparison.Clear();
+            actions.UpdateButtons(ActionManager.State.Busy);
+            if (demo)
+                algoManager.Demo(demo = false);
+            algoManager.UpdateAlgoButtons(AlgoControlManager.State.Finished);
+            return;
         }
+        UpdateActions();
+        UpdateAlgo();
+        if (demo)
+        {
+            DoStep();
+        }
+        
     }
 
     private void DoStep() {
@@ -538,7 +549,7 @@ public class SortingManager : MonoBehaviour
             algoManager.UpdateAlgoButtons(AlgoControlManager.State.Demo);
         else if (alg.step == 0)
             algoManager.UpdateAlgoButtons(AlgoControlManager.State.Active);
-        else if (alg.complete)
+        else if (alg.Complete)
             algoManager.UpdateAlgoButtons(AlgoControlManager.State.Finished);
         else
             algoManager.UpdateAlgoButtons(AlgoControlManager.State.InProgress);

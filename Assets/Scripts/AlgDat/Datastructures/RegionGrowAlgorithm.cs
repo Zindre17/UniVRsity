@@ -110,10 +110,13 @@ public class RegionGrowAlgorithm {
     }
 
     public void UndoStep() {
+        if (Complete)
+            Complete = false;
         step--;
     }
 
     public ImageAction GetNext() {
+        if (Complete) return null;
         return actions[step];
     }
     public ImageAction GetPrev() {

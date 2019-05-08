@@ -162,6 +162,6 @@ public class Comparison : MonoBehaviour
 
         SetState(s1, s2);
         routine = null;
-        EventManager.ActionCompleted(reverse);
+        EventManager.ActionCompleted();
     }
 }

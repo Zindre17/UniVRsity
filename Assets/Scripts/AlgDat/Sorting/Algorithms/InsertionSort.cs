@@ -40,11 +40,12 @@ public class InsertionSort :SortingAlgorithm {
         };
     }
 
-    internal override void GenerateActions() {
+    protected override void GenerateActions() {
         int i = -1;
         int key = -1;
         int j;
         for (j = 1; j < size; j++) {
+            focusChangePoints.Add(states.Count);
             states.Add(new InsertionState(states.Count, i, j, key));
             key = array[j];
             actions.Add(new StoreAction(j));
@@ -64,5 +65,31 @@ public class InsertionSort :SortingAlgorithm {
             array[i + 1] = key;
         }
         //states.Add(string.Format(state, i, j, key, states.Count));
+    }
+
+    protected override void CheckForFocusChange(bool reverse = false)
+    {
+        if (reverse)
+        {
+            if (cursor == 0) return;
+            if (focusChangePoints[cursor - 1] == step + 1)
+            {
+                cursor--;
+                InsertionState s = (InsertionState)states[step];
+                EventManager.FocusChanged(-1, 0, s.j);
+                EventManager.FocusChanged(-1, 0, s.j);
+            }
+        }
+        else
+        {
+            if (cursor >= focusChangePoints.Count) return;
+            if (step == focusChangePoints[cursor])
+            {
+                InsertionState s = (InsertionState)states[step];
+                EventManager.FocusChanged(-1, 0, s.j);
+                EventManager.FocusChanged(-1, 0, s.j);
+                cursor++;
+            }
+        }
     }
 }
