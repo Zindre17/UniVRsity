@@ -33,12 +33,6 @@ public class Hoverable : MonoBehaviour {
             outline.OutlineColor = illegalColor;
     }
    
-    public void StartHover(bool legal) {
-        if (on) {
-            outline.OutlineWidth = 5;
-        }
-    }
-
     public void StartHover() {
         if (on) {
             outline.OutlineWidth = 5;

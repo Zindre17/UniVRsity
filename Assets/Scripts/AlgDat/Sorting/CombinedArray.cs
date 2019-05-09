@@ -37,9 +37,10 @@ public class CombinedArray : MonoBehaviour
         return replaced == size;
     }
 
-    public void Init(int _size, int _start) {
+    public void Init(int _size, int _start, int _end) {
         size = _size;
         start = _start;
+        text.text = string.Format("A[{0}:{1}]", _start, _end-1);
         elements = new List<SortingElement>(size);
         e = new List<EmptyElement>(size);
         box.transform.localScale = new Vector3(size / 2f, 1, 1);
@@ -47,6 +48,7 @@ public class CombinedArray : MonoBehaviour
             SortingElement s = Instantiate(elementPrefab, transform).GetComponent<SortingElement>();
             s.gameObject.SetActive(false);
             s.Index = start + i;
+            s.label.text = string.Format("A[{0}]",s.Index);
             elements.Add(s);
             EmptyElement l = Instantiate(emptyPrefab, transform).GetComponent<EmptyElement>();
             e.Add(l);

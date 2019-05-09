@@ -9,7 +9,8 @@ public class PartialArray : Selectable
     public TextMeshPro text;
     public GameObject elementPrefab;
     public GameObject box;
-
+    public Hoverable hoverable;
+    
     [HideInInspector]
     public ArrayManager original;
 
@@ -89,6 +90,7 @@ public class PartialArray : Selectable
     private IEnumerator ShowAnimation() {
         for(int i = 0; i < Size; i++) {
             array[i].gameObject.SetActive(true);
+            array[i].label.text = string.Format("A[{0}]", Start+array[i].Index);
             yield return new WaitForSeconds(interval);
         }
         routine = null;
@@ -143,6 +145,7 @@ public class PartialArray : Selectable
     public void Expand() {
         text.text = Index % 2 == 0 ? "L" : "R";
         expansion.gameObject.SetActive(true);
+        expansion.label.text = string.Format("{0}[{1}]",text.text, Size);
         routine = StartCoroutine(ExpansionAnimation());
     }
 
@@ -157,6 +160,7 @@ public class PartialArray : Selectable
         Vector3 addition = new Vector3(.5f, 0, 0);
         int i;
         for (i = 0; i < Size; i++) {
+            array[i].label.text = string.Format("A[{0}]",Start+array[i].Index);
             starts.Add(array[i].transform.localPosition);
             paths.Add(GetPosition(i,false) - starts[i]);
         }
@@ -185,14 +189,16 @@ public class PartialArray : Selectable
         float elapsed = 0f;
         float percent;
         float duration = .5f;
+        if (expansion.Size != 20)
+            expansion.Size = 20;
         List<Vector3> starts = new List<Vector3>(Size);
         List<Vector3> paths = new List<Vector3>(Size);
         Vector3 start = expansion.transform.localScale;
         Vector3 boxStart = box.transform.localScale;
         Vector3 addition = new Vector3(.5f, 0, 0);
-        expansion.Size = 20;
         int i;
         for (i = 0; i < Size; i++) {
+            array[i].label.text = string.Format("{0}[{1}]", Index % 2 == 0 ? "L" : "R", array[i].Index);
             starts.Add(array[i].transform.localPosition);
             paths.Add(GetPosition(i, true) - starts[i]);
         }
@@ -213,7 +219,6 @@ public class PartialArray : Selectable
         for(i = 0; i< Size; i++) {
             array[i].transform.localPosition = starts[i] + paths[i];
         }
-        expansion.Size = 20;
         routine = null;
         EventManager.PartialActionComplete();
     }

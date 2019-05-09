@@ -5,7 +5,7 @@ using UnityEngine;
 public class ArrayManager : Selectable
 {
     public Transform arrayCenter;
-
+    public Hoverable hoverable;
     public GameObject elementPrefab;
 
     private int spawnedElements = 0;

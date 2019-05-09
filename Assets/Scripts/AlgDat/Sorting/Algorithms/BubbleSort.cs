@@ -25,10 +25,12 @@ public class BubbleSort : SortingAlgorithm {
         name = "Bubble sort";
         //pseudo code
         pseudo = new string[1] {
-        "for i = 0 to i = A.length - 2  \n" +
-        "   for j = A.length - 1 down to i + 1 \n" +
-        "       if A[j] < A[j-1]) \n" +
-        "           exchange A[j] with A[j-1]"
+        "BubbleSort(Array A)\n" +
+        "   for i = 0 to i = A.length - 2  \n" +
+        "       for j = A.length - 1 down to i + 1 \n" +
+        "           // compare A[j] and A[j-1]\n" +
+        "           if A[j] < A[j-1]) \n" +
+        "               swap A[j] with A[j-1]"
         };
     }
 

@@ -25,14 +25,16 @@ public class Comparison : MonoBehaviour
         rText.text = "";
         comparison.text = "";
     }
-    
+
+    private void Awake()
+    {
+        prevCompares = new Stack<SortingElement>();
+        when = new Stack<int>();
+        leftOrigin = Left.transform.position;
+        rightOrigin = Right.transform.position;
+    }
+
     public void Compare(SortingElement s1, SortingElement s2, int step) {
-        if (prevCompares == null) {
-            prevCompares = new Stack<SortingElement>();
-            when = new Stack<int>();
-            leftOrigin = Left.transform.position;
-            rightOrigin = Right.transform.position;
-        }
         prevCompares.Push(s1);
         prevCompares.Push(s2);
         when.Push(step);
@@ -51,7 +53,7 @@ public class Comparison : MonoBehaviour
 
 
     public void LoadPrev(int step) {
-        if (when.Count != 0)
+        if (when.Count != 0 && step > 1)
         {
             if (when.Peek() == step - 2)
             {

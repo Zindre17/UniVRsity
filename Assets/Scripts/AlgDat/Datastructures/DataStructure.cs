@@ -30,6 +30,21 @@ public class DataStructure : MonoBehaviour
         laser.Hide();
     }
 
+    public void Check()
+    {
+        if (poppedData.Count != 0)
+        {
+            laser.Hide();
+            poppedItems.Peek().SetActive(false);
+        }
+    }
+
+    public void UnCheck()
+    {
+        poppedItems.Peek().SetActive(true);
+        laser.Target(poppedData.Peek().surface.position, false);
+    }
+
     public void SetMode(Stage.Data mode) {
         this.mode = mode;
         switch (mode) {
@@ -79,11 +94,7 @@ public class DataStructure : MonoBehaviour
 
     public Pixel Pop() {
         if (data.Count == 0) return null;
-        if(poppedData.Count!=0) {
-            laser.Hide();
-            //Destroy(poppedI.gameObject);
-            poppedItems.Peek().SetActive(false);
-        } 
+        
         switch (mode) {
             case Stage.Data.Stack:
                 return StackPop();
@@ -95,19 +106,29 @@ public class DataStructure : MonoBehaviour
 
     public void UnPop() {
         if (poppedData.Count == 0) return;
-        StartCoroutine(mode == Stage.Data.Stack ? StackUnPopRoutine() : QueueUnPopRoutine());
+        StartCoroutine(UnPopRoutine(mode == Stage.Data.Queue));
     }
 
-    private IEnumerator QueueUnPopRoutine() {
+    private IEnumerator UnPopRoutine(bool queue) {
         Pixel p = poppedData.Pop();
         GameObject o = poppedItems.Pop();
         laser.Hide();
+        if (queue)
+        {
+            data.Insert(0, p);
+            items.Insert(0, o);
+        }
+        else
+        {
+            data.Add(p);
+            items.Add(o);
+        }
         float duration = .6f;
         float elapsed = 0f;
         float prevTime = Time.time;
         float percent;
         Vector3 start = o.transform.position;
-        Vector3 end = GetPos(0);
+        Vector3 end = queue?GetPos(0):GetNextPos();
         Vector3 mid = new Vector3(start.x, end.y, start.z);
         Vector3 path1 = mid - start;
         Vector3 path2 = end - mid;
@@ -119,10 +140,14 @@ public class DataStructure : MonoBehaviour
         paths = new List<Vector3>(data.Count);
         Vector3 startAngle = o.transform.localRotation.eulerAngles;
         Vector3 endAngle = Vector3.zero;
-        for (int i = 0; i < data.Count; i++) {
-            starts.Add(items[i].transform.position);
-            ends.Add(GetPos(i+1));
-            paths.Add(ends[i] - starts[i]);
+        if (queue)
+        {
+            for (int i = 0; i < data.Count; i++)
+            {
+                starts.Add(items[i].transform.position);
+                ends.Add(GetPos(i));
+                paths.Add(ends[i] - starts[i]);
+            }
         }
         float part = .3f;
         while (elapsed < duration) {
@@ -135,8 +160,12 @@ public class DataStructure : MonoBehaviour
                 o.transform.position = mid + path2 * percent;
             }
             percent = elapsed / duration;
-            for(int i = 0; i < data.Count; i++) {
-                items[i].transform.position = starts[i] + paths[i] * percent;
+            if (queue)
+            {
+                for (int i = 0; i < data.Count; i++)
+                {
+                    items[i].transform.position = starts[i] + paths[i] * percent;
+                }
             }
             float time = Time.time;
             elapsed += time - prevTime;
@@ -145,52 +174,7 @@ public class DataStructure : MonoBehaviour
         }
         o.transform.position = end;
         o.transform.localRotation = Quaternion.Euler(endAngle);
-        data.Insert(0, p);
-        items.Insert(0, o);
-        if(poppedData.Count != 0) {
-            poppedItems.Peek().SetActive(true);
-            laser.Target(poppedData.Peek().surface.position, true);
-        }
-        EventManager.ActionCompleted();
-    }
-
-    private IEnumerator StackUnPopRoutine() {
-        Pixel p = poppedData.Pop();
-        GameObject o = poppedItems.Pop();
-        data.Add(p);
-        items.Add(o);
-        float duration = .6f;
-        float elapsed = 0f;
-        float prevTime = Time.time;
-        float percent;
-        Vector3 start = o.transform.position;
-        Vector3 end = GetNextPos();
-        Vector3 mid = new Vector3(start.x, end.y, start.z);
-        Vector3 path1 = mid - start;
-        Vector3 path2 = end - mid;
-        Vector3 startAngle = o.transform.localRotation.eulerAngles;
-        Vector3 endAngle = Vector3.zero;
-        float part = .3f;
-        while(elapsed < duration) {
-            if(elapsed < part) {
-                percent = elapsed / part;
-                o.transform.position = start + path1 * percent;
-                o.transform.localRotation = Quaternion.Euler(startAngle - (startAngle * percent));
-            } else {
-                percent = (elapsed-part) / (duration-part);
-                o.transform.position = mid + path2 * percent;
-            }
-            float time = Time.time;
-            elapsed += time - prevTime;
-            prevTime = time;
-            yield return null;
-        }
-        o.transform.position = end;
-        o.transform.localRotation = Quaternion.Euler(endAngle);
-        if (poppedData.Count != 0) {
-            poppedItems.Peek().SetActive(true);
-            laser.Target(poppedData.Peek().surface.position, true);
-        }
+        
         EventManager.ActionCompleted();
     }
 

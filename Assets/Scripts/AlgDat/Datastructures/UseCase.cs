@@ -116,6 +116,7 @@ public class UseCase : MonoBehaviour
         if (algorithm.PerformStep(new ImageAction(index, ImageAction.ActionType.Check), p)) {
             imageRep.Visit(index, pattern);
             if(pattern) patternRep.Pattern(index);
+            dataStructure.Check();
             StepComplete();
         } else {
             ShowHint();
@@ -135,6 +136,7 @@ public class UseCase : MonoBehaviour
         } else {
             if ((imageHandler.Get(a.Pixel)).Dark)
                 patternRep.Undo();
+            dataStructure.UnCheck();
             StepComplete();
         }
     }

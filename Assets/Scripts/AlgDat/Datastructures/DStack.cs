@@ -11,11 +11,21 @@ public class DStack : MonoBehaviour
     public TMPro.TextMeshPro message;
     public TMPro.TextMeshPro instructions;
     public TMPro.TextMeshPro add, remove, usecase;
+    public PlayController controller;
 
     private List<StructureItem> structure = new List<StructureItem>();
     private int size = 0;
     private readonly int limit = 10;
     private bool queue = false;
+    private bool animating = false;
+    private Coroutine routine = null;
+    public bool Animating {
+        get { return animating; }
+        set {
+            animating = value;
+            controller.UpdateStatus(animating);
+        }
+    }
     public bool Queue {
         get { return queue; }
         set {
@@ -35,6 +45,9 @@ public class DStack : MonoBehaviour
 
     private void Restart() {
         size = 0;
+        if (animating)
+            StopCoroutine(routine);
+        Animating = false;
         UpdateTexts();
         for(int i = structure.Count-1; i> -1; i--) {
             StructureItem a = structure[i];
@@ -65,11 +78,12 @@ public class DStack : MonoBehaviour
             _usecase = "Use case";
             _instructons = string.Format(t, "stack", _add, _remove, _usecase);
         }
-            text.text = _text;
-            instructions.text = _instructons;
-            add.text = _add;
-            remove.text = _remove;
-            usecase.text = _usecase;
+        text.text = _text;
+        instructions.text = _instructons;
+        add.text = _add;
+        remove.text = _remove;
+        usecase.text = _usecase;
+        ShowMessage("");
     }
 
     public void Push(int value) {
@@ -89,6 +103,7 @@ public class DStack : MonoBehaviour
             ShowMessage(string.Format("Error: Underflow\nCalling {1} on an empty {0} causes the the {0} to underflow.", queue ? "queue" : "stack", queue? "Dequeue":"Pop"));
             return;
         }
+        Animating = true;
         ShowMessage();
         size--;
         StructureItem i;
@@ -96,12 +111,18 @@ public class DStack : MonoBehaviour
             i = structure[0];
         else
             i = structure[size];
-        int a = i.Value;
+        routine = StartCoroutine(PopAnimation(i));
+    }
+
+    private void PopComplete(StructureItem i)
+    {
         structure.Remove(i);
-        StartCoroutine(PopAnimation(i));
+        Destroy(i.gameObject);
+
     }
 
     private StructureItem Spawn(int value, bool fake=false) {
+        Animating = true;
         //GameObject o = Instantiate(itemPrefab, spawnpoint.position + size * new Vector3(0, 0.06f, 0), spawnpoint.rotation, transform);
         GameObject o = Instantiate(itemPrefab, spawnpoint);
         StructureItem i = o.GetComponent<StructureItem>();
@@ -113,7 +134,7 @@ public class DStack : MonoBehaviour
         if(i != null) {
             i.Value = value;
         }
-        StartCoroutine(PushAnimation(i,fake));
+        routine = StartCoroutine(PushAnimation(i,fake));
         return i;
     }
 
@@ -152,7 +173,8 @@ public class DStack : MonoBehaviour
                 yield return null;
             }
         }
-        Destroy(o);
+        Animating = false;
+        PopComplete(item);
     }
 
     private Vector3 GetPos(int i) {
@@ -185,6 +207,7 @@ public class DStack : MonoBehaviour
                 yield return null;
             }
             Destroy(i.gameObject);
-        } 
+        }
+        Animating = false;
     }
 }

@@ -49,29 +49,32 @@ public class MergeSort : SortingAlgorithm {
         name = "Merge sort";
 
         pseudo = new string[] {
-            "Mergesort(Array a, int p, int r)\n" +
+            "Mergesort(Array A, int p, int r)\n" +
             "   if p < r\n" +
             "       //split\n" +
             "       q = floor((p+r)/2)\n" +
-            "       Mergesort(a,p,q)\n" +
-            "       Mergesort(a,q+1,r)\n" +
+            "       Mergesort(A,p,q)\n" +
+            "       Mergesort(A,q+1,r)\n" +
             "       Merge(A,p,q,r)",
 
-            "Merge(Array a, int p, int q, int r)\n" +
+            "Merge(Array A, int p, int q, int r)\n" +
             "n1 = q - p\n" +
             "n2 = r - q\n" +
             "let L and R be new arrays\n" +
             "with lengths n1+1, and n2+1\n" +
-            "L[0:n1-1] = a[p:q]\n"+
-            "R[0:n2-1] = a[q+1:r]\n"+
+            "L[0:n1-1] = A[p:q]\n"+
+            "R[0:n2-1] = A[q+1:r]\n"+
             "L[n1] = R[n2] = infinity\n" +
             "i = j = 1\n" +
             "for k = p to r\n" +
+            "   //compare L[i] and R[j]\n" +
             "   if L[i] <= R[j]\n" +
-            "       a[k] = L[i]\n" +
+            "       //copy L[i] to A[k]\n" +
+            "       A[k] = L[i]\n" +
             "       i = i + 1\n" +
             "   else\n" +
-            "       a[k] = R[j]\n" +
+            "       //copy R[j] to A[k]\n" +
+            "       A[k] = R[j]\n" +
             "       j = j + 1"
         };
     }

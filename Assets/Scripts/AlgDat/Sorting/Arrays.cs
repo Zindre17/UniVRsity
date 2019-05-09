@@ -98,6 +98,18 @@ public class Arrays : MonoBehaviour
     public void UndoMerge() {
         Split s = mergedSplits.Pop();
         CombinedArray c = mergedCombined.Pop();
+        if (splits.Count == 0)
+        {
+            array.Active = false;
+            array.InFocus = false;
+        }
+        else
+        {
+            current.Left.Active = false;
+            current.Right.Active = false;
+            current.Left.InFocus = false;
+            current.Right.InFocus = false;
+        }
         current = s;
         splits.Add(s.Left);
         splits.Add(s.Right);
@@ -129,7 +141,8 @@ public class Arrays : MonoBehaviour
 
     public void UnComplete()
     {
-        array.Active = true;
+        if(mergedSplits.Count == 0)
+            array.Active = true;
     }
     public void Complete() {
         array.Active = false;
@@ -343,9 +356,7 @@ public class Arrays : MonoBehaviour
         // 
         mergeArray = Instantiate(CombinedArrayPrefab, transform).GetComponent<CombinedArray>();
         int s = current.Left.Size + current.Right.Size;
-        mergeArray.Init(s, current.Left.Start);
-        //Vector3 pos = (current.Right.transform.position - current.Left.transform.position) / 2f + current.Left.transform.position;
-        //Vector3 pos = new Vector3(current.Left.transform.position.x + current.Left.Size / 4f + spacing, current.Left.transform.position.y, current.Left.transform.position.z);
+        mergeArray.Init(s, current.Left.Start, current.Right.End);
         Vector3 pos = current.Left.Parent == -1 ? transform.position: current.Left.Parent%2==0 ? splits[action.a1-2].StartPos : splits[action.a1-1].StartPos; 
         mergeArray.Pos = pos;
         mergeArray.gameObject.SetActive(false);

@@ -30,13 +30,18 @@ public class InsertionSort :SortingAlgorithm {
         name = "Insertion sort";
 
         pseudo = new string[] {
-            "for j = 1 to A.length -1 \n" +
-            "   key = A[j] \n" +
-            "   i = j - 1 \n" +
-            "   while i > -1 and A[i] > key \n" +
-            "       A[i+1] = A[i] \n" +
-            "       i = i - 1 \n" +
-            "   A[i+1] = key"
+            "InsertionSort(Array A)\n" +
+            "   for j = 1 to A.length -1 \n" +
+            "       //store A[j]\n" +
+            "       key = A[j] \n" +
+            "       i = j - 1 \n" +
+            "       //compare A[i] and storage(key)\n" +
+            "       while i > -1 and A[i] > key \n" +
+            "           //copy A[i] to A[i+1]\n" +
+            "           A[i+1] = A[i] \n" +
+            "           i = i - 1 \n" +
+            "       //copy storage to A[i+1]\n" +
+            "       A[i+1] = key"
         };
     }
 

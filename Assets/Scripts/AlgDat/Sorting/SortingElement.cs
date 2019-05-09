@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Hoverable))]
 public class SortingElement : Selectable {
 
     private Stack<int> prevValues;
-
+    public TMPro.TextMeshPro label;
+    public GameObject cube;
+    public Renderer WallBehindText;
+    public Hoverable hoverable;
     private bool correct = false;
 
     private int size;
@@ -14,7 +16,7 @@ public class SortingElement : Selectable {
         get { return size; }
         set {
             size = value;
-            transform.localScale = new Vector3(1, Size, 1);
+            cube.transform.localScale = new Vector3(1, Size, 1);
             correct = size == goal;
             UpdateColor();
         }
@@ -49,6 +51,7 @@ public class SortingElement : Selectable {
 
     public void Set(int i, int v, int g, int p) {
         Index = i;
+        label.text = string.Format("A[{0}]", Index);
         goal = g;
         Size = v;
         Selected = false;
@@ -89,6 +92,7 @@ public class SortingElement : Selectable {
             color = new Color(color.r, color.g, color.b, 0.3f);
         }
         rend.material.color = color;
+        WallBehindText.material.color = color;
     }
 
     internal override void SetActive(bool a) {

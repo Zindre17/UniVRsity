@@ -24,5 +24,13 @@ namespace Valve.VR
                 return SteamVR_Actions.selection_select;
             }
         }
+        
+        public virtual SteamVR_Action_Pose Pose
+        {
+            get
+            {
+                return SteamVR_Actions.selection_Pose;
+            }
+        }
     }
 }

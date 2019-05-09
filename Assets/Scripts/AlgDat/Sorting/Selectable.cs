@@ -5,7 +5,6 @@ public abstract class Selectable : MonoBehaviour
 {
 
     public Renderer rend;
-    public Hoverable hoverable;
     internal ColorManager cm;
     internal Coroutine hintRoutine;
 

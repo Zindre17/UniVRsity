@@ -40,20 +40,22 @@ public class QuickSort : SortingAlgorithm {
         name = "Quick sort";
 
         pseudo = new string[] {
-            "Qucksort(Array a, int p, int r) \n" +
+            "Qucksort(Array A, int p, int r) \n" +
             "   if p < r \n" +
-            "       q = Partition(a, p, r) \n" +
-            "       Quicksort(a, p, q-1) \n" +
-            "       Quicksort(a, q+1, r) \n",
+            "       q = Partition(A, p, r) \n" +
+            "       Quicksort(A, p, q-1) \n" +
+            "       Quicksort(A, q+1, r) \n",
 
-            "Partition(Array a, int p, int r) \n" +
-            "   x = a[r] \n" +
+            "Partition(Array A, int p, int r) \n" +
+            "   //set A[r] as pivot\n" +
+            "   x = A[r] \n" +
             "   i = p - 1 \n" +
             "   for j = p to r - 1\n" +
-            "       if a[j] <= x\n" +
+            "       //compare A[j] and pivot\n" +
+            "       if A[j] <= x\n" +
             "           i = i + 1\n" +
-            "           swap a[j] with a[i]\n" +
-            "   swap a[i+1] with a[r]\n" +
+            "           swap A[j] with A[i]\n" +
+            "   swap A[i+1] with A[r]\n" +
             "   return i+1"
         };
     }
