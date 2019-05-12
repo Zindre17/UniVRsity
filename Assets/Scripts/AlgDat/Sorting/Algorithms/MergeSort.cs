@@ -81,6 +81,7 @@ public class MergeSort : SortingAlgorithm {
 
     protected override void GenerateActions() {
         mergeCompleteAt = new List<int>();
+        focusChangePoints.Add(0);
         _MergeSort(array, 0, size-1, -1, false);
     }
 
@@ -95,9 +96,16 @@ public class MergeSort : SortingAlgorithm {
             if (focusChangePoints[cursor - 1] == step + 1)
             {
                 cursor--;
-                MergeState s = (MergeState)states[step];
-                EventManager.FocusChanged(s.array, s.i, s.i);
-                EventManager.FocusChanged(s.array + 1, s.j, s.j);
+                if (cursor == 0)
+                {
+                    EventManager.FocusChanged(-1, 0, array.Length);
+                }
+                else
+                {
+                    MergeState s = (MergeState)states[step];
+                    EventManager.FocusChanged(s.array, s.i, s.i);
+                    EventManager.FocusChanged(s.array + 1, s.j, s.j);
+                }
             }
         }
         else
@@ -105,9 +113,16 @@ public class MergeSort : SortingAlgorithm {
             if (cursor >= focusChangePoints.Count) return;
             if (step == focusChangePoints[cursor])
             {
-                MergeState s = (MergeState)states[step];
-                EventManager.FocusChanged(s.array, s.i, s.i);
-                EventManager.FocusChanged(s.array + 1, s.j, s.j);
+                if (cursor == 0)
+                {
+                    EventManager.FocusChanged(-1, 0, array.Length);
+                }
+                else
+                {
+                    MergeState s = (MergeState)states[step];
+                    EventManager.FocusChanged(s.array, s.i, s.i);
+                    EventManager.FocusChanged(s.array + 1, s.j, s.j);
+                }
                 cursor++;
             }
         }

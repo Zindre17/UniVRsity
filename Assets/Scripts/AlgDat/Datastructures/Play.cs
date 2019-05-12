@@ -7,12 +7,16 @@ public class Play : MonoBehaviour
     public DStack Stack;
     public GameObject LinkedList;
     public GameObject scene;
+    public TMPro.TextMeshPro instructions;
 
+    private readonly static string defInstructions = "Play around with the different data structures to see how they work";
     private Stage.Data model;
 
     public void ChangeDataModel(Stage.Data model) {
         this.model = model;
         UpdateScene();
+        if (model == Stage.Data.None) 
+            instructions.text = defInstructions;
     }
 
     public void ChangeMode(Stage.Mode mode) {
@@ -34,7 +38,6 @@ public class Play : MonoBehaviour
             Stack.Queue = false;
         if (queue)
             Stack.Queue = true;
-        LinkedList.SetActive(linked);
     }
 
     private void UpdateScene() {

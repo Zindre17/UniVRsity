@@ -153,13 +153,14 @@ public class DStack : MonoBehaviour
             yield return null;
         }
         o.transform.localScale = origSize;
+        o.SetActive(false);
         if (queue) {
-            int i = 0;
+            int i = 1;
             float interval = 0.1f;
             while (i < structure.Count) {
                 GameObject ob = structure[i].gameObject;
                 Vector3 old = ob.transform.localPosition;
-                Vector3 pos = GetPos(i+1);
+                Vector3 pos = GetPos(i);
                 Vector3 travel = pos - old;
                 float elapsed2 = 0;
                 while(elapsed2 < interval) {
