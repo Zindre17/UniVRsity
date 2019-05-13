@@ -157,6 +157,7 @@ public class SortingManager : MonoBehaviour
     public void Demo() {
         demo = !demo;
         UpdateAlgo();
+        UpdateAlgSelection();
         algoManager.Demo(demo);
         if (demo) {
             if (performingAction || partialAction) return;
@@ -552,7 +553,7 @@ public class SortingManager : MonoBehaviour
 
     private void UpdateAlgSelection()
     {
-        if(performingAction || partialAction)
+        if(performingAction || partialAction || demo)
         {
             algSelectManager.UpdateStates(false);
         }
@@ -563,13 +564,12 @@ public class SortingManager : MonoBehaviour
     }
 
     private void UpdateAlgo() {
-        if (alg == null || performingAction || partialAction)
-        {
+        if (alg == null)
             algoManager.UpdateAlgoButtons(AlgoControlManager.State.Inactive);
-            return;
-        }
         else if (demo)
             algoManager.UpdateAlgoButtons(AlgoControlManager.State.Demo);
+        else if (performingAction || partialAction)
+            algoManager.UpdateAlgoButtons(AlgoControlManager.State.Inactive);
         else if (alg.step == 0)
             algoManager.UpdateAlgoButtons(AlgoControlManager.State.Active);
         else if (alg.Complete)
