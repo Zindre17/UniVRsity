@@ -39,13 +39,18 @@ public class UseCase : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        EventManager.OnSeedChanged += ReSeed;
+        EventManager.OnActionCompleted += StepComplete;
+        EventManager.OnPixelSelected += PixelSelected;
+    }
+
     private void Start() {
         enabled = false;
         algorithm = new RegionGrowAlgorithm(resolution, data);
         messages.text = "";
-        EventManager.OnSeedChanged += ReSeed;
-        EventManager.OnActionCompleted += StepComplete;
-        EventManager.OnPixelSelected += PixelSelected;
+        
     }
     private void Update()
     {

@@ -51,7 +51,7 @@ public class PatternRep : MonoBehaviour
     }
 
     public void Pattern(int index) {
-        if (index > 0 && index < image.Count)
+        if (index >= 0 && index < image.Count)
         {
             image[index].material.color = colorManager.black;
             changes.Push(index);

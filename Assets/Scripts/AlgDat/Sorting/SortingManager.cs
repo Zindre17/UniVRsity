@@ -138,6 +138,8 @@ public class SortingManager : MonoBehaviour
         action = new MoveAction(selected[0].Parent, selected[0].Index, -1);
         partialAction = true;
         UpdateActions();
+        UpdateAlgSelection();
+        UpdateAlgo();
     }
 
     public void Split() {

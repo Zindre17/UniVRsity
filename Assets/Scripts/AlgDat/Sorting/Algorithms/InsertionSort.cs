@@ -27,7 +27,7 @@ public class InsertionSort :SortingAlgorithm {
 
     public override string GetStorageName()
     {
-        return "Key";
+        return "key";
     }
 
     public InsertionSort(int _arrayLength, int[] _array):base(_arrayLength, _array) {
