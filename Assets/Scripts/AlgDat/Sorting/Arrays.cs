@@ -88,6 +88,12 @@ public class Arrays : MonoBehaviour
     private void Awake() {
         EventManager.OnArrayInFocusChanged += FocusChanged;
         EventManager.OnMergeComplete += MergeComplete;
+        mergedSplits = new Stack<Split>();
+        copies = new Stack<int>();
+        mergedCombined = new Stack<CombinedArray>();
+        splits = new List<PartialArray>();
+        layers = new List<Split>();
+        stored = new Stack<int>();
     }
 
     private void OnDestroy() {
@@ -198,12 +204,14 @@ public class Arrays : MonoBehaviour
     }
 
     public void New() {
-        anim.Stop();
         GenerateRandomArray();
         array.New(Array);
-        array.Active = true;
-        array.InFocus = true;
-        storage.Stop();
+        Restart();
+    }
+
+    public void ReNameStorage(string name)
+    {
+        storage.SetName(name);
     }
 
     public void Restart() {
@@ -229,6 +237,9 @@ public class Arrays : MonoBehaviour
             Destroy(mergeArray.gameObject);
             mergeArray = null;
         }
+        mergedCombined.Clear();
+        stored.Clear();
+        copies.Clear();
     }
 
     public void Hint(GameAction a) {

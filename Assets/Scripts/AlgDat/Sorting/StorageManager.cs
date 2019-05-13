@@ -11,18 +11,25 @@ public class StorageManager : MonoBehaviour
 
     private Coroutine routine;
 
+    private void Awake()
+    {
+        Spawn();
+    }
+
     public void Stop() {
         if (routine != null) {
             StopCoroutine(routine);
             routine = null;
         }
-        if (stored != null)
-            stored.gameObject.SetActive(false);
+        stored.gameObject.SetActive(false);
+    }
+
+    public void SetName(string name)
+    {
+        stored.label.text = name;
     }
 
     public SortingElement Get() {
-        if (stored == null)
-            Spawn();
         return stored;
     }
 

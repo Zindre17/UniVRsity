@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1164362154}
-  m_IndirectSpecularColor: {r: 0.18028381, g: 0.22571398, b: 0.3069224, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028395, g: 0.22571427, b: 0.30692324, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2233,6 +2233,7 @@ MonoBehaviour:
   menu: {fileID: 112023766}
   comparison: {fileID: 357703329}
   algoManager: {fileID: 750983994}
+  algSelectManager: {fileID: 1289790040}
 --- !u!1 &395139855
 GameObject:
   m_ObjectHideFlags: 0
@@ -2946,17 +2947,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1289790040}
-        m_MethodName: Select
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 487909650}
-          m_ObjectArgumentAssemblyTypeName: UIButton, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 487909648}
@@ -3627,17 +3617,6 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1289790040}
-        m_MethodName: Select
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 707695842}
-          m_ObjectArgumentAssemblyTypeName: UIButton, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -5646,9 +5625,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1289790038}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9956ee27def34bd40bb1f3a1a57a29a8, type: 3}
+  m_Script: {fileID: 11500000, guid: 16ba26754341ea347919cc9cd3697eda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bubble: {fileID: 487909650}
+  insertion: {fileID: 1722760100}
+  quick: {fileID: 707695842}
+  merge: {fileID: 1898242187}
 --- !u!1 &1294369756
 GameObject:
   m_ObjectHideFlags: 0
@@ -7953,17 +7936,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1289790040}
-        m_MethodName: Select
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 1722760100}
-          m_ObjectArgumentAssemblyTypeName: UIButton, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
     m_TypeName: UIButton+ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   rend: {fileID: 1722760098}
@@ -9072,17 +9044,6 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1289790040}
-        m_MethodName: Select
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 1898242187}
-          m_ObjectArgumentAssemblyTypeName: UIButton, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 

@@ -30,6 +30,11 @@ public abstract class SortingAlgorithm {
         CheckForFocusChange();
     }
 
+    public virtual string GetStorageName()
+    {
+        return "";
+    }
+
     protected abstract void CheckForFocusChange(bool reverse = false);
     public virtual bool NeedsExtraSpace()
     {

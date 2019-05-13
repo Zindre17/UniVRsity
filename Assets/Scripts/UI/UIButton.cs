@@ -43,11 +43,10 @@ public abstract class UIButton :MonoBehaviour
     }
 
     protected virtual void UpdateColor() {
-        if (active)
-            if (toggled)
-                rend.material.color = colorManager.toggleButtonOn;
-            else
-                rend.material.color = colorManager.button;
+        if (toggled)
+            rend.material.color = colorManager.toggleButtonOn;
+        else if (active)
+            rend.material.color = colorManager.button;
         else
             rend.material.color = colorManager.inactive;
     }

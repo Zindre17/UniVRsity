@@ -12,6 +12,7 @@ public class SortingManager : MonoBehaviour
     public MenuManager menu;
     public Comparison comparison;
     public AlgoControlManager algoManager;
+    public AlgSelectManager algSelectManager;
 
     private SortingAlgorithm alg;
 
@@ -84,24 +85,28 @@ public class SortingManager : MonoBehaviour
     public void Bubble() {
         arrays.New();
         alg = new BubbleSort(arrays.Size, arrays.Array);
+        algSelectManager.Bubble();
         Setup();
     }
 
     public void Insertion() {
         arrays.New();
         alg = new InsertionSort(arrays.Size, arrays.Array);
+        algSelectManager.Insertion();
         Setup();
     }
 
     public void Quick() {
         arrays.New();
         alg = new QuickSort(arrays.Size, arrays.Array);
+        algSelectManager.Quick();
         Setup();
     }
 
    public void MergeSort() {
         arrays.New();
         alg = new MergeSort(arrays.Size, arrays.Array);
+        algSelectManager.Merge();
         Setup();
     }
 
@@ -162,6 +167,7 @@ public class SortingManager : MonoBehaviour
     public void Next() {
         performingAction = true;
         UpdateAlgo();
+        UpdateAlgSelection();
         DoStep();
     }
 
@@ -184,6 +190,7 @@ public class SortingManager : MonoBehaviour
 
     private void Setup() {
         arrays.Restart();
+        arrays.ReNameStorage(alg.GetStorageName());
         ResetState();
         ClearSelections();
         UpdateActions();
@@ -257,6 +264,8 @@ public class SortingManager : MonoBehaviour
     private void DoAction() {
         if (alg.CorrectAction(action)) {
             performingAction = true;
+            UpdateAlgo();
+            UpdateAlgSelection();
             comparison.Clear();
             switch (action.type) {
                 case GameAction.GameActionType.Compare:
@@ -317,6 +326,7 @@ public class SortingManager : MonoBehaviour
         }
         UpdateActions();
         UpdateAlgo();
+        UpdateAlgSelection();
         if (demo)
         {
             DoStep();
@@ -339,6 +349,7 @@ public class SortingManager : MonoBehaviour
     private void UndoStep() {
         performingAction = true;
         UpdateAlgo();
+        UpdateAlgSelection();
         GameAction a = alg.GetAction(alg.step - 1);
         if(alg.GetType() == typeof(MergeSort) && !undoMergeInProgress) {
             MergeSort s = (MergeSort)alg;
@@ -537,6 +548,18 @@ public class SortingManager : MonoBehaviour
         if (a == null) return;
         arrays.Hint(a);
         actions.Hint(a.type);
+    }
+
+    private void UpdateAlgSelection()
+    {
+        if(performingAction || partialAction)
+        {
+            algSelectManager.UpdateStates(false);
+        }
+        else
+        {
+            algSelectManager.UpdateStates(true);
+        }
     }
 
     private void UpdateAlgo() {

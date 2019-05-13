@@ -24,7 +24,11 @@ public class InsertionSort :SortingAlgorithm {
             return string.Format(state, i==-1?"":i.ToString(), j, key==-1?"":key.ToString(), steps);
         }
     }
-    
+
+    public override string GetStorageName()
+    {
+        return "Key";
+    }
 
     public InsertionSort(int _arrayLength, int[] _array):base(_arrayLength, _array) {
         name = "Insertion sort";
