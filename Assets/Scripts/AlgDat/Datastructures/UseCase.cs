@@ -12,6 +12,9 @@ public class UseCase : MonoBehaviour
     public ActionController actionController;
     public GameObject tutorial;
     public AlgoControlManager algoManager;
+    public TMPro.TextMeshPro messages;
+    private Coroutine message = null;
+    private int pixelInFocus;
 
     [Range(4,16)]
     public int resolution = 8;
@@ -39,6 +42,7 @@ public class UseCase : MonoBehaviour
     private void Start() {
         enabled = false;
         algorithm = new RegionGrowAlgorithm(resolution, data);
+        messages.text = "";
         EventManager.OnSeedChanged += ReSeed;
         EventManager.OnActionCompleted += StepComplete;
         EventManager.OnPixelSelected += PixelSelected;
@@ -69,6 +73,7 @@ public class UseCase : MonoBehaviour
         imageRep.Seed(index);
         patternRep.Seed(index);
         algorithm.SetSeedPoint(index);
+        pixelInFocus = index;
     }
 
     public void Started() {
@@ -115,7 +120,11 @@ public class UseCase : MonoBehaviour
         bool pattern = p.Dark;
         if (algorithm.PerformStep(new ImageAction(index, ImageAction.ActionType.Check), p)) {
             imageRep.Visit(index, pattern);
-            if(pattern) patternRep.Pattern(index);
+            if (pattern)
+            {
+                patternRep.Pattern(index);
+                pixelInFocus = index;
+            }
             dataStructure.Check();
             StepComplete();
         } else {
@@ -143,6 +152,8 @@ public class UseCase : MonoBehaviour
     
     private void StepComplete(bool reverse=false) {
         performingAction = false;
+        if (algorithm.Complete)
+            ShowMessage("Algorithm complete!");
         if(demo && !algorithm.Complete)
         {
             StartCoroutine(DoStepRoutine());
@@ -160,17 +171,50 @@ public class UseCase : MonoBehaviour
         StartCoroutine(DoStepRoutine());
     }
 
+    private void ShowMessage(string _message)
+    {
+        if (message != null)
+            StopCoroutine(message);
+        message = StartCoroutine(ShowMessageRoutine(_message));
+    }
+
+    private IEnumerator ShowMessageRoutine(string _message)
+    {
+        messages.text = _message;
+        yield return new WaitForSeconds(5f);
+        messages.text = "";
+    }
+
     private IEnumerator DoStepRoutine() {
         performingAction = true;
         if (!demo)
             UpdateAlgoButtons();
         ImageAction a = algorithm.GetNext();
+        ShowMessage(GetMessage(a));
         if(a.Type != ImageAction.ActionType.Pop) {
             yield return new WaitForSeconds(.2f);
             imageHandler.SelectPixel(a.Pixel);
             yield return new WaitForSeconds(.2f);
         }
         actionController.Press(a.Type);
+    }
+
+    private string GetMessage(ImageAction action)
+    {
+        switch (action.Type) {
+            case ImageAction.ActionType.Check:
+                return string.Format("Checking pixel at col {0}, row {1}", action.Pixel % resolution, Mathf.FloorToInt(action.Pixel / resolution));
+            case ImageAction.ActionType.Pop:
+                return string.Format("Getting next pixel to check by {0} from the {1}", data == Stage.Data.Stack ? "popping" : "dequeueing", data == Stage.Data.Stack ? "stack" : "queue");
+            case ImageAction.ActionType.Push:
+                string pos;
+                if (action.Pixel == pixelInFocus - 1) pos = "to the left";
+                else if (action.Pixel == pixelInFocus + 1) pos = "to the right";
+                else if (action.Pixel == pixelInFocus + resolution) pos = "above";
+                else pos = "below";
+                return string.Format("{0} the pixel {1} to the {2}", data == Stage.Data.Stack ? "Pushing" : "Enqueueing", pos, data == Stage.Data.Stack ? "stack" : "queue");
+        }
+        return "";
     }
 
     private void UpdateAlgoButtons() {
@@ -220,5 +264,8 @@ public class UseCase : MonoBehaviour
         imageHandler.Restart(resolution);
         actionController.UpdateState(ActionController.State.Empty);
         algoManager.UpdateAlgoButtons(AlgoControlManager.State.Inactive);
+        if (message != null)
+            StopCoroutine(message);
+        messages.text = "";
     }
 }
