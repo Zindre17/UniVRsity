@@ -323,6 +323,7 @@ public class SortingManager : MonoBehaviour
             if (demo)
                 algoManager.Demo(demo = false);
             algoManager.UpdateAlgoButtons(AlgoControlManager.State.Finished);
+            UpdateAlgSelection();
             return;
         }
         UpdateActions();
