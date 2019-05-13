@@ -58,9 +58,9 @@ public class DStack : MonoBehaviour
 
     private void UpdateTexts()
     {
-        string t = "{1}: add element to the {0}\n" +
-                "{2}: remove element from the {0}\n" +
-                "{3}: shows a demonstration of how a {0} can be used in a real scenario";
+        string t = "<u>{1}</u>: add element to the {0}\n\n" +
+                "<u>{2}</u>: remove element from the {0}\n\n" +
+                "<u>{3}</u>: shows a demonstration of how a {0} can be used in a real scenario";
         string _text, _instructons, _add, _remove, _usecase;
         if (queue)
         {

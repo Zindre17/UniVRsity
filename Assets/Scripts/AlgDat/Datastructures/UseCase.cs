@@ -205,14 +205,14 @@ public class UseCase : MonoBehaviour
             case ImageAction.ActionType.Check:
                 return string.Format("Checking pixel at col {0}, row {1}", action.Pixel % resolution, Mathf.FloorToInt(action.Pixel / resolution));
             case ImageAction.ActionType.Pop:
-                return string.Format("Getting next pixel to check by {0} from the {1}", data == Stage.Data.Stack ? "popping" : "dequeueing", data == Stage.Data.Stack ? "stack" : "queue");
+                return string.Format("{0} for next pixel to check", data == Stage.Data.Stack ? "Popping" : "Dequeueing");
             case ImageAction.ActionType.Push:
                 string pos;
                 if (action.Pixel == pixelInFocus - 1) pos = "to the left";
                 else if (action.Pixel == pixelInFocus + 1) pos = "to the right";
                 else if (action.Pixel == pixelInFocus + resolution) pos = "above";
                 else pos = "below";
-                return string.Format("{0} the pixel {1} to the {2}", data == Stage.Data.Stack ? "Pushing" : "Enqueueing", pos, data == Stage.Data.Stack ? "stack" : "queue");
+                return string.Format("{0} the pixel {1}", data == Stage.Data.Stack ? "Pushing" : "Enqueueing", pos);
         }
         return "";
     }
