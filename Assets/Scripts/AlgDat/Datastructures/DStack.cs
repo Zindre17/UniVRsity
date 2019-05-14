@@ -6,6 +6,8 @@ public class DStack : MonoBehaviour
 {
     public Transform spawnpoint;
     public Transform restpoint;
+    public Transform inSpawn;
+    public Transform outPos;
     public GameObject itemPrefab;
     public TMPro.TextMeshPro text;
     public TMPro.TextMeshPro message;
@@ -14,6 +16,8 @@ public class DStack : MonoBehaviour
     public PlayController controller;
 
     private List<StructureItem> structure = new List<StructureItem>();
+    private StructureItem inItem = null;
+    private StructureItem outItem = null, oldOutItem = null;
     private int size = 0;
     private readonly int limit = 10;
     private bool queue = false;
@@ -41,12 +45,18 @@ public class DStack : MonoBehaviour
 
     private void Awake() {
         difference = restpoint.localPosition - spawnpoint.localPosition;
+        inItem = Spawn();
     }
 
     private void Restart() {
         size = 0;
         if (animating)
             StopCoroutine(routine);
+        if (outItem != null)
+            Destroy(outItem.gameObject);
+        if (oldOutItem != null)
+            Destroy(oldOutItem.gameObject);
+        inItem.transform.localScale = origSize;
         Animating = false;
         UpdateTexts();
         for(int i = structure.Count-1; i> -1; i--) {
@@ -86,17 +96,30 @@ public class DStack : MonoBehaviour
         ShowMessage("");
     }
 
-    public void Push(int value) {
+    public void Push() {
+        Animating = true;
+        size++;
+        StructureItem i = inItem;
+        inItem = Spawn();
+        structure.Add(i);
         if (size == limit) {
-            Spawn(value, true);
+
+            StartCoroutine(PushAnimation(i, true));
+            //Spawn(value, true);
             ShowMessage(string.Format("Error: Overflow\n{1} a full {0} causes the {0} to overflow.", queue? "queue":"stack", queue?"Enqueueing on":"Pushing to"));
             return;
         }
         ShowMessage();
-        size++;
-        structure.Add(Spawn(value));
+        routine = StartCoroutine(PushAnimation(i, false));
     }
 
+
+    public void FakePushComplete()
+    {
+        StructureItem i = structure[structure.Count - 1];
+        structure.Remove(i);
+        Destroy(i.gameObject);
+    }
 
     public void Pop() {
         if (size == 0) {
@@ -111,30 +134,27 @@ public class DStack : MonoBehaviour
             i = structure[0];
         else
             i = structure[size];
-        routine = StartCoroutine(PopAnimation(i));
+        if (outItem != null)
+            oldOutItem = outItem;
+        outItem = i;
+        structure.Remove(i);
+        routine = StartCoroutine(PopAnimation(outItem));
     }
 
     private void PopComplete(StructureItem i)
     {
-        structure.Remove(i);
-        Destroy(i.gameObject);
-
+        if (oldOutItem != null)
+            Destroy(oldOutItem.gameObject);
     }
 
-    private StructureItem Spawn(int value, bool fake=false) {
-        Animating = true;
-        //GameObject o = Instantiate(itemPrefab, spawnpoint.position + size * new Vector3(0, 0.06f, 0), spawnpoint.rotation, transform);
+    private StructureItem Spawn() {
         GameObject o = Instantiate(itemPrefab, spawnpoint);
         StructureItem i = o.GetComponent<StructureItem>();
-        //o.transform.localPosition = GetPos(size,i.Width);
+        o.transform.position = inSpawn.transform.position;
         if (width == 0) {
             origSize = o.transform.localScale;
             width = i.Width;
         }
-        if(i != null) {
-            i.Value = value;
-        }
-        routine = StartCoroutine(PushAnimation(i,fake));
         return i;
     }
 
@@ -145,69 +165,110 @@ public class DStack : MonoBehaviour
     private IEnumerator PopAnimation(StructureItem item) {
         float duration = .6f;
         float elapsed = 0;
-        GameObject o = item.gameObject;
-        while(elapsed < duration) {
-            float percent = elapsed / duration;
-            o.transform.localScale = origSize * (1-percent);
-            elapsed += Time.deltaTime;
-            yield return null;
+        int parts = 2;
+        int part = 0;
+        float partialDuration = duration / (float)parts;
+        Vector3 startpos = item.transform.position;
+        Vector3 endpos = outPos.transform.position;
+        Vector3 midpos = new Vector3(endpos.x, startpos.y, startpos.z);
+        Vector3 path1 = midpos - startpos;
+        Vector3 path2 = endpos - midpos;
+        float percent;
+        while (part < parts)
+        {
+            while (elapsed < partialDuration)
+            {
+                percent = elapsed / partialDuration;
+                if(part == 0)
+                {
+                    item.transform.position = startpos + path1 * percent;
+                    if (oldOutItem != null)
+                        oldOutItem.transform.localScale = origSize * (1 - percent);
+                }
+                if(part == 1)
+                {
+                    item.transform.position = midpos + path2 * percent;
+                }
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            elapsed = 0f;
+            part++;
         }
-        o.transform.localScale = origSize;
-        o.SetActive(false);
+        item.transform.position = endpos;
         if (queue) {
             int i = 1;
             float interval = 0.1f;
             while (i < structure.Count) {
                 GameObject ob = structure[i].gameObject;
-                Vector3 old = ob.transform.localPosition;
+                Vector3 old = ob.transform.position;
                 Vector3 pos = GetPos(i);
                 Vector3 travel = pos - old;
                 float elapsed2 = 0;
                 while(elapsed2 < interval) {
                     float percent2 = elapsed2 / interval;
-                    ob.transform.localPosition = old + (travel*percent2);
+                    ob.transform.position = old + (travel*percent2);
                     elapsed2 += Time.deltaTime;
                     yield return null;
                 }
-                ob.transform.localPosition = pos;
+                ob.transform.position = pos;
                 i++;
                 yield return null;
             }
         }
-        Animating = false;
         PopComplete(item);
+        Animating = false;
     }
 
     private Vector3 GetPos(int i) {
-        return difference + new Vector3(0, width * 3 * i, 0);
+        return restpoint.transform.position + new Vector3(0, width * 1.5f * i, 0);
     }
 
     private IEnumerator PushAnimation(StructureItem i, bool f) {
         float duration = .6f;
         float elapsed = 0;
-        float part1 = .3f;
-        Vector3 pos = GetPos(size + (f?1:0));
-        while(elapsed < duration) {
-            float percent = elapsed / part1;
-            if (elapsed < part1) {
-                i.transform.localScale = origSize * percent;
-            } else {
-                percent = (elapsed - part1) / (duration - part1);
-                i.transform.localPosition = pos * percent;
-            }
-            elapsed += Time.deltaTime;
-            yield return null;  
-        }
-        i.transform.localPosition = pos;
-        i.transform.localScale = origSize;
-        if (f) {
-            elapsed = 0;
-            while (elapsed < part1) {
-                i.transform.localScale = origSize * (1 - (elapsed / part1));
+        int parts = 2;
+        int part = 0;
+        float partialDuration = duration / (float)parts;
+        float percent;
+        Vector3 endpos = GetPos(size + (f?1:0));
+        Vector3 startpos = i.transform.position;
+        Vector3 midpos = new Vector3(startpos.x, endpos.y, startpos.z);
+        Vector3 path1 = midpos - startpos;
+        Vector3 path2 = endpos - midpos;
+        while (part < parts)
+        {
+            while (elapsed < partialDuration)
+            {
+                percent = elapsed / partialDuration;
+
+                // move up to correct height
+                if (part == 0)
+                {
+                    i.transform.position = startpos + path1 * percent;
+                }
+                
+                if (part == 1)
+                {
+                    inItem.transform.localScale = origSize * percent;
+                    i.transform.position = midpos + path2 * percent;
+                }
                 elapsed += Time.deltaTime;
                 yield return null;
             }
-            Destroy(i.gameObject);
+            elapsed = 0f;
+            part++;
+        }
+        i.transform.position = endpos;
+        i.transform.localScale = origSize;
+        if (f) {
+            elapsed = 0f;
+            while (elapsed < partialDuration) {
+                i.transform.localScale = origSize * (1 - (elapsed / partialDuration));
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            FakePushComplete();
         }
         Animating = false;
     }
