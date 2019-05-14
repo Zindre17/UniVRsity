@@ -79,11 +79,18 @@ public class EventManager : MonoBehaviour {
                 lastButtonPress = Time.time;
                 Pixel p = hit.collider.GetComponentInParent<Pixel>();
                 if (p != null) {
-                    if (OnPixelSelected != null) OnPixelSelected(p);
+                    OnPixelSelected?.Invoke(p);
                     return;
                 }
-                Selectable sl = hit.collider.GetComponentInParent<Selectable>();
-                if(sl != null) {
+                SelectableReference slr = hit.collider.GetComponent<SelectableReference>();
+                if(slr != null) {
+                    Selectable sl = slr.s;
+                    if(sl.GetType() == typeof(EmptyElement))
+                    {
+                        if (OnEmptySelect != null && sl.Active)
+                            OnEmptySelect((EmptyElement)sl);
+                        return;
+                    }
                     if (OnSelection != null && sl.Active) OnSelection(sl);
                     return;
                 }
@@ -92,16 +99,8 @@ public class EventManager : MonoBehaviour {
                     b.Press();
                     return;
                 }
-                SortingElement s = hit.collider.GetComponentInParent<SortingElement>();
-                if (s != null && s.InFocus && s.Active) {
-                    if(OnSelect != null) OnSelect(s);
-                    return;
-                }
-                EmptyElement e = hit.collider.GetComponentInParent<EmptyElement>();
-                if (e != null) {
-                    if (OnEmptySelect != null) OnEmptySelect(e);
-                    return;
-                }
+               
+                
             }
 
         } 

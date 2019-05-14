@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4337239220665278633}
   - component: {fileID: 2045849202256897144}
   - component: {fileID: 3405362054023142359}
+  - component: {fileID: 5450714176302194149}
   m_Layer: 0
   m_Name: Array
   m_TagString: Untagged
@@ -91,6 +92,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5450714176302194149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5005418538372649971}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc69b73dd642c8f4a9ffd9d2a2dfe0cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  s: {fileID: 77597977366547941}
 --- !u!1 &5352886050463258089
 GameObject:
   m_ObjectHideFlags: 0
@@ -139,12 +153,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rend: {fileID: 2045849202256897144}
-  hoverable: {fileID: 6691863977531146896}
   center: {fileID: 3552565616000376839}
   text: {fileID: 841807443117562871}
   elementPrefab: {fileID: 1386513676272926, guid: 8bbc1e2613d7dc54ea832d313fd3284e,
     type: 3}
   box: {fileID: 5005418538372649971}
+  hoverable: {fileID: 6691863977531146896}
   original: {fileID: 0}
 --- !u!114 &6691863977531146896
 MonoBehaviour:
@@ -330,7 +344,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 33.45
+  m_fontSize: 33.7
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -338,7 +352,6 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_textAlignment: 514
-  m_isAlignmentEnumConverted: 1
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -365,6 +378,7 @@ MonoBehaviour:
   m_verticalMapping: 0
   m_uvLineOffset: 0
   m_geometrySortingOrder: 0
+  m_VertexBufferAutoSizeReduction: 1
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
@@ -379,12 +393,9 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
-  m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 153992763853048123}
   m_subTextObjects:

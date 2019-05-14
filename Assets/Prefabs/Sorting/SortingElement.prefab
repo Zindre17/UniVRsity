@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 33508835574312290}
   - component: {fileID: 23789232759578806}
   - component: {fileID: 65625307405810846}
+  - component: {fileID: 6964010166183210258}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -91,6 +92,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6964010166183210258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1065450627200240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc69b73dd642c8f4a9ffd9d2a2dfe0cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  s: {fileID: 114074307227366492}
 --- !u!1 &1386513676272926
 GameObject:
   m_ObjectHideFlags: 0
@@ -101,6 +115,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4589483561609744}
   - component: {fileID: 114074307227366492}
+  - component: {fileID: 7701011829646571800}
   m_Layer: 0
   m_Name: SortingElement
   m_TagString: Untagged
@@ -140,8 +155,22 @@ MonoBehaviour:
   label: {fileID: 8698883177956929402}
   cube: {fileID: 3154537767882101315}
   WallBehindText: {fileID: 8117605959390076980}
-  hoverable: {fileID: 516451148834673551}
+  hoverable: {fileID: 7701011829646571800}
   movementMagnitude: 0.4
+--- !u!114 &7701011829646571800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1386513676272926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95a94fd23201d7344839b912b3ad8ddd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hoverColor: {r: 0.08426833, g: 1, b: 0, a: 1}
+  illegalColor: {r: 0.9433962, g: 0, b: 0, a: 1}
 --- !u!1 &3154537767882101315
 GameObject:
   m_ObjectHideFlags: 0
@@ -151,7 +180,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9151851757599283949}
-  - component: {fileID: 516451148834673551}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -174,20 +202,6 @@ Transform:
   m_Father: {fileID: 4589483561609744}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &516451148834673551
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3154537767882101315}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95a94fd23201d7344839b912b3ad8ddd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hoverColor: {r: 0.04320717, g: 1, b: 0, a: 1}
-  illegalColor: {r: 1, g: 0.066037714, b: 0.066037714, a: 1}
 --- !u!1 &4968292544831156104
 GameObject:
   m_ObjectHideFlags: 0
@@ -415,7 +429,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5714746525903626483}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -436,6 +450,7 @@ GameObject:
   - component: {fileID: 5753695758932574850}
   - component: {fileID: 8117605959390076980}
   - component: {fileID: 8217769904623760353}
+  - component: {fileID: 949568199608282292}
   m_Layer: 0
   m_Name: Wall
   m_TagString: Untagged
@@ -450,9 +465,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7415535266678595496}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.0000010133, y: 0.1579, z: -0.152}
-  m_LocalScale: {x: 0.03, y: 1, z: 0.013}
+  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0.1579, z: -0.152}
+  m_LocalScale: {x: 0.03, y: 1, z: 0.013000015}
   m_Children: []
   m_Father: {fileID: 8096666013509688682}
   m_RootOrder: 1
@@ -516,3 +531,16 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 14
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &949568199608282292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7415535266678595496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc69b73dd642c8f4a9ffd9d2a2dfe0cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  s: {fileID: 114074307227366492}

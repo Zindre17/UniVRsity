@@ -160,6 +160,7 @@ public class SortingManager : MonoBehaviour
         demo = !demo;
         UpdateAlgo();
         UpdateAlgSelection();
+        UpdateMenu();
         algoManager.Demo(demo);
         if (demo) {
             if (performingAction || partialAction) return;
@@ -171,6 +172,7 @@ public class SortingManager : MonoBehaviour
         performingAction = true;
         UpdateAlgo();
         UpdateAlgSelection();
+        UpdateMenu();
         DoStep();
     }
 
@@ -268,6 +270,7 @@ public class SortingManager : MonoBehaviour
         if (alg.CorrectAction(action)) {
             performingAction = true;
             UpdateAlgo();
+            UpdateMenu();
             UpdateAlgSelection();
             comparison.Clear();
             switch (action.type) {
@@ -326,8 +329,10 @@ public class SortingManager : MonoBehaviour
                 algoManager.Demo(demo = false);
             algoManager.UpdateAlgoButtons(AlgoControlManager.State.Finished);
             UpdateAlgSelection();
+            UpdateMenu();
             return;
         }
+        UpdateMenu();
         UpdateActions();
         UpdateAlgo();
         UpdateAlgSelection();
@@ -354,6 +359,7 @@ public class SortingManager : MonoBehaviour
         performingAction = true;
         UpdateAlgo();
         UpdateAlgSelection();
+        UpdateMenu();
         GameAction a = alg.GetAction(alg.step - 1);
         if(alg.GetType() == typeof(MergeSort) && !undoMergeInProgress) {
             MergeSort s = (MergeSort)alg;
@@ -582,7 +588,7 @@ public class SortingManager : MonoBehaviour
     }
 
     private void UpdateMenu() {
-        if (alg == null)
+        if (alg == null || demo || performingAction)
             menu.UpdateMenu(MenuManager.State.Idle);
         else
             menu.UpdateMenu(MenuManager.State.Started);

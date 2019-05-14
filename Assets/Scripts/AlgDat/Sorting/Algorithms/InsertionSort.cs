@@ -69,7 +69,7 @@ public class InsertionSort :SortingAlgorithm {
                 array[i + 1] = array[i];
                 i--;
             }
-            states.Add(new InsertionState(states.Count, i, j, key));
+            states.Add(new InsertionState(states.Count, i+1, j, key));
             actions.Add(new MoveAction(-1,-1, i + 1));
             array[i + 1] = key;
         }
