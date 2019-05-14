@@ -68,8 +68,8 @@ public class DStack : MonoBehaviour
 
     private void UpdateTexts()
     {
-        string t = "<u>{1}</u>: add element to the {0}\n\n" +
-                "<u>{2}</u>: remove element from the {0}\n\n" +
+        string t = "<u>{1}</u>: add an element to the top/end of the {0}\n\n" +
+                "<u>{2}</u>: remove {4} element from the {0}\n\n" +
                 "<u>{3}</u>: shows a demonstration of how a {0} can be used in a real scenario";
         string _text, _instructons, _add, _remove, _usecase;
         if (queue)
@@ -78,7 +78,7 @@ public class DStack : MonoBehaviour
             _add = "Enqueue";
             _remove = "Dequeue";
             _usecase = "Use case";
-            _instructons = string.Format(t, "queue", _add, _remove, _usecase);
+            _instructons = string.Format(t, "queue", _add, _remove, _usecase, "the bottom/start");
         }
         else
         {
@@ -86,7 +86,7 @@ public class DStack : MonoBehaviour
             _add = "Push";
             _remove = "Pop";
             _usecase = "Use case";
-            _instructons = string.Format(t, "stack", _add, _remove, _usecase);
+            _instructons = string.Format(t, "stack", _add, _remove, _usecase, "the top/end");
         }
         text.text = _text;
         instructions.text = _instructons;
@@ -105,7 +105,6 @@ public class DStack : MonoBehaviour
         if (size == limit) {
 
             StartCoroutine(PushAnimation(i, true));
-            //Spawn(value, true);
             ShowMessage(string.Format("Error: Overflow\n{1} a full {0} causes the {0} to overflow.", queue? "queue":"stack", queue?"Enqueueing on":"Pushing to"));
             return;
         }
@@ -118,6 +117,7 @@ public class DStack : MonoBehaviour
     {
         StructureItem i = structure[structure.Count - 1];
         structure.Remove(i);
+        size--;
         Destroy(i.gameObject);
     }
 
@@ -192,6 +192,8 @@ public class DStack : MonoBehaviour
                 elapsed += Time.deltaTime;
                 yield return null;
             }
+            if (part == 0 && oldOutItem!=null)
+                oldOutItem.transform.localScale = Vector3.zero;
             elapsed = 0f;
             part++;
         }
