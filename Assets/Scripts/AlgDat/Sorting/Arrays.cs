@@ -368,7 +368,8 @@ public class Arrays : MonoBehaviour
         mergeArray = Instantiate(CombinedArrayPrefab, transform).GetComponent<CombinedArray>();
         int s = current.Left.Size + current.Right.Size;
         mergeArray.Init(s, current.Left.Start, current.Right.End);
-        Vector3 pos = current.Left.Parent == -1 ? transform.position: current.Left.Parent%2==0 ? splits[action.a1-2].StartPos : splits[action.a1-1].StartPos; 
+        int leftSplitIndex = action.a1 < action.a2 ? action.a1 : action.a2;
+        Vector3 pos = current.Left.Parent == -1 ? transform.position: current.Left.Parent%2==0 ? splits[leftSplitIndex-2].StartPos : splits[leftSplitIndex-1].StartPos; 
         mergeArray.Pos = pos;
         mergeArray.gameObject.SetActive(false);
         anim.Merge(current, mergeArray);

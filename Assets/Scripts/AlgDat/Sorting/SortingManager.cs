@@ -140,6 +140,7 @@ public class SortingManager : MonoBehaviour
         UpdateActions();
         UpdateAlgSelection();
         UpdateAlgo();
+        UpdateMenu();
     }
 
     public void Split() {
@@ -592,7 +593,7 @@ public class SortingManager : MonoBehaviour
     }
 
     private void UpdateMenu() {
-        if (alg == null || demo || performingAction)
+        if (alg == null || demo || performingAction || partialAction)
             menu.UpdateMenu(MenuManager.State.Idle);
         else
             menu.UpdateMenu(MenuManager.State.Started);

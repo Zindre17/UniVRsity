@@ -104,8 +104,17 @@ public class MergeSort : SortingAlgorithm {
                 else
                 {
                     MergeState s = (MergeState)states[step];
-                    EventManager.FocusChanged(s.array, s.i, s.i);
-                    EventManager.FocusChanged(s.array + 1, s.j, s.j);
+                    if(s.i == -1)
+                    {
+                        s = (MergeState)states[step+1];
+                        EventManager.FocusChanged(s.array, 0, array.Length);
+                        EventManager.FocusChanged(s.array + 1, 0, array.Length);
+                    }
+                    else
+                    {
+                        EventManager.FocusChanged(s.array, s.i, s.i);
+                        EventManager.FocusChanged(s.array + 1, s.j, s.j);
+                    }
                 }
             }
         }

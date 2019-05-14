@@ -101,6 +101,7 @@ public class DStack : MonoBehaviour
         size++;
         StructureItem i = inItem;
         inItem = Spawn();
+        inItem.gameObject.SetActive(false);
         structure.Add(i);
         if (size == limit) {
 
@@ -199,12 +200,12 @@ public class DStack : MonoBehaviour
         }
         item.transform.position = endpos;
         if (queue) {
-            int i = 1;
+            int i = 0;
             float interval = 0.1f;
             while (i < structure.Count) {
                 GameObject ob = structure[i].gameObject;
                 Vector3 old = ob.transform.position;
-                Vector3 pos = GetPos(i);
+                Vector3 pos = GetPos(i+1);
                 Vector3 travel = pos - old;
                 float elapsed2 = 0;
                 while(elapsed2 < interval) {
@@ -257,6 +258,10 @@ public class DStack : MonoBehaviour
                 }
                 elapsed += Time.deltaTime;
                 yield return null;
+            }
+            if (part == 0)
+            {
+                inItem.gameObject.SetActive(true);
             }
             elapsed = 0f;
             part++;
