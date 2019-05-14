@@ -21,7 +21,7 @@ public class InsertionSort :SortingAlgorithm {
         }
 
         public string Readable() {
-            return string.Format(state, i==-1?"":i.ToString(), j, key==-1?"":key.ToString(), steps);
+            return string.Format(state, i==-2?"":i.ToString(), j, key==-1?"":key.ToString(), steps);
         }
     }
 
@@ -50,7 +50,7 @@ public class InsertionSort :SortingAlgorithm {
     }
 
     protected override void GenerateActions() {
-        int i = -1;
+        int i = -2;
         int key = -1;
         int j;
         for (j = 1; j < size; j++) {
@@ -69,7 +69,7 @@ public class InsertionSort :SortingAlgorithm {
                 array[i + 1] = array[i];
                 i--;
             }
-            states.Add(new InsertionState(states.Count, i+1, j, key));
+            states.Add(new InsertionState(states.Count, i, j, key));
             actions.Add(new MoveAction(-1,-1, i + 1));
             array[i + 1] = key;
         }

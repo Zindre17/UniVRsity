@@ -85,12 +85,6 @@ public class EventManager : MonoBehaviour {
                 SelectableReference slr = hit.collider.GetComponent<SelectableReference>();
                 if(slr != null) {
                     Selectable sl = slr.s;
-                    if(sl.GetType() == typeof(EmptyElement))
-                    {
-                        if (OnEmptySelect != null && sl.Active)
-                            OnEmptySelect((EmptyElement)sl);
-                        return;
-                    }
                     if (OnSelection != null && sl.Active) OnSelection(sl);
                     return;
                 }

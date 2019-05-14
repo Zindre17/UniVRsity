@@ -302,6 +302,9 @@ public class SortingManager : MonoBehaviour
             performingAction = false;
             ClearSelections();
             UpdateActions();
+            UpdateAlgo();
+            UpdateAlgSelection();
+            UpdateMenu();
             Hint();
         }
     }
@@ -360,6 +363,7 @@ public class SortingManager : MonoBehaviour
         UpdateAlgo();
         UpdateAlgSelection();
         UpdateMenu();
+        ClearSelections();
         GameAction a = alg.GetAction(alg.step - 1);
         if(alg.GetType() == typeof(MergeSort) && !undoMergeInProgress) {
             MergeSort s = (MergeSort)alg;

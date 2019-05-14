@@ -55,6 +55,7 @@ public class MergeSort : SortingAlgorithm {
             "       q = floor((p+r)/2)\n" +
             "       Mergesort(A,p,q)\n" +
             "       Mergesort(A,q+1,r)\n" +
+            "       //merge A[p:q] and A[q+1:r]\n" +
             "       Merge(A,p,q,r)",
 
             "Merge(Array A, int p, int q, int r)\n" +
